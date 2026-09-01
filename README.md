@@ -1,4 +1,5 @@
 # CampusFood
+<<<<<<< HEAD
 
 CampusFood es una plataforma web universitaria que conecta estudiantes que venden alimentos dentro de la universidad con otros estudiantes interesados en comprarlos.
 
@@ -13,3 +14,6 @@ CampusFood es una plataforma web universitaria que conecta estudiantes que vende
 - Acceso exclusivo con correo institucional (`@universidad.edu.pe`).
 - Stock autogestionado por el vendedor.
 - Compras y entregas presenciales (sin pasarela de pago virtual).
+=======
+Proyecto de Marcos de desarrollo web
+>>>>>>> e3ba3fe3a31a67bd12ac3069d3c2744b41347fdc
