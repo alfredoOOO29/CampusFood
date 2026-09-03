@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head(${title})}"></head>
+<body>
+
+<nav th:replace="~{layout/base :: navbar}"></nav>
+
+<main class="container mt-5">
+    <div class="row align-items-center">
+        <div class="col-md-6 text-center text-md-start">
+            <h1 class="display-4 fw-bold">Comida en el campus, <span class="text-primary" style="color: #ff6b6b !important;">rápido y fácil</span></h1>
+            <p class="lead text-muted mt-3">Conecta con estudiantes que venden alimentos dentro de tu universidad. Encuentra snacks, almuerzos o postres para tu día a día.</p>
+            <div class="mt-4">
+                <a th:href="@{/registro}" class="btn btn-primary btn-lg px-4 me-md-2">Empezar a comprar</a>
+                <a th:href="@{/registro}" class="btn btn-outline-secondary btn-lg px-4">Quiero vender</a>
+            </div>
+        </div>
+        <div class="col-md-6 mt-5 mt-md-0 d-flex justify-content-center">
+            <!-- Espacio para una ilustración o imagen generada posteriormente -->
+            <div class="bg-white p-4 rounded-4 shadow-sm border" style="width: 100%; max-width: 400px;">
+                <h4 class="mb-3">Próximos disponibles</h4>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-light rounded p-2 me-3 fs-3">🥪</div>
+                    <div>
+                        <h6 class="mb-0">Pan con Pollo</h6>
+                        <small class="text-muted">Pabellón B • S/ 4.00</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-light rounded p-2 me-3 fs-3">🍫</div>
+                    <div>
+                        <h6 class="mb-0">Chocotejas</h6>
+                        <small class="text-muted">Biblioteca • S/ 2.00</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="bg-light rounded p-2 me-3 fs-3">🥤</div>
+                    <div>
+                        <h6 class="mb-0">Chicha Morada Helada</h6>
+                        <small class="text-muted">Patio Central • S/ 3.50</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{layout/base :: footer}"></footer>
+
+</body>
+</html>
