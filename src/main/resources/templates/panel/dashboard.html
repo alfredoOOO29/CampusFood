@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Mi Panel - CampusFood')}"></head>
+<body>
+
+<nav th:replace="~{layout/base :: navbar}"></nav>
+
+<main class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="fw-bold mb-4">Bienvenido, <span th:text="${nombreUsuario}" class="text-primary" style="color: #ff6b6b !important;">Usuario</span></h2>
+        </div>
+    </div>
+    
+    <div class="row g-4 mt-2">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100 rounded-4">
+                <div class="card-body p-4 text-center">
+                    <div class="display-4 mb-3">🛒</div>
+                    <h5 class="fw-bold">Mis Pedidos</h5>
+                    <p class="text-muted small">Consulta el estado de las compras que has realizado a otros estudiantes.</p>
+                    <a href="#" class="btn btn-outline-primary mt-2">Ver pedidos</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100 rounded-4">
+                <div class="card-body p-4 text-center">
+                    <div class="display-4 mb-3">🏪</div>
+                    <h5 class="fw-bold">Mis Publicaciones</h5>
+                    <p class="text-muted small">Administra los productos que estás vendiendo, actualiza precios y stock.</p>
+                    <a href="#" class="btn btn-outline-primary mt-2">Gestionar ventas</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100 rounded-4">
+                <div class="card-body p-4 text-center">
+                    <div class="display-4 mb-3">⚙️</div>
+                    <h5 class="fw-bold">Mi Perfil</h5>
+                    <p class="text-muted small">Actualiza tus datos personales y gestiona la configuración de tu cuenta.</p>
+                    <a href="#" class="btn btn-outline-secondary mt-2">Configuración</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{layout/base :: footer}"></footer>
+
+</body>
+</html>
