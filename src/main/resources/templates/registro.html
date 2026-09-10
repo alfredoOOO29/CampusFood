@@ -13,32 +13,39 @@
                     <h3 class="text-center mb-2 fw-bold">Crear una cuenta</h3>
                     <p class="text-center text-muted small mb-4">Únete a la comunidad de CampusFood. Solo para estudiantes verificados.</p>
                     
-                    <form th:action="@{/registro}" method="post">
+                    <div th:if="${errorRegistro}" class="alert alert-danger" th:text="${errorRegistro}"></div>
+                    
+                    <form th:action="@{/registro}" method="post" th:object="${registroDTO}">
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="nombre" class="form-label">Nombre</label>
-                                <input type="text" class="form-control" id="nombre" name="nombre" required>
+                                <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="apellidos" class="form-label">Apellidos</label>
-                                <input type="text" class="form-control" id="apellidos" name="apellidos" required>
+                                <input type="text" class="form-control" id="apellidos" th:field="*{apellidos}" required>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}"></div>
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label for="email" class="form-label">Correo institucional</label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="usuario@utp.edu.pe" required>
+                            <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="usuario@utp.edu.pe" required>
                             <div class="form-text small text-muted">Recibirás un enlace para verificar tu cuenta.</div>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                         </div>
                         
                         <div class="mb-3">
                             <label for="password" class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
+                            <input type="password" class="form-control" id="password" th:field="*{password}" required>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="password-confirm" class="form-label">Confirmar Contraseña</label>
-                            <input type="password" class="form-control" id="password-confirm" name="password-confirm" required>
+                            <label for="passwordConfirm" class="form-label">Confirmar Contraseña</label>
+                            <input type="password" class="form-control" id="passwordConfirm" th:field="*{passwordConfirm}" required>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}"></div>
                         </div>
                         
                         <div class="mb-4 form-check">

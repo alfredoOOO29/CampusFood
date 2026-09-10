@@ -12,6 +12,11 @@
                 <div class="card-body p-4 p-md-5">
                     <h3 class="text-center mb-4 fw-bold">Bienvenido de nuevo</h3>
                     
+                    <div th:if="${mensajeExito}" class="alert alert-success" th:text="${mensajeExito}"></div>
+                    <div th:if="${errorLogin}" class="alert alert-danger" th:text="${errorLogin}"></div>
+                    <div th:if="${param.error}" class="alert alert-danger">Credenciales inválidas.</div>
+                    <div th:if="${param.logout}" class="alert alert-info">Has cerrado sesión correctamente.</div>
+                    
                     <form th:action="@{/login}" method="post">
                         <div class="mb-3">
                             <label for="username" class="form-label">Correo institucional</label>
