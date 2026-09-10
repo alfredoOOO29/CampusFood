@@ -9,6 +9,10 @@
     <div class="row">
         <div class="col-12">
             <h2 class="fw-bold mb-4">Bienvenido, <span th:text="${nombreUsuario}" class="text-primary" style="color: #ff6b6b !important;">Usuario</span></h2>
+            <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <span th:text="${mensajeExito}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         </div>
     </div>
     
@@ -30,7 +34,8 @@
                     <div class="display-4 mb-3">🏪</div>
                     <h5 class="fw-bold">Mis Publicaciones</h5>
                     <p class="text-muted small">Administra los productos que estás vendiendo, actualiza precios y stock.</p>
-                    <a href="#" class="btn btn-outline-primary mt-2">Gestionar ventas</a>
+                    <a th:href="@{/panel/productos/nuevo}" class="btn btn-primary mt-2">Publicar nuevo alimento</a>
+                    <a href="#" class="btn btn-outline-secondary mt-2 d-block mx-auto mt-2" style="width: fit-content;">Ver mi catálogo</a>
                 </div>
             </div>
         </div>
