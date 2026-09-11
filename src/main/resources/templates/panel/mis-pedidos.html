@@ -56,7 +56,20 @@
                                   th:text="${pedido.estado}">PENDIENTE</span>
                         </td>
                         <td class="pe-4 text-center">
-                            <a href="#" class="btn btn-sm btn-outline-secondary">Ver info</a>
+                            <!-- Acciones Comprador -->
+                            <div class="d-flex justify-content-center gap-1">
+                                <form th:if="${pedido.estado.name() == 'PENDIENTE' or pedido.estado.name() == 'ACEPTADO'}" th:action="@{/panel/pedidos/{id}/estado(id=${pedido.id})}" method="post">
+                                    <input type="hidden" name="estado" value="CANCELADO">
+                                    <input type="hidden" name="origen" value="pedidos">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Seguro que deseas cancelar tu compra?')">Cancelar</button>
+                                </form>
+                                <form th:if="${pedido.estado.name() == 'LISTO'}" th:action="@{/panel/pedidos/{id}/estado(id=${pedido.id})}" method="post">
+                                    <input type="hidden" name="estado" value="ENTREGADO">
+                                    <input type="hidden" name="origen" value="pedidos">
+                                    <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('¿Confirmas que recibiste el producto y pagaste?')">Confirmar Entrega</button>
+                                </form>
+                                <span th:if="${pedido.estado.name() == 'ENTREGADO' or pedido.estado.name() == 'CANCELADO' or pedido.estado.name() == 'RECHAZADO'}" class="text-muted small">Sin acciones</span>
+                            </div>
                         </td>
                     </tr>
                 </tbody>

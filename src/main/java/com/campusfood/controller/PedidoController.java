@@ -1,5 +1,6 @@
 package com.campusfood.controller;
 
+import com.campusfood.entity.EstadoPedido;
 import com.campusfood.entity.Producto;
 import com.campusfood.repository.PedidoRepository;
 import com.campusfood.repository.ProductoRepository;
@@ -57,5 +58,28 @@ public class PedidoController {
     public String misPedidos(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         model.addAttribute("pedidos", pedidoRepository.findByCompradorIdOrderByFechaPedidoDesc(userDetails.getId()));
         return "panel/mis-pedidos";
+    }
+
+    // Ver mis ventas (vendedor)
+    @GetMapping("/panel/ventas")
+    public String misVentas(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        model.addAttribute("pedidos", pedidoRepository.findByVendedorIdOrderByFechaPedidoDesc(userDetails.getId()));
+        return "panel/mis-ventas";
+    }
+
+    // Actualizar estado del pedido
+    @PostMapping("/panel/pedidos/{id}/estado")
+    public String actualizarEstado(@PathVariable Long id,
+                                   @RequestParam EstadoPedido estado,
+                                   @RequestParam String origen,
+                                   @AuthenticationPrincipal CustomUserDetails userDetails,
+                                   RedirectAttributes redirectAttributes) {
+        try {
+            pedidoService.actualizarEstadoPedido(id, estado, userDetails.getId());
+            redirectAttributes.addFlashAttribute("mensajeExito", "Estado actualizado a " + estado);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/panel/" + origen;
     }
 }

@@ -64,4 +64,46 @@ public class PedidoService {
 
         return pedidoRepository.save(pedido);
     }
+
+    @Transactional
+    public void actualizarEstadoPedido(Long pedidoId, EstadoPedido nuevoEstado, Long usuarioId) {
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado"));
+
+        boolean esComprador = pedido.getComprador().getId().equals(usuarioId);
+        boolean esVendedor = pedido.getVendedor().getId().equals(usuarioId);
+
+        if (!esComprador && !esVendedor) {
+            throw new IllegalArgumentException("No tienes permiso para modificar este pedido");
+        }
+
+        // Lógica de transición de estados básicos
+        if (esVendedor) {
+            if (nuevoEstado == EstadoPedido.ACEPTADO || nuevoEstado == EstadoPedido.RECHAZADO || nuevoEstado == EstadoPedido.LISTO) {
+                pedido.setEstado(nuevoEstado);
+            } else {
+                throw new IllegalArgumentException("El vendedor no puede cambiar a este estado");
+            }
+        }
+
+        if (esComprador) {
+            if (nuevoEstado == EstadoPedido.CANCELADO || nuevoEstado == EstadoPedido.ENTREGADO) {
+                pedido.setEstado(nuevoEstado);
+            } else {
+                throw new IllegalArgumentException("El comprador no puede cambiar a este estado");
+            }
+        }
+
+        // Si se rechaza o cancela, devolver el stock
+        if (nuevoEstado == EstadoPedido.RECHAZADO || nuevoEstado == EstadoPedido.CANCELADO) {
+            for (DetallePedido detalle : pedido.getDetalles()) {
+                Producto p = detalle.getProducto();
+                p.setStock(p.getStock() + detalle.getCantidad());
+                p.setActivo(true);
+                productoRepository.save(p);
+            }
+        }
+
+        pedidoRepository.save(pedido);
+    }
 }
