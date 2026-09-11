@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout/base :: head(${producto.nombre} + ' - CampusFood')}"></head>
+<body>
+
+<nav th:replace="~{layout/base :: navbar}"></nav>
+
+<main class="container mt-5 mb-5">
+    
+    <!-- Mensaje de error si la compra falla -->
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="row bg-white rounded-4 shadow-sm border overflow-hidden">
+        
+        <!-- Imagen -->
+        <div class="col-md-5 bg-light p-5 d-flex align-items-center justify-content-center border-end">
+            <span class="display-1">🍔</span>
+        </div>
+        
+        <!-- Detalles -->
+        <div class="col-md-7 p-4 p-md-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge bg-secondary" th:text="${producto.categoria.nombre}">Categoría</span>
+                <span class="badge bg-success" th:if="${producto.stock > 0}" th:text="'Disponible: ' + ${producto.stock} + ' und'">Stock</span>
+                <span class="badge bg-danger" th:if="${producto.stock <= 0}">Agotado</span>
+            </div>
+            
+            <h2 class="fw-bold mb-2" th:text="${producto.nombre}">Nombre del Producto</h2>
+            <h3 class="text-primary fw-bold mb-4" th:text="'S/ ' + ${producto.precio}">S/ 0.00</h3>
+            
+            <h5 class="fw-semibold">Descripción</h5>
+            <p class="text-muted mb-4" th:text="${producto.descripcion}">Descripción del producto...</p>
+            
+            <h5 class="fw-semibold">Lugar y Horario de entrega</h5>
+            <ul class="list-unstyled text-muted mb-4 bg-light p-3 rounded-3">
+                <li class="mb-2"><strong>📍 Ubicación:</strong> <span th:text="${producto.disponibilidad.ubicacion}">Ubicación</span></li>
+                <li class="mb-2"><strong>📅 Fecha:</strong> <span th:text="${producto.disponibilidad.fechaDisponible}">Fecha</span></li>
+                <li><strong>🕒 Horario:</strong> <span th:text="${producto.disponibilidad.horaInicio + ' a ' + producto.disponibilidad.horaFin}">Horario</span></li>
+            </ul>
+            
+            <h5 class="fw-semibold">Vendedor</h5>
+            <p class="text-muted mb-4"><strong>👨‍🎓 </strong> <span th:text="${producto.vendedor.nombre + ' ' + producto.vendedor.apellidos}">Nombre Vendedor</span></p>
+            
+            <hr>
+            
+            <!-- Formulario de Compra -->
+            <div th:if="${producto.stock > 0}">
+                <div sec:authorize="isAuthenticated()">
+                    <form th:action="@{/panel/comprar/{id}(id=${producto.id})}" method="post" class="d-flex align-items-end mt-4">
+                        <div class="me-3" style="width: 100px;">
+                            <label for="cantidad" class="form-label fw-semibold">Cantidad</label>
+                            <input type="number" name="cantidad" id="cantidad" class="form-control" value="1" min="1" th:max="${producto.stock}" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg flex-grow-1 shadow-sm">Realizar Pedido Ahora</button>
+                    </form>
+                    <p class="text-muted small mt-2">No necesitas tarjeta. El pago lo realizas al encontrarte con el vendedor.</p>
+                </div>
+                
+                <div sec:authorize="!isAuthenticated()" class="alert alert-warning mt-4 text-center">
+                    Debes <a th:href="@{/login}" class="fw-bold text-dark">Iniciar Sesión</a> o <a th:href="@{/registro}" class="fw-bold text-dark">Registrarte</a> para poder realizar un pedido.
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{layout/base :: footer}"></footer>
+
+</body>
+</html>

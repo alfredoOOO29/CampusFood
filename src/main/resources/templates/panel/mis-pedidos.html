@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Mis Pedidos - CampusFood')}"></head>
+<body>
+
+<nav th:replace="~{layout/base :: navbar}"></nav>
+
+<main class="container mt-5 mb-5">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold m-0">Mis Pedidos</h2>
+        <a th:href="@{/panel}" class="btn btn-outline-secondary">Volver al Panel</a>
+    </div>
+
+    <!-- Mensaje de éxito -->
+    <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+        <span th:text="${mensajeExito}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Código</th>
+                        <th>Producto</th>
+                        <th>Fecha y Hora</th>
+                        <th>Vendedor</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th class="pe-4 text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${pedidos == null or pedidos.isEmpty()}">
+                        <td colspan="7" class="text-center py-5 text-muted">No has realizado ningún pedido todavía.</td>
+                    </tr>
+                    <tr th:each="pedido : ${pedidos}">
+                        <td class="ps-4 fw-bold text-secondary" th:text="'#' + ${pedido.id}">#1</td>
+                        <td>
+                            <div th:each="detalle : ${pedido.detalles}" class="d-flex flex-column">
+                                <span class="fw-semibold text-dark" th:text="${detalle.producto.nombre}">Nombre Prod</span>
+                                <small class="text-muted" th:text="'Cant: ' + ${detalle.cantidad} + ' x S/ ' + ${detalle.precioUnitario}">Cant: 1</small>
+                            </div>
+                        </td>
+                        <td th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy HH:mm')}">Fecha</td>
+                        <td th:text="${pedido.vendedor.nombre}">Juan</td>
+                        <td class="fw-bold text-primary" th:text="'S/ ' + ${pedido.total}">S/ 0.00</td>
+                        <td>
+                            <span class="badge" 
+                                  th:classappend="${pedido.estado.name() == 'PENDIENTE' ? 'bg-warning text-dark' : 
+                                                 (pedido.estado.name() == 'ACEPTADO' ? 'bg-info text-dark' : 
+                                                 (pedido.estado.name() == 'LISTO' ? 'bg-primary' : 
+                                                 (pedido.estado.name() == 'ENTREGADO' ? 'bg-success' : 'bg-danger')))}"
+                                  th:text="${pedido.estado}">PENDIENTE</span>
+                        </td>
+                        <td class="pe-4 text-center">
+                            <a href="#" class="btn btn-sm btn-outline-secondary">Ver info</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{layout/base :: footer}"></footer>
+
+</body>
+</html>
