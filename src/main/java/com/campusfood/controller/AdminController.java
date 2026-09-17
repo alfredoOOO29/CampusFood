@@ -2,6 +2,7 @@ package com.campusfood.controller;
 
 import com.campusfood.entity.Producto;
 import com.campusfood.entity.Usuario;
+import com.campusfood.repository.PedidoRepository;
 import com.campusfood.repository.ProductoRepository;
 import com.campusfood.repository.UsuarioRepository;
 import org.springframework.stereotype.Controller;
@@ -18,14 +19,19 @@ public class AdminController {
 
     private final UsuarioRepository usuarioRepository;
     private final ProductoRepository productoRepository;
+    private final PedidoRepository pedidoRepository;
 
-    public AdminController(UsuarioRepository usuarioRepository, ProductoRepository productoRepository) {
+    public AdminController(UsuarioRepository usuarioRepository, ProductoRepository productoRepository, PedidoRepository pedidoRepository) {
         this.usuarioRepository = usuarioRepository;
         this.productoRepository = productoRepository;
+        this.pedidoRepository = pedidoRepository;
     }
 
     @GetMapping
-    public String dashboard() {
+    public String dashboard(Model model) {
+        model.addAttribute("totalUsuarios", usuarioRepository.count());
+        model.addAttribute("totalProductos", productoRepository.count());
+        model.addAttribute("totalPedidos", pedidoRepository.count());
         return "admin/dashboard";
     }
 

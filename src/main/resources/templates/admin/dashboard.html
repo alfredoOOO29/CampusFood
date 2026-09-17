@@ -14,6 +14,44 @@
         </div>
     </div>
     
+    <div class="row g-4 justify-content-center mb-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100 rounded-4 bg-primary text-white">
+                <div class="card-body p-4 text-center">
+                    <h5 class="fw-bold">Usuarios Totales</h5>
+                    <h2 class="display-4 fw-bold mb-0" th:text="${totalUsuarios}">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100 rounded-4 bg-success text-white">
+                <div class="card-body p-4 text-center">
+                    <h5 class="fw-bold">Alimentos Publicados</h5>
+                    <h2 class="display-4 fw-bold mb-0" th:text="${totalProductos}">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100 rounded-4 bg-warning text-dark">
+                <div class="card-body p-4 text-center">
+                    <h5 class="fw-bold">Pedidos Realizados</h5>
+                    <h2 class="display-4 fw-bold mb-0" th:text="${totalPedidos}">0</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 justify-content-center mb-5">
+        <div class="col-md-10">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4 text-center">Resumen de Actividad de CampusFood</h5>
+                    <canvas id="statsChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div class="row g-4 justify-content-center">
         <div class="col-md-5">
             <div class="card shadow-sm border-0 h-100 rounded-4">
@@ -38,6 +76,53 @@
         </div>
     </div>
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener("DOMContentLoaded", function() {
+        const ctx = document.getElementById('statsChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Usuarios Registrados', 'Productos Publicados', 'Pedidos Generados'],
+                datasets: [{
+                    label: 'Métricas Actuales',
+                    data: [
+                        /*[[${totalUsuarios}]]*/ 0,
+                        /*[[${totalProductos}]]*/ 0,
+                        /*[[${totalPedidos}]]*/ 0
+                    ],
+                    backgroundColor: [
+                        'rgba(13, 110, 253, 0.7)',
+                        'rgba(25, 135, 84, 0.7)',
+                        'rgba(255, 193, 7, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(13, 110, 253, 1)',
+                        'rgba(25, 135, 84, 1)',
+                        'rgba(255, 193, 7, 1)'
+                    ],
+                    borderWidth: 1,
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    });
+    /*]]>*/
+</script>
 
 <footer th:replace="~{layout/base :: footer}"></footer>
 
