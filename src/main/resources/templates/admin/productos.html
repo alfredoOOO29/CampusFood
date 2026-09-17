@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Gestión de Productos - CampusFood')}"></head>
+<body>
+
+<nav th:replace="~{layout/base :: navbar}"></nav>
+
+<main class="container mt-5 mb-5">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold m-0">🍔 Gestión de Publicaciones</h2>
+        <a th:href="@{/admin}" class="btn btn-outline-secondary">Volver al Panel</a>
+    </div>
+
+    <!-- Alertas -->
+    <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+        <span th:text="${mensajeExito}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">ID</th>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Vendedor</th>
+                        <th>Stock / Precio</th>
+                        <th>Estado</th>
+                        <th class="pe-4 text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="producto : ${productos}">
+                        <td class="ps-4 text-secondary" th:text="${producto.id}">1</td>
+                        <td class="fw-semibold" th:text="${producto.nombre}">Nombre Producto</td>
+                        <td th:text="${producto.categoria.nombre}">Cat</td>
+                        <td th:text="${producto.vendedor.nombre + ' ' + producto.vendedor.apellidos}">Vendedor</td>
+                        <td>
+                            <div class="d-flex flex-column">
+                                <span class="fw-bold text-success" th:text="'S/ ' + ${producto.precio}">S/ 0.00</span>
+                                <small class="text-muted" th:text="'Stock: ' + ${producto.stock}">Stock: 0</small>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge" th:classappend="${producto.activo ? 'bg-success' : 'bg-danger'}" th:text="${producto.activo ? 'PUBLICADO' : 'SUSPENDIDO'}">PUBLICADO</span>
+                        </td>
+                        <td class="pe-4 text-center">
+                            <form th:action="@{/admin/productos/{id}/toggle-estado(id=${producto.id})}" method="post">
+                                <button type="submit" class="btn btn-sm" th:classappend="${producto.activo ? 'btn-outline-danger' : 'btn-outline-success'}" th:text="${producto.activo ? 'Suspender' : 'Activar'}">
+                                    Suspender
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{layout/base :: footer}"></footer>
+
+</body>
+</html>

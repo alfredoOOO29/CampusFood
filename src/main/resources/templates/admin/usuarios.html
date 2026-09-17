@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Gestión de Usuarios - CampusFood')}"></head>
+<body>
+
+<nav th:replace="~{layout/base :: navbar}"></nav>
+
+<main class="container mt-5 mb-5">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold m-0">👥 Gestión de Usuarios</h2>
+        <a th:href="@{/admin}" class="btn btn-outline-secondary">Volver al Panel</a>
+    </div>
+
+    <!-- Alertas -->
+    <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+        <span th:text="${mensajeExito}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">ID</th>
+                        <th>Nombre Completo</th>
+                        <th>Email Institucional</th>
+                        <th>Roles</th>
+                        <th>Fecha Registro</th>
+                        <th>Estado</th>
+                        <th class="pe-4 text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="usuario : ${usuarios}">
+                        <td class="ps-4 text-secondary" th:text="${usuario.id}">1</td>
+                        <td class="fw-semibold" th:text="${usuario.nombre + ' ' + usuario.apellidos}">Nombre Apellido</td>
+                        <td th:text="${usuario.email}">correo@utp.edu.pe</td>
+                        <td>
+                            <span th:each="rol : ${usuario.roles}" class="badge bg-secondary me-1" th:text="${rol.nombre}">ESTUDIANTE</span>
+                        </td>
+                        <td th:text="${#temporals.format(usuario.fechaRegistro, 'dd/MM/yyyy')}">01/01/2026</td>
+                        <td>
+                            <span class="badge" th:classappend="${usuario.habilitado ? 'bg-success' : 'bg-danger'}" th:text="${usuario.habilitado ? 'ACTIVO' : 'BLOQUEADO'}">ACTIVO</span>
+                        </td>
+                        <td class="pe-4 text-center">
+                            <form th:action="@{/admin/usuarios/{id}/toggle-estado(id=${usuario.id})}" method="post">
+                                <button type="submit" class="btn btn-sm" th:classappend="${usuario.habilitado ? 'btn-outline-danger' : 'btn-outline-success'}" th:text="${usuario.habilitado ? 'Bloquear' : 'Desbloquear'}">
+                                    Bloquear
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{layout/base :: footer}"></footer>
+
+</body>
+</html>

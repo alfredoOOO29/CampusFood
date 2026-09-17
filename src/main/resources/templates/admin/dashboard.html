@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Panel de Administración - CampusFood')}"></head>
+<body>
+
+<nav th:replace="~{layout/base :: navbar}"></nav>
+
+<main class="container mt-5 mb-5">
+    
+    <div class="row">
+        <div class="col-12 text-center mb-5">
+            <h1 class="display-5 fw-bold text-dark">Panel de Control</h1>
+            <p class="lead text-muted">Gestión de la plataforma (Solo Administradores)</p>
+        </div>
+    </div>
+    
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-sm border-0 h-100 rounded-4">
+                <div class="card-body p-5 text-center">
+                    <div class="display-3 mb-4">👥</div>
+                    <h4 class="fw-bold">Gestión de Usuarios</h4>
+                    <p class="text-muted">Visualiza los perfiles de todos los estudiantes registrados y bloquea cuentas infractoras.</p>
+                    <a th:href="@{/admin/usuarios}" class="btn btn-primary btn-lg mt-3 w-100">Administrar Usuarios</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-5">
+            <div class="card shadow-sm border-0 h-100 rounded-4">
+                <div class="card-body p-5 text-center">
+                    <div class="display-3 mb-4">🍔</div>
+                    <h4 class="fw-bold">Gestión de Publicaciones</h4>
+                    <p class="text-muted">Revisa el catálogo completo, incluyendo productos inactivos, y suspende publicaciones.</p>
+                    <a th:href="@{/admin/productos}" class="btn btn-primary btn-lg mt-3 w-100">Administrar Productos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{layout/base :: footer}"></footer>
+
+</body>
+</html>
