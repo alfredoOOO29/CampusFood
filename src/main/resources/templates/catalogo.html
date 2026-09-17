@@ -41,9 +41,12 @@
         
         <div class="col-md-6 col-lg-4" th:each="producto : ${productos}">
             <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
-                <!-- Imagen temporal genérica si no hay URL -->
-                <div class="bg-light" style="height: 150px; display: flex; align-items: center; justify-content: center;">
+                <!-- Imagen -->
+                <div th:if="${producto.imagenUrl == null}" class="bg-light" style="height: 150px; display: flex; align-items: center; justify-content: center;">
                     <span class="display-3">🍔</span>
+                </div>
+                <div th:if="${producto.imagenUrl != null}" style="height: 150px; overflow: hidden;">
+                    <img th:src="@{${producto.imagenUrl}}" alt="Imagen del producto" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 
                 <div class="card-body p-4">

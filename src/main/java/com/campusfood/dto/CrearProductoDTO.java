@@ -3,12 +3,15 @@ package com.campusfood.dto;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class CrearProductoDTO {
+
+    private MultipartFile imagen;
 
     @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
@@ -58,4 +61,6 @@ public class CrearProductoDTO {
     public void setHoraInicio(LocalTime horaInicio) { this.horaInicio = horaInicio; }
     public LocalTime getHoraFin() { return horaFin; }
     public void setHoraFin(LocalTime horaFin) { this.horaFin = horaFin; }
+    public MultipartFile getImagen() { return imagen; }
+    public void setImagen(MultipartFile imagen) { this.imagen = imagen; }
 }

@@ -17,10 +17,16 @@
                     
                     <div th:if="${errorProducto}" class="alert alert-danger" th:text="${errorProducto}"></div>
                     
-                    <form th:action="@{/panel/productos/nuevo}" method="post" th:object="${productoDTO}">
+                    <form th:action="@{/panel/productos/nuevo}" method="post" th:object="${productoDTO}" enctype="multipart/form-data">
                         
                         <h5 class="fw-semibold mb-3 text-primary">Información del Producto</h5>
                         <div class="row g-3">
+                            <div class="col-md-12 mb-2">
+                                <label for="imagen" class="form-label">Foto del producto (opcional)</label>
+                                <input class="form-control" type="file" id="imagen" th:field="*{imagen}" accept="image/png, image/jpeg, image/jpg">
+                                <div class="text-danger small" th:if="${#fields.hasErrors('imagen')}" th:errors="*{imagen}"></div>
+                            </div>
+                            
                             <div class="col-md-8">
                                 <label for="nombre" class="form-label">Nombre del producto</label>
                                 <input type="text" class="form-control" id="nombre" th:field="*{nombre}" placeholder="Ej: Pan con pollo y papas" required>

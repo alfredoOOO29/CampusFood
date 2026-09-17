@@ -63,6 +63,25 @@ public class ProductoService {
 
         producto.setDisponibilidad(disponibilidad);
 
+        // Manejo de imagen
+        if (dto.getImagen() != null && !dto.getImagen().isEmpty()) {
+            try {
+                String uploadsDir = "uploads/";
+                java.nio.file.Path uploadPath = java.nio.file.Paths.get(uploadsDir);
+                if (!java.nio.file.Files.exists(uploadPath)) {
+                    java.nio.file.Files.createDirectories(uploadPath);
+                }
+                
+                String filename = java.util.UUID.randomUUID().toString() + "_" + dto.getImagen().getOriginalFilename();
+                java.nio.file.Path filePath = uploadPath.resolve(filename);
+                java.nio.file.Files.copy(dto.getImagen().getInputStream(), filePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                
+                producto.setImagenUrl("/uploads/" + filename);
+            } catch (java.io.IOException e) {
+                throw new RuntimeException("No se pudo guardar la imagen", e);
+            }
+        }
+
         return productoRepository.save(producto);
     }
 }
