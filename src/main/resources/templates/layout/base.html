@@ -11,39 +11,117 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
-        .navbar-brand { font-weight: 700; color: #ff6b6b !important; }
-        .btn-primary { background-color: #ff6b6b; border-color: #ff6b6b; }
-        .btn-primary:hover { background-color: #ff5252; border-color: #ff5252; }
+        body { font-family: 'Inter', sans-serif; background-color: #f2f4f8; }
+        :root {
+            --brand-color: #8b0000; /* Granate institucional */
+            --brand-hover: #660000;
+            --accent-color: #ff9900; /* Acento estilo Amazon */
+            --accent-hover: #e68a00;
+        }
+        
+        /* Utilidades */
+        .text-brand { color: var(--brand-color) !important; }
+        .bg-brand { background-color: var(--brand-color) !important; }
+        .btn-brand { background-color: var(--brand-color); border-color: var(--brand-color); color: white; }
+        .btn-brand:hover { background-color: var(--brand-hover); border-color: var(--brand-hover); color: white; }
+        
+        /* Navbar */
+        .navbar-brand { font-weight: 800; color: #fff !important; font-size: 1.6rem; letter-spacing: -0.5px; }
+        .navbar-main { background-color: var(--brand-color); padding: 10px 0; }
+        .nav-link { color: rgba(255,255,255,0.95) !important; font-weight: 500; font-size: 0.95rem; }
+        .nav-link:hover { color: #fff !important; }
+        
+        /* Barra de búsqueda */
+        .search-bar { max-width: 600px; width: 100%; border-radius: 6px 0 0 6px; border: none; padding: 11px 15px; font-size: 0.95rem; }
+        .search-bar:focus { box-shadow: none; outline: 2px solid var(--accent-color); z-index: 10; }
+        .search-btn { border-radius: 0 6px 6px 0; background-color: var(--accent-color); border: none; color: #111; font-weight: 600; padding: 0 22px; }
+        .search-btn:hover { background-color: var(--accent-hover); color: #111; }
+        
+        /* Cards de Producto */
+        .product-card { 
+            transition: transform 0.2s ease, box-shadow 0.2s ease; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            background: #fff;
+        }
+        .product-card:hover { 
+            transform: translateY(-4px); 
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1) !important; 
+            border-color: #ccc; 
+            cursor: pointer;
+        }
+        .card-img-top-container { 
+            position: relative; 
+            height: 200px; 
+            overflow: hidden; 
+            border-radius: 8px 8px 0 0; 
+            background-color: #f8f9fa; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card-img-top-container img { width: 100%; height: 100%; object-fit: cover; }
+        .badge-overlay-top-left { position: absolute; top: 12px; left: 12px; z-index: 2; }
+        .badge-overlay-bottom-right { position: absolute; bottom: 12px; right: 12px; z-index: 2; }
     </style>
 </head>
 <body>
 
-<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
-    <div class="container">
-        <a class="navbar-brand" th:href="@{/}">🍔 CampusFood</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-main shadow-sm mb-4">
+    <div class="container d-flex align-items-center">
+        <!-- Logo -->
+        <a class="navbar-brand me-4" th:href="@{/}">🎓 CampusFood</a>
+        
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
         </button>
+
+        <!-- Contenedor Búsqueda y Enlaces -->
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item me-3">
-                    <a class="nav-link fw-semibold text-primary" th:href="@{/catalogo}">Catálogo de Alimentos</a>
+            
+            <!-- Buscador Central Robusto -->
+            <form th:action="@{/catalogo}" method="get" class="d-flex mx-auto w-100 my-3 my-lg-0" style="max-width: 600px;">
+                <input class="form-control search-bar shadow-none" type="search" name="q" placeholder="Buscar alimentos, categorías, vendedores..." aria-label="Search">
+                <button class="btn search-btn shadow-none d-flex align-items-center justify-content-center" type="submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                    </svg>
+                </button>
+            </form>
+
+            <!-- Accesos de Usuario -->
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <li class="nav-item me-2 d-none d-lg-block">
+                    <a class="nav-link" th:href="@{/catalogo}">Catálogo</a>
                 </li>
-                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                    <a class="nav-link text-danger fw-bold" th:href="@{/admin}">Administración</a>
+                
+                <li class="nav-item me-2" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link fw-bold" style="color: var(--accent-color) !important;" th:href="@{/admin}">Administración</a>
                 </li>
+                
+                <!-- Visitante -->
                 <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a class="nav-link" th:href="@{/login}">Iniciar Sesión</a>
+                    <a class="nav-link" th:href="@{/login}">Hola, Identifícate</a>
                 </li>
-                <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a class="btn btn-outline-primary ms-2" th:href="@{/registro}">Registrarse</a>
+                <li class="nav-item ms-lg-2 mt-2 mt-lg-0" sec:authorize="!isAuthenticated()">
+                    <a class="btn btn-sm shadow-sm px-3 py-1" style="background-color: #fff; color: var(--brand-color); font-weight: 600; border-radius: 6px;" th:href="@{/registro}">Registrarse</a>
                 </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="nav-link fw-semibold" th:href="@{/panel}">Mi Panel</a>
-                </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="btn btn-outline-danger ms-3" th:href="@{/logout}">Cerrar Sesión</a>
+                
+                <!-- Logueado -->
+                <li class="nav-item ms-lg-3 dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle fw-semibold d-flex align-items-center" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="rounded-circle bg-white text-brand d-inline-flex align-items-center justify-content-center me-2 shadow-sm" style="width: 32px; height: 32px; font-weight: 800; font-size: 0.9rem;">
+                            👤
+                        </span>
+                        <span>Hola, <span sec:authentication="name">Estudiante</span></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 rounded-3" aria-labelledby="userMenu">
+                        <li><a class="dropdown-item py-2 fw-medium" th:href="@{/panel}">Mi Perfil y Panel</a></li>
+                        <li><a class="dropdown-item py-2" th:href="@{/panel/pedidos}">Mis Reservas</a></li>
+                        <li><a class="dropdown-item py-2" th:href="@{/panel/ventas}">Mis Ventas</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item py-2 text-danger fw-semibold" th:href="@{/logout}">Cerrar Sesión</a></li>
+                    </ul>
                 </li>
             </ul>
         </div>

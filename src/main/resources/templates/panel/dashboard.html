@@ -5,48 +5,55 @@
 
 <nav th:replace="~{layout/base :: navbar}"></nav>
 
-<main class="container mt-5">
-    <div class="row">
-        <div class="col-12">
-            <h2 class="fw-bold mb-4">Bienvenido, <span th:text="${nombreUsuario}" class="text-primary" style="color: #ff6b6b !important;">Usuario</span></h2>
-            <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show" role="alert">
+<main class="container mt-5 mb-5">
+    <div class="row mb-5">
+        <div class="col-12 text-center text-md-start border-bottom pb-4">
+            <h2 class="fw-bold mb-1 text-dark" style="letter-spacing: -0.5px;">Tu cuenta</h2>
+            <p class="text-muted mb-0 fs-5">Bienvenido, <span th:text="${nombreUsuario}" class="text-brand fw-bold">Usuario</span></p>
+            
+            <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show mt-3 d-inline-block text-start w-100 shadow-sm border-0" role="alert">
                 <span th:text="${mensajeExito}"></span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
     </div>
     
-    <div class="row g-4 mt-2">
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0 h-100 rounded-4">
-                <div class="card-body p-4 text-center">
-                    <div class="display-4 mb-3">🛒</div>
-                    <h5 class="fw-bold">Mis Pedidos</h5>
-                    <p class="text-muted small">Consulta el estado de las compras que has realizado a otros estudiantes.</p>
-                    <a th:href="@{/panel/pedidos}" class="btn btn-outline-primary mt-2">Ver pedidos</a>
+    <div class="row g-4 justify-content-center">
+        <!-- Mis Pedidos -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card product-card h-100 text-center d-flex flex-column text-decoration-none" style="cursor: default;">
+                <div class="card-body p-4 p-lg-5 d-flex flex-column align-items-center">
+                    <div class="display-3 mb-4 rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">🛒</div>
+                    <h4 class="fw-bold text-dark mb-3">Mis Compras</h4>
+                    <p class="text-muted small mb-4">Rastrea, cancela o confirma la entrega de los pedidos que has realizado a otros estudiantes.</p>
+                    <a th:href="@{/panel/pedidos}" class="btn btn-brand mt-auto w-100 fw-semibold rounded-3 py-2 shadow-sm">Ver mis reservas</a>
                 </div>
             </div>
         </div>
         
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0 h-100 rounded-4">
-                <div class="card-body p-4 text-center">
-                    <div class="display-4 mb-3">🏪</div>
-                    <h5 class="fw-bold">Mis Publicaciones</h5>
-                    <p class="text-muted small">Administra los productos que estás vendiendo, actualiza precios y stock.</p>
-                    <a th:href="@{/panel/productos/nuevo}" class="btn btn-primary mt-2">Publicar nuevo alimento</a>
-                    <a th:href="@{/panel/ventas}" class="btn btn-outline-secondary mt-2 d-block mx-auto mt-2" style="width: fit-content;">Ver pedidos y catálogo</a>
+        <!-- Mis Publicaciones / Ventas -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card product-card h-100 text-center d-flex flex-column" style="cursor: default;">
+                <div class="card-body p-4 p-lg-5 d-flex flex-column align-items-center">
+                    <div class="display-3 mb-4 rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">🏪</div>
+                    <h4 class="fw-bold text-dark mb-3">Mis Ventas</h4>
+                    <p class="text-muted small mb-4">Gestiona los productos que ofreces, actualiza disponibilidad y aprueba nuevos pedidos.</p>
+                    <div class="mt-auto w-100 d-flex flex-column gap-2">
+                        <a th:href="@{/panel/productos/nuevo}" class="btn btn-warning fw-bold text-dark rounded-3 py-2 shadow-sm border border-warning">Publicar nuevo alimento</a>
+                        <a th:href="@{/panel/ventas}" class="btn btn-white border fw-semibold rounded-3 py-2 shadow-sm">Ver pedidos recibidos</a>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0 h-100 rounded-4">
-                <div class="card-body p-4 text-center">
-                    <div class="display-4 mb-3">⚙️</div>
-                    <h5 class="fw-bold">Mi Perfil</h5>
-                    <p class="text-muted small">Actualiza tus datos personales y gestiona la configuración de tu cuenta.</p>
-                    <a href="#" class="btn btn-outline-secondary mt-2">Configuración</a>
+        <!-- Mi Perfil -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card product-card h-100 text-center d-flex flex-column" style="cursor: default;">
+                <div class="card-body p-4 p-lg-5 d-flex flex-column align-items-center">
+                    <div class="display-3 mb-4 rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">⚙️</div>
+                    <h4 class="fw-bold text-dark mb-3">Seguridad e Inicio de Sesión</h4>
+                    <p class="text-muted small mb-4">Actualiza tus credenciales, revisa tus dispositivos y edita tu información personal.</p>
+                    <a href="#" class="btn btn-white border mt-auto w-100 fw-semibold rounded-3 py-2 shadow-sm">Editar perfil</a>
                 </div>
             </div>
         </div>

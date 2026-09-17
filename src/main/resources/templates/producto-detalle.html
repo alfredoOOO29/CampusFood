@@ -19,51 +19,86 @@
         <div th:if="${producto.imagenUrl == null}" class="col-md-5 bg-light p-5 d-flex align-items-center justify-content-center border-end">
             <span class="display-1">🍔</span>
         </div>
-        <div th:if="${producto.imagenUrl != null}" class="col-md-5 p-0 border-end" style="height: 400px;">
+        <div th:if="${producto.imagenUrl != null}" class="col-md-5 p-0 border-end" style="height: auto; min-height: 400px;">
             <img th:src="@{${producto.imagenUrl}}" alt="Imagen del producto" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
         
         <!-- Detalles -->
-        <div class="col-md-7 p-4 p-md-5">
+        <div class="col-md-7 p-4 p-md-5 d-flex flex-column">
+            
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="badge bg-secondary" th:text="${producto.categoria.nombre}">Categoría</span>
-                <span class="badge bg-success" th:if="${producto.stock > 0}" th:text="'Disponible: ' + ${producto.stock} + ' und'">Stock</span>
-                <span class="badge bg-danger" th:if="${producto.stock <= 0}">Agotado</span>
+                <span class="badge bg-light text-dark border px-3 py-2 shadow-sm" th:text="${producto.categoria.nombre}">Categoría</span>
+                <span class="badge px-3 py-2 shadow-sm" th:classappend="${producto.stock > 5 ? 'bg-success' : (producto.stock > 0 ? 'bg-warning text-dark' : 'bg-danger')}" th:text="${producto.stock > 0 ? 'Disponible: ' + producto.stock + ' und' : 'Agotado'}">Stock</span>
             </div>
             
-            <h2 class="fw-bold mb-2" th:text="${producto.nombre}">Nombre del Producto</h2>
-            <h3 class="text-primary fw-bold mb-4" th:text="'S/ ' + ${producto.precio}">S/ 0.00</h3>
+            <h1 class="fw-bold mb-2 text-dark" style="letter-spacing: -0.5px;" th:text="${producto.nombre}">Nombre del Producto</h1>
+            <h2 class="text-brand fw-bold mb-4" th:text="'S/ ' + ${producto.precio}">S/ 0.00</h2>
             
-            <h5 class="fw-semibold">Descripción</h5>
-            <p class="text-muted mb-4" th:text="${producto.descripcion}">Descripción del producto...</p>
+            <h5 class="fw-bold text-dark mb-2">Acerca de este alimento</h5>
+            <p class="text-muted mb-4" th:text="${producto.descripcion}" style="line-height: 1.6;">Descripción del producto...</p>
             
-            <h5 class="fw-semibold">Lugar y Horario de entrega</h5>
-            <ul class="list-unstyled text-muted mb-4 bg-light p-3 rounded-3">
-                <li class="mb-2"><strong>📍 Ubicación:</strong> <span th:text="${producto.disponibilidad.ubicacion}">Ubicación</span></li>
-                <li class="mb-2"><strong>📅 Fecha:</strong> <span th:text="${producto.disponibilidad.fechaDisponible}">Fecha</span></li>
-                <li><strong>🕒 Horario:</strong> <span th:text="${producto.disponibilidad.horaInicio + ' a ' + producto.disponibilidad.horaFin}">Horario</span></li>
-            </ul>
+            <div class="bg-light p-4 rounded-4 mb-4 border">
+                <h5 class="fw-bold text-dark mb-3">Detalles de Entrega</h5>
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-center">
+                            <span class="fs-4 me-3 text-danger">📍</span>
+                            <div>
+                                <span class="d-block small text-muted fw-semibold">Ubicación de entrega</span>
+                                <span class="fw-bold text-dark" th:text="${producto.disponibilidad.ubicacion}">Ubicación</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-center">
+                            <span class="fs-4 me-3 text-primary">🕒</span>
+                            <div>
+                                <span class="d-block small text-muted fw-semibold">Horario establecido</span>
+                                <span class="fw-bold text-dark" th:text="${#temporals.format(producto.disponibilidad.horaInicio, 'HH:mm')} + ' a ' + ${#temporals.format(producto.disponibilidad.horaFin, 'HH:mm')}">Horario</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-3">
+                        <div class="d-flex align-items-center">
+                            <span class="fs-4 me-3 text-success">📅</span>
+                            <div>
+                                <span class="d-block small text-muted fw-semibold">Fecha de entrega</span>
+                                <span class="fw-bold text-dark" th:text="${producto.disponibilidad.fechaDisponible}">Fecha</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
-            <h5 class="fw-semibold">Vendedor</h5>
-            <p class="text-muted mb-4"><strong>👨‍🎓 </strong> <span th:text="${producto.vendedor.nombre + ' ' + producto.vendedor.apellidos}">Nombre Vendedor</span></p>
+            <div class="mb-4">
+                <span class="text-muted">Vendido por: </span>
+                <span class="fw-bold text-dark">👨‍🎓 <span th:text="${producto.vendedor.nombre + ' ' + producto.vendedor.apellidos}">Nombre Vendedor</span></span>
+            </div>
             
-            <hr>
+            <hr class="mt-auto">
             
             <!-- Formulario de Compra -->
             <div th:if="${producto.stock > 0}">
                 <div sec:authorize="isAuthenticated()">
-                    <form th:action="@{/panel/comprar/{id}(id=${producto.id})}" method="post" class="d-flex align-items-end mt-4">
-                        <div class="me-3" style="width: 100px;">
-                            <label for="cantidad" class="form-label fw-semibold">Cantidad</label>
-                            <input type="number" name="cantidad" id="cantidad" class="form-control" value="1" min="1" th:max="${producto.stock}" required>
+                    <form th:action="@{/panel/comprar/{id}(id=${producto.id})}" method="post" class="d-flex flex-column flex-sm-row align-items-sm-end mt-4">
+                        <div class="me-sm-3 mb-3 mb-sm-0" style="width: 120px;">
+                            <label for="cantidad" class="form-label fw-bold text-dark small">Cantidad a reservar</label>
+                            <input type="number" name="cantidad" id="cantidad" class="form-control form-control-lg text-center" value="1" min="1" th:max="${producto.stock}" required>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-lg flex-grow-1 shadow-sm">Realizar Pedido Ahora</button>
+                        <button type="submit" class="btn btn-brand btn-lg flex-grow-1 shadow-sm fw-bold">Reservar pedido ahora</button>
                     </form>
-                    <p class="text-muted small mt-2">No necesitas tarjeta. El pago lo realizas al encontrarte con el vendedor.</p>
+                    <div class="d-flex align-items-center mt-3 text-muted small">
+                        <span class="fs-5 me-2">🔒</span>
+                        <span>Reserva segura. No necesitas tarjeta de crédito. El pago se realiza en persona al momento de encontrarte con el vendedor.</span>
+                    </div>
                 </div>
                 
-                <div sec:authorize="!isAuthenticated()" class="alert alert-warning mt-4 text-center">
-                    Debes <a th:href="@{/login}" class="fw-bold text-dark">Iniciar Sesión</a> o <a th:href="@{/registro}" class="fw-bold text-dark">Registrarte</a> para poder realizar un pedido.
+                <div sec:authorize="!isAuthenticated()" class="alert alert-warning mt-4 d-flex align-items-center border-warning">
+                    <span class="fs-3 me-3">⚠️</span>
+                    <div>
+                        <strong>Inicia sesión para reservar.</strong><br>
+                        Debes <a th:href="@{/login}" class="text-dark fw-bold text-decoration-none border-bottom border-dark">Identificarte</a> o <a th:href="@{/registro}" class="text-dark fw-bold text-decoration-none border-bottom border-dark">Crear una cuenta</a> para acordar la entrega con este estudiante.
+                    </div>
                 </div>
             </div>
             
