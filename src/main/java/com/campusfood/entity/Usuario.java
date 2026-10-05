@@ -30,6 +30,15 @@ public class Usuario {
 
     @Column(name = "fecha_registro")
     private LocalDateTime fechaRegistro = LocalDateTime.now();
+    
+    @Column(nullable = false)
+    private Integer strikes = 0;
+    
+    @Column(name = "fecha_fin_suspension")
+    private LocalDateTime fechaFinSuspension;
+    
+    @Column(name = "motivo_suspension", length = 500)
+    private String motivoSuspension;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -56,6 +65,12 @@ public class Usuario {
     public void setHabilitado(boolean habilitado) { this.habilitado = habilitado; }
     public LocalDateTime getFechaRegistro() { return fechaRegistro; }
     public void setFechaRegistro(LocalDateTime fechaRegistro) { this.fechaRegistro = fechaRegistro; }
+    public Integer getStrikes() { return strikes; }
+    public void setStrikes(Integer strikes) { this.strikes = strikes; }
+    public LocalDateTime getFechaFinSuspension() { return fechaFinSuspension; }
+    public void setFechaFinSuspension(LocalDateTime fechaFinSuspension) { this.fechaFinSuspension = fechaFinSuspension; }
+    public String getMotivoSuspension() { return motivoSuspension; }
+    public void setMotivoSuspension(String motivoSuspension) { this.motivoSuspension = motivoSuspension; }
     public Set<Rol> getRoles() { return roles; }
     public void setRoles(Set<Rol> roles) { this.roles = roles; }
 }

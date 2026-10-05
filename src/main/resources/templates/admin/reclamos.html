@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Gestión de Reclamos - CampusFood')}"></head>
+<body>
+
+<nav th:replace="~{layout/base :: navbar}"></nav>
+
+<div class="container-fluid mt-4 mb-5">
+    <div class="row">
+        <!-- Sidebar de Admin (Simplificado para MVP o puedes extraer a fragmento) -->
+        <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar rounded-4 shadow-sm border p-3 mb-4 mb-md-0 me-md-4">
+            <h5 class="fw-bold text-brand mb-4 px-2">⚙️ Administración</h5>
+            <ul class="nav flex-column gap-2">
+                <li class="nav-item">
+                    <a class="nav-link text-dark rounded-3 px-3 py-2" th:href="@{/admin}">📊 Panel Principal</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark rounded-3 px-3 py-2" th:href="@{/admin/usuarios}">👥 Usuarios</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark rounded-3 px-3 py-2" th:href="@{/admin/productos}">🍔 Productos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active bg-brand text-white rounded-3 px-3 py-2 fw-bold shadow-sm" th:href="@{/admin/reclamos}">⚖️ Reclamos y Strikes</a>
+                </li>
+            </ul>
+        </div>
+
+        <main class="col-md-8 col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold mb-0">Gestión de Reclamos y Strikes</h2>
+            </div>
+            
+            <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                <span th:text="${mensajeExito}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">Reportado</th>
+                                <th>Strikes</th>
+                                <th>Reportante</th>
+                                <th>Motivo / Evidencia</th>
+                                <th>Estado</th>
+                                <th class="pe-4 text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${reclamos == null or reclamos.isEmpty()}">
+                                <td colspan="6" class="text-center py-5 text-muted">No hay reclamos en el sistema. ¡Todos se están portando bien!</td>
+                            </tr>
+                            <tr th:each="reclamo : ${reclamos}">
+                                <td class="ps-4">
+                                    <div class="fw-bold text-dark" th:text="${reclamo.reportado.nombre + ' ' + reclamo.reportado.apellidos}">Reportado</div>
+                                    <div class="small text-muted" th:text="${reclamo.reportado.email}">correo</div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-danger rounded-pill" th:text="${reclamo.reportado.strikes}">0</span>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold text-secondary" th:text="${reclamo.reportante.nombre}">Reportante</div>
+                                    <div class="small text-muted" th:text="'Pedido #' + ${reclamo.pedido.id}">Pedido</div>
+                                </td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill fw-medium" data-bs-toggle="modal" th:data-bs-target="'#detallesModal' + ${reclamo.id}">
+                                        🔍 Ver Detalles
+                                    </button>
+                                    
+                                    <!-- Modal de Detalles del Reclamo -->
+                                    <div class="modal fade" th:id="'detallesModal' + ${reclamo.id}" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content rounded-4 border-0 shadow">
+                                                <div class="modal-header bg-light border-0 rounded-top-4">
+                                                    <h5 class="modal-title fw-bold text-dark">Detalles del Reclamo #<span th:text="${reclamo.id}"></span></h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body p-4 text-start">
+                                                    <h6 class="fw-bold text-dark mb-2">Motivo del Vendedor:</h6>
+                                                    <div class="p-3 bg-light rounded-3 mb-3 text-dark small" style="white-space: pre-wrap;" th:text="${reclamo.motivo}"></div>
+                                                    
+                                                    <div th:if="${reclamo.evidenciaUrl != null and !reclamo.evidenciaUrl.isEmpty()}" class="mb-4">
+                                                        <a th:href="${reclamo.evidenciaUrl}" target="_blank" class="btn btn-sm btn-info text-white fw-bold">📎 Ver Evidencia Adjunta</a>
+                                                    </div>
+
+                                                    <th:block th:if="${reclamo.motivoApelacion != null}">
+                                                        <hr class="my-4">
+                                                        <h6 class="fw-bold text-primary mb-2">Apelación del Estudiante:</h6>
+                                                        <div class="p-3 bg-primary bg-opacity-10 rounded-3 text-dark small" style="white-space: pre-wrap;" th:text="${reclamo.motivoApelacion}"></div>
+                                                    </th:block>
+                                                </div>
+                                                <div class="modal-footer border-0">
+                                                    <button type="button" class="btn btn-secondary fw-bold rounded-pill" data-bs-dismiss="modal">Cerrar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${reclamo.estado.name() == 'PENDIENTE' ? 'bg-warning text-dark' : 
+                                                         (reclamo.estado.name() == 'APELADO' ? 'bg-primary' : 
+                                                         (reclamo.estado.name() == 'APROBADO' ? 'bg-danger' : 'bg-secondary'))}"
+                                          th:text="${reclamo.estado}">ESTADO</span>
+                                </td>
+                                <td class="pe-4 text-center">
+                                    <!-- Botones de Acción -->
+                                    <div th:if="${reclamo.estado.name() == 'PENDIENTE' or reclamo.estado.name() == 'APELADO'}" class="d-flex gap-1 justify-content-center">
+                                        <!-- Modal Trigger para Aprobar (Aplicar Strike) -->
+                                        <button type="button" class="btn btn-sm btn-danger fw-bold shadow-sm" data-bs-toggle="modal" th:data-bs-target="'#strikeModal' + ${reclamo.id}">
+                                            Aplicar Strike
+                                        </button>
+                                        
+                                        <!-- Rechazar / Absolver -->
+                                        <form th:action="@{/admin/reclamos/{id}/rechazar(id=${reclamo.id})}" method="post">
+                                            <button type="submit" class="btn btn-sm btn-light border" onclick="return confirm('¿Seguro que deseas rechazar este reporte/apelación y no hacer nada?')">Desestimar</button>
+                                        </form>
+                                    </div>
+                                    <span th:if="${reclamo.estado.name() == 'APROBADO' or reclamo.estado.name() == 'RECHAZADO'}" class="text-muted small">Cerrado</span>
+                                </td>
+
+                                <!-- Modal de Aprobación de Strike -->
+                                <div class="modal fade" th:id="'strikeModal' + ${reclamo.id}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content rounded-4 border-0 shadow">
+                                            <div class="modal-header bg-danger text-white border-0 rounded-top-4">
+                                                <h5 class="modal-title fw-bold">Aplicar Strike a <span th:text="${reclamo.reportado.nombre}"></span></h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form th:action="@{/admin/reclamos/{id}/aprobar(id=${reclamo.id})}" method="post">
+                                                <div class="modal-body p-4 text-start">
+                                                    <div class="alert alert-warning border-warning">
+                                                        <span class="fw-bold d-block mb-1">Status Actual:</span>
+                                                        Este usuario tiene <strong th:text="${reclamo.reportado.strikes}"></strong> strikes. Al aprobar esto, sumará 1 strike más.
+                                                        <br><br>
+                                                        Si llega a <strong>3 strikes</strong>, será suspendido automáticamente.
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Penalidad adicional (Opcional)</label>
+                                                        <select name="diasSuspension" class="form-select bg-light">
+                                                            <option value="">Solo sumar strike (sin suspender aún)</option>
+                                                            <option value="7">Suspender por 1 Semana</option>
+                                                            <option value="30">Suspender por 1 Mes</option>
+                                                            <option value="0">Suspensión Indefinida (Ban permanente)</option>
+                                                        </select>
+                                                        <small class="text-muted d-block mt-1">Si eliges una opción, el usuario será bloqueado sin importar cuántos strikes tenga.</small>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer border-0">
+                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                                                    <button type="submit" class="btn btn-danger fw-bold shadow-sm">Confirmar Strike</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer th:replace="~{layout/base :: footer}"></footer>
+
+</body>
+</html>

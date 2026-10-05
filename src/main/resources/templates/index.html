@@ -13,9 +13,10 @@
             <div class="d-flex gap-3 justify-content-center justify-content-md-start">
                 <a th:href="@{/catalogo}" class="btn btn-brand btn-lg px-4 shadow-sm fw-bold">Ver Catálogo</a>
                 
-                <!-- Botón de vender dinámico -->
+                <!-- Botones dinámicos según el Rol -->
                 <a sec:authorize="!isAuthenticated()" th:href="@{/registro}" class="btn btn-white border border-2 btn-lg px-4 fw-semibold text-dark shadow-sm">Quiero vender</a>
-                <a sec:authorize="isAuthenticated()" th:href="@{/panel/productos/nuevo}" class="btn btn-white border border-2 btn-lg px-4 fw-semibold text-dark shadow-sm">Quiero vender</a>
+                <a sec:authorize="isAuthenticated() and !hasRole('ADMIN')" th:href="@{/panel/productos/nuevo}" class="btn btn-white border border-2 btn-lg px-4 fw-semibold text-dark shadow-sm">Quiero vender</a>
+                <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin}" class="btn btn-dark btn-lg px-4 fw-semibold shadow-sm">⚙️ Ir al Panel</a>
             </div>
         </div>
         <div class="col-md-6 mt-5 mt-md-0 d-flex justify-content-center">

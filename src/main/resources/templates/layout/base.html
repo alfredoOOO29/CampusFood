@@ -28,8 +28,8 @@
         /* Navbar */
         .navbar-brand { font-weight: 800; color: #fff !important; font-size: 1.6rem; letter-spacing: -0.5px; }
         .navbar-main { background-color: var(--brand-color); padding: 10px 0; }
-        .nav-link { color: rgba(255,255,255,0.95) !important; font-weight: 500; font-size: 0.95rem; }
-        .nav-link:hover { color: #fff !important; }
+        .navbar-main .nav-link { color: rgba(255,255,255,0.95) !important; font-weight: 500; font-size: 0.95rem; }
+        .navbar-main .nav-link:hover { color: #fff !important; }
         
         /* Barra de búsqueda */
         .search-bar { max-width: 600px; width: 100%; border-radius: 6px 0 0 6px; border: none; padding: 11px 15px; font-size: 0.95rem; }
@@ -116,9 +116,16 @@
                         <span>Hola, <span sec:authentication="name">Estudiante</span></span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 rounded-3" aria-labelledby="userMenu">
-                        <li><a class="dropdown-item py-2 fw-medium" th:href="@{/panel}">Mi Perfil y Panel</a></li>
-                        <li><a class="dropdown-item py-2" th:href="@{/panel/pedidos}">Mis Reservas</a></li>
-                        <li><a class="dropdown-item py-2" th:href="@{/panel/ventas}">Mis Ventas</a></li>
+                        <th:block sec:authorize="!hasRole('ADMIN')">
+                            <li><a class="dropdown-item py-2 fw-medium" th:href="@{/panel}">Mi Perfil y Panel</a></li>
+                            <li><a class="dropdown-item py-2" th:href="@{/panel/pedidos}">Mis Reservas</a></li>
+                            <li><a class="dropdown-item py-2" th:href="@{/panel/ventas}">Mis Ventas</a></li>
+                        </th:block>
+                        
+                        <th:block sec:authorize="hasRole('ADMIN')">
+                            <li><a class="dropdown-item py-2 fw-medium text-brand" th:href="@{/admin}">⚙️ Panel de Control</a></li>
+                        </th:block>
+                        
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item py-2 text-danger fw-semibold" th:href="@{/logout}">Cerrar Sesión</a></li>
                     </ul>

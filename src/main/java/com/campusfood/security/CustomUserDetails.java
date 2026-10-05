@@ -48,6 +48,9 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
+        if (usuario.getFechaFinSuspension() != null) {
+            return usuario.getFechaFinSuspension().isBefore(java.time.LocalDateTime.now());
+        }
         return true;
     }
 

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Apelar Suspensión - CampusFood')}"></head>
+<body>
+
+<nav th:replace="~{layout/base :: navbar}"></nav>
+
+<main class="container mt-5 mb-5 d-flex justify-content-center">
+    <div class="card shadow-sm border-0 rounded-4 p-4 p-md-5" style="max-width: 600px; width: 100%;">
+        <div class="text-center mb-4">
+            <div class="display-3 mb-3">⚖️</div>
+            <h2 class="fw-bold text-dark">Centro de Apelaciones</h2>
+            <p class="text-muted">Si tu cuenta fue suspendida por un reporte injusto o por acumulación de strikes, puedes enviar tus evidencias aquí.</p>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        
+        <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            <span th:text="${mensajeExito}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        
+        <form th:action="@{/apelar}" method="post">
+            <div class="mb-4">
+                <label for="email" class="form-label fw-bold">Correo Institucional</label>
+                <input type="email" name="email" id="email" class="form-control form-control-lg bg-light" placeholder="tu_correo@utp.edu.pe" required>
+            </div>
+            
+            <div class="mb-4">
+                <label for="motivoApelacion" class="form-label fw-bold">Tu descargo o evidencia</label>
+                <textarea name="motivoApelacion" id="motivoApelacion" class="form-control bg-light" rows="5" placeholder="Explica qué pasó realmente o adjunta un enlace (Google Drive, Imgur, etc.) con capturas de pantalla de WhatsApp demostrando tu inocencia..." required></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-brand btn-lg w-100 fw-bold shadow-sm">Enviar Apelación al Administrador</button>
+        </form>
+    </div>
+</main>
+
+<footer th:replace="~{layout/base :: footer}"></footer>
+
+</body>
+</html>

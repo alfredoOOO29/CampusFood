@@ -5,77 +5,86 @@
 
 <nav th:replace="~{layout/base :: navbar}"></nav>
 
-<main class="container mt-5 mb-5">
-    
+<div class="container-fluid mt-4 mb-5">
     <div class="row">
-        <div class="col-12 text-center mb-5">
-            <h1 class="display-5 fw-bold text-dark">Panel de Control</h1>
-            <p class="lead text-muted">Gestión de la plataforma (Solo Administradores)</p>
+        <!-- Sidebar de Admin -->
+        <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar rounded-4 shadow-sm border p-3 mb-4 mb-md-0 me-md-4">
+            <h5 class="fw-bold text-brand mb-4 px-2">⚙️ Administración</h5>
+            <ul class="nav flex-column gap-2">
+                <li class="nav-item">
+                    <a class="nav-link active bg-brand text-white rounded-3 px-3 py-2 fw-bold shadow-sm" th:href="@{/admin}">📊 Panel Principal</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark rounded-3 px-3 py-2 transition-hover" th:href="@{/admin/usuarios}">👥 Usuarios</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark rounded-3 px-3 py-2 transition-hover" th:href="@{/admin/productos}">🍔 Productos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark rounded-3 px-3 py-2 transition-hover" th:href="@{/admin/reclamos}">⚖️ Reclamos y Strikes</a>
+                </li>
+            </ul>
         </div>
-    </div>
-    
-    <div class="row g-4 justify-content-center mb-5">
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0 h-100 rounded-4 bg-primary text-white">
-                <div class="card-body p-4 text-center">
-                    <h5 class="fw-bold">Usuarios Totales</h5>
-                    <h2 class="display-4 fw-bold mb-0" th:text="${totalUsuarios}">0</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0 h-100 rounded-4 bg-success text-white">
-                <div class="card-body p-4 text-center">
-                    <h5 class="fw-bold">Alimentos Publicados</h5>
-                    <h2 class="display-4 fw-bold mb-0" th:text="${totalProductos}">0</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0 h-100 rounded-4 bg-warning text-dark">
-                <div class="card-body p-4 text-center">
-                    <h5 class="fw-bold">Pedidos Realizados</h5>
-                    <h2 class="display-4 fw-bold mb-0" th:text="${totalPedidos}">0</h2>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="row g-4 justify-content-center mb-5">
-        <div class="col-md-10">
-            <div class="card shadow-sm border-0 rounded-4">
-                <div class="card-body p-4">
-                    <h5 class="fw-bold mb-4 text-center">Resumen de Actividad de CampusFood</h5>
-                    <canvas id="statsChart" height="100"></canvas>
+        <!-- Main Content -->
+        <main class="col-md-8 col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1 text-dark">Panel de Control</h2>
+                    <p class="text-muted mb-0">Resumen del estado general de la plataforma CampusFood.</p>
                 </div>
             </div>
-        </div>
+            
+            <!-- Cards de Métricas -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 h-100 rounded-4" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);">
+                        <div class="card-body p-4 d-flex justify-content-between align-items-center text-white">
+                            <div>
+                                <h6 class="fw-semibold text-white-50 text-uppercase mb-1" style="letter-spacing: 1px;">Usuarios Totales</h6>
+                                <h2 class="display-5 fw-bold mb-0" th:text="${totalUsuarios}">0</h2>
+                            </div>
+                            <div class="display-4 opacity-50">👥</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 h-100 rounded-4" style="background: linear-gradient(135deg, #198754 0%, #146c43 100%);">
+                        <div class="card-body p-4 d-flex justify-content-between align-items-center text-white">
+                            <div>
+                                <h6 class="fw-semibold text-white-50 text-uppercase mb-1" style="letter-spacing: 1px;">Alimentos Publicados</h6>
+                                <h2 class="display-5 fw-bold mb-0" th:text="${totalProductos}">0</h2>
+                            </div>
+                            <div class="display-4 opacity-50">🍔</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 h-100 rounded-4" style="background: linear-gradient(135deg, #fd7e14 0%, #e8590c 100%);">
+                        <div class="card-body p-4 d-flex justify-content-between align-items-center text-white">
+                            <div>
+                                <h6 class="fw-semibold text-white-50 text-uppercase mb-1" style="letter-spacing: 1px;">Pedidos Generados</h6>
+                                <h2 class="display-5 fw-bold mb-0" th:text="${totalPedidos}">0</h2>
+                            </div>
+                            <div class="display-4 opacity-50">📦</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico de Actividad -->
+            <div class="card shadow-sm border-0 rounded-4 mb-5">
+                <div class="card-body p-4 p-md-5">
+                    <h5 class="fw-bold mb-4 text-dark">Actividad de la Plataforma</h5>
+                    <div style="position: relative; height:30vh; width:100%">
+                        <canvas id="statsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+        </main>
     </div>
-    
-    <div class="row g-4 justify-content-center">
-        <div class="col-md-5">
-            <div class="card shadow-sm border-0 h-100 rounded-4">
-                <div class="card-body p-5 text-center">
-                    <div class="display-3 mb-4">👥</div>
-                    <h4 class="fw-bold">Gestión de Usuarios</h4>
-                    <p class="text-muted">Visualiza los perfiles de todos los estudiantes registrados y bloquea cuentas infractoras.</p>
-                    <a th:href="@{/admin/usuarios}" class="btn btn-primary btn-lg mt-3 w-100">Administrar Usuarios</a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-5">
-            <div class="card shadow-sm border-0 h-100 rounded-4">
-                <div class="card-body p-5 text-center">
-                    <div class="display-3 mb-4">🍔</div>
-                    <h4 class="fw-bold">Gestión de Publicaciones</h4>
-                    <p class="text-muted">Revisa el catálogo completo, incluyendo productos inactivos, y suspende publicaciones.</p>
-                    <a th:href="@{/admin/productos}" class="btn btn-primary btn-lg mt-3 w-100">Administrar Productos</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script th:inline="javascript">
@@ -94,25 +103,26 @@
                         /*[[${totalPedidos}]]*/ 0
                     ],
                     backgroundColor: [
-                        'rgba(13, 110, 253, 0.7)',
-                        'rgba(25, 135, 84, 0.7)',
-                        'rgba(255, 193, 7, 0.7)'
+                        'rgba(13, 110, 253, 0.8)',
+                        'rgba(25, 135, 84, 0.8)',
+                        'rgba(253, 126, 20, 0.8)'
                     ],
-                    borderColor: [
-                        'rgba(13, 110, 253, 1)',
-                        'rgba(25, 135, 84, 1)',
-                        'rgba(255, 193, 7, 1)'
-                    ],
-                    borderWidth: 1,
-                    borderRadius: 5
+                    borderRadius: 8,
+                    borderSkipped: false
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     y: {
                         beginAtZero: true,
-                        ticks: { stepSize: 1 }
+                        grid: { borderDash: [5, 5], color: '#e9ecef' },
+                        ticks: { stepSize: 1, font: { family: 'Inter' } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { family: 'Inter', weight: '600' } }
                     }
                 },
                 plugins: {
