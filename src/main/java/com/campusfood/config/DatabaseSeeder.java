@@ -19,16 +19,15 @@ import java.util.List;
 public class DatabaseSeeder {
 
     @Bean
-    public CommandLineRunner initData(CategoriaRepository categoriaRepository, 
-                                      RolRepository rolRepository,
-                                      UsuarioRepository usuarioRepository,
-                                      PasswordEncoder passwordEncoder) {
+    public CommandLineRunner initData(CategoriaRepository categoriaRepository,
+            RolRepository rolRepository,
+            UsuarioRepository usuarioRepository,
+            PasswordEncoder passwordEncoder) {
         return args -> {
             // 1. Inicializar Categorías
             if (categoriaRepository.count() == 0) {
                 List<String> categoriasBase = Arrays.asList(
-                    "Sándwiches", "Postres", "Dulces", "Snacks", "Bebidas", "Comida preparada", "Otros"
-                );
+                        "Sándwiches", "Postres", "Dulces", "Snacks", "Bebidas", "Comida preparada", "Otros");
                 for (String nombre : categoriasBase) {
                     categoriaRepository.save(new Categoria(nombre));
                 }
@@ -39,11 +38,11 @@ public class DatabaseSeeder {
             Rol rolAdmin = rolRepository.findByNombre("ADMIN").orElseGet(() -> {
                 return rolRepository.save(new Rol("ADMIN"));
             });
-            
+
             Rol rolEstudiante = rolRepository.findByNombre("ESTUDIANTE").orElseGet(() -> {
                 return rolRepository.save(new Rol("ESTUDIANTE"));
             });
-            
+
             // 3. Inicializar Administrador
             if (usuarioRepository.findByEmail("jefe@utp.edu.pe").isEmpty()) {
                 Usuario admin = new Usuario();

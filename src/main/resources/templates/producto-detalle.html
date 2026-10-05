@@ -104,6 +104,68 @@
             
         </div>
     </div>
+    
+    <!-- SECCIÓN DE RESEÑAS -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="fw-bold mb-4">Valoraciones de Estudiantes</h3>
+            
+            <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                <span th:text="${mensajeExito}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            
+            <div class="bg-white rounded-4 shadow-sm border p-4 p-md-5">
+                
+                <!-- Formulario de nueva reseña (Solo visible si compró y no ha comentado) -->
+                <div th:if="${puedeComentar}" class="mb-5 pb-4 border-bottom">
+                    <h5 class="fw-bold mb-3">Deja tu valoración</h5>
+                    <form th:action="@{/producto/{id}/resena(id=${producto.id})}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Calificación</label>
+                            <select name="estrellas" class="form-select w-auto" required>
+                                <option value="5">⭐⭐⭐⭐⭐ (5) - Excelente</option>
+                                <option value="4">⭐⭐⭐⭐ (4) - Muy bueno</option>
+                                <option value="3">⭐⭐⭐ (3) - Bueno</option>
+                                <option value="2">⭐⭐ (2) - Regular</option>
+                                <option value="1">⭐ (1) - Malo</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Comentario (opcional)</label>
+                            <textarea name="comentario" class="form-control" rows="3" placeholder="¿Qué te pareció este producto?"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-brand fw-bold px-4 shadow-sm">Enviar reseña</button>
+                    </form>
+                </div>
+
+                <!-- Lista de reseñas -->
+                <div th:if="${resenas != null and !resenas.isEmpty()}">
+                    <div th:each="resena : ${resenas}" class="mb-4 pb-3 border-bottom">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center text-brand fw-bold me-3 border shadow-sm" style="width: 45px; height: 45px; font-size: 1.2rem;">
+                                <span th:text="${#strings.substring(resena.usuario.nombre, 0, 1)}">U</span>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0 text-dark" th:text="${resena.usuario.nombre + ' ' + resena.usuario.apellidos}">Nombre</h6>
+                                <div class="text-warning small mt-1">
+                                    <span th:each="i : ${#numbers.sequence(1, 5)}" th:text="${i <= resena.estrellas ? '⭐' : '☆'}"></span>
+                                    <span class="text-muted ms-2 fw-medium" th:text="${#temporals.format(resena.fechaCreacion, 'dd/MM/yyyy')}">Fecha</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-muted mb-0 ms-5" th:if="${resena.comentario != null and !resena.comentario.isEmpty()}" th:text="${resena.comentario}">Comentario</p>
+                    </div>
+                </div>
+                
+                <div th:if="${resenas == null or resenas.isEmpty()}" class="text-center py-4">
+                    <div class="display-4 text-muted mb-3">💬</div>
+                    <h5 class="text-muted fw-bold">Aún no hay valoraciones para este producto</h5>
+                    <p class="text-muted small">Sé el primero en comprarlo y dejar tu opinión para ayudar a otros estudiantes.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 
 <footer th:replace="~{layout/base :: footer}"></footer>

@@ -1,18 +1,21 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{layout/base :: head(${title})}"></head>
 <body>
 
 <nav th:replace="~{layout/base :: navbar}"></nav>
 
-<main class="container mt-5">
+<main class="container mt-5 mb-5">
     <div class="row align-items-center">
         <div class="col-md-6 text-center text-md-start">
-            <h1 class="display-4 fw-bold mb-3 text-dark">La mejor comida en tu universidad</h1>
-            <p class="lead text-muted mb-4">Compra y vende postres, almuerzos y snacks entre estudiantes de manera segura y rápida. Sin intermediarios.</p>
+            <h1 class="display-4 fw-bold mb-3 text-dark" style="letter-spacing: -1px;">La mejor comida en tu universidad</h1>
+            <p class="lead text-muted mb-4" style="line-height: 1.6;">Compra y vende postres, almuerzos y snacks entre estudiantes de manera segura y rápida. Sin intermediarios.</p>
             <div class="d-flex gap-3 justify-content-center justify-content-md-start">
-                <a th:href="@{/catalogo}" class="btn btn-primary btn-lg px-4 shadow-sm">Ver Catálogo</a>
-                <a th:href="@{/registro}" class="btn btn-outline-secondary btn-lg px-4">Quiero vender</a>
+                <a th:href="@{/catalogo}" class="btn btn-brand btn-lg px-4 shadow-sm fw-bold">Ver Catálogo</a>
+                
+                <!-- Botón de vender dinámico -->
+                <a sec:authorize="!isAuthenticated()" th:href="@{/registro}" class="btn btn-white border border-2 btn-lg px-4 fw-semibold text-dark shadow-sm">Quiero vender</a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/panel/productos/nuevo}" class="btn btn-white border border-2 btn-lg px-4 fw-semibold text-dark shadow-sm">Quiero vender</a>
             </div>
         </div>
         <div class="col-md-6 mt-5 mt-md-0 d-flex justify-content-center">
