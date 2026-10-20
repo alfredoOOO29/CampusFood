@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,16 +24,23 @@ public class UsuarioService {
     private final RolRepository rolRepository;
     private final VerificacionCorreoRepository verificacionCorreoRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Value("${campusfood.allowed.email.domain}")
     private String allowedDomain;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, RolRepository rolRepository,
-                          VerificacionCorreoRepository verificacionCorreoRepository, PasswordEncoder passwordEncoder) {
+    private final SecureRandom secureRandom = new SecureRandom();
+
+    public UsuarioService(UsuarioRepository usuarioRepository,
+                          RolRepository rolRepository,
+                          VerificacionCorreoRepository verificacionCorreoRepository,
+                          PasswordEncoder passwordEncoder,
+                          EmailService emailService) {
         this.usuarioRepository = usuarioRepository;
         this.rolRepository = rolRepository;
         this.verificacionCorreoRepository = verificacionCorreoRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -64,19 +72,78 @@ public class UsuarioService {
 
         usuario = usuarioRepository.save(usuario);
 
-        // Generar token de verificación
-        String token = UUID.randomUUID().toString();
-        VerificacionCorreo verificacion = new VerificacionCorreo(token, usuario, LocalDateTime.now().plusHours(24));
-        verificacionCorreoRepository.save(verificacion);
-
-        // Simulamos envío de correo imprimiendo el enlace en consola
-        System.out.println("==================================================================");
-        System.out.println("SIMULACIÓN DE ENVÍO DE CORREO (Solo para desarrollo local)");
-        System.out.println("Para: " + usuario.getEmail());
-        System.out.println("Enlace de validación: http://localhost:8080/verificar-correo?token=" + token);
-        System.out.println("==================================================================");
+        // Generar código numérico de 6 dígitos y token
+        generarYEnviarCodigo(usuario);
 
         return usuario;
+    }
+
+    @Transactional
+    public boolean validarCodigo(String email, String codigo) {
+        if (email == null || codigo == null) {
+            return false;
+        }
+
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email.trim().toLowerCase());
+        if (usuarioOpt.isEmpty()) {
+            return false;
+        }
+
+        Usuario usuario = usuarioOpt.get();
+        if (usuario.isHabilitado()) {
+            return true;
+        }
+
+        Optional<VerificacionCorreo> verificacionOpt = verificacionCorreoRepository.findByUsuarioAndCodigo(usuario, codigo.trim());
+        if (verificacionOpt.isEmpty()) {
+            return false;
+        }
+
+        VerificacionCorreo verificacion = verificacionOpt.get();
+        if (verificacion.getFechaExpiracion().isBefore(LocalDateTime.now())) {
+            return false;
+        }
+
+        // Habilitar usuario
+        usuario.setHabilitado(true);
+        usuarioRepository.save(usuario);
+
+        // Eliminar código usado
+        verificacionCorreoRepository.delete(verificacion);
+
+        return true;
+    }
+
+    @Transactional
+    public void reenviarCodigo(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("Debe ingresar un correo electrónico.");
+        }
+
+        Usuario usuario = usuarioRepository.findByEmail(email.trim().toLowerCase())
+                .orElseThrow(() -> new IllegalArgumentException("No existe ninguna cuenta registrada con el correo: " + email));
+
+        if (usuario.isHabilitado()) {
+            throw new IllegalArgumentException("Esta cuenta ya está verificada y activa.");
+        }
+
+        generarYEnviarCodigo(usuario);
+    }
+
+    private void generarYEnviarCodigo(Usuario usuario) {
+        // Eliminar verificaciones previas del usuario
+        verificacionCorreoRepository.deleteByUsuario(usuario);
+
+        // Generar código de 6 dígitos
+        String codigo = String.format("%06d", secureRandom.nextInt(1_000_000));
+        String token = UUID.randomUUID().toString();
+        LocalDateTime fechaExpiracion = LocalDateTime.now().plusMinutes(15);
+
+        VerificacionCorreo verificacion = new VerificacionCorreo(codigo, token, usuario, fechaExpiracion);
+        verificacionCorreoRepository.save(verificacion);
+
+        // Enviar por correo mediante EmailService
+        emailService.enviarCodigoVerificacion(usuario.getEmail(), usuario.getNombre(), codigo);
     }
 
     @Transactional
@@ -95,9 +162,7 @@ public class UsuarioService {
         usuario.setHabilitado(true);
         usuarioRepository.save(usuario);
         
-        // El token se usará solo una vez, lo podemos eliminar o marcar usado.
         verificacionCorreoRepository.delete(verificacion);
-        
         return true;
     }
 }

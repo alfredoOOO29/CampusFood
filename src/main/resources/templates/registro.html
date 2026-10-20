@@ -32,7 +32,7 @@
                         <div class="mb-3">
                             <label for="email" class="form-label">Correo institucional</label>
                             <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="usuario@utp.edu.pe" required>
-                            <div class="form-text small text-muted">Recibirás un enlace para verificar tu cuenta.</div>
+                            <div class="form-text small text-muted">Recibirás un código de 6 dígitos para verificar tu cuenta.</div>
                             <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                         </div>
                         

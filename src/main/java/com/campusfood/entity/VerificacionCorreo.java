@@ -11,7 +11,10 @@ public class VerificacionCorreo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(length = 6)
+    private String codigo;
+
+    @Column(name = "token")
     private String token;
 
     @OneToOne(targetEntity = Usuario.class, fetch = FetchType.EAGER)
@@ -24,14 +27,23 @@ public class VerificacionCorreo {
     public VerificacionCorreo() {
     }
 
-    public VerificacionCorreo(String token, Usuario usuario, LocalDateTime fechaExpiracion) {
+    public VerificacionCorreo(String codigo, String token, Usuario usuario, LocalDateTime fechaExpiracion) {
+        this.codigo = codigo;
         this.token = token;
+        this.usuario = usuario;
+        this.fechaExpiracion = fechaExpiracion;
+    }
+
+    public VerificacionCorreo(String codigo, Usuario usuario, LocalDateTime fechaExpiracion) {
+        this.codigo = codigo;
         this.usuario = usuario;
         this.fechaExpiracion = fechaExpiracion;
     }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+    public String getCodigo() { return codigo; }
+    public void setCodigo(String codigo) { this.codigo = codigo; }
     public String getToken() { return token; }
     public void setToken(String token) { this.token = token; }
     public Usuario getUsuario() { return usuario; }
