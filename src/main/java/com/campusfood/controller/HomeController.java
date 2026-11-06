@@ -1,6 +1,8 @@
 package com.campusfood.controller;
 
 import com.campusfood.dto.RegistroEstudianteDTO;
+import com.campusfood.repository.CategoriaRepository;
+import com.campusfood.repository.ProductoRepository;
 import com.campusfood.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -16,15 +18,29 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class HomeController {
 
     private final UsuarioService usuarioService;
+    private final ProductoRepository productoRepository;
+    private final CategoriaRepository categoriaRepository;
 
-    public HomeController(UsuarioService usuarioService) {
+    public HomeController(UsuarioService usuarioService,
+                          ProductoRepository productoRepository,
+                          CategoriaRepository categoriaRepository) {
         this.usuarioService = usuarioService;
+        this.productoRepository = productoRepository;
+        this.categoriaRepository = categoriaRepository;
     }
 
     @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("title", "CampusFood - Inicio");
+        model.addAttribute("productosDestacados", productoRepository.findAllDisponibles().stream().limit(4).toList());
+        model.addAttribute("categorias", categoriaRepository.findAll());
         return "index";
+    }
+
+    @GetMapping("/carrito")
+    public String verCarrito(Model model) {
+        model.addAttribute("title", "Tu Carrito - CampusFood");
+        return "carrito";
     }
 
     @GetMapping("/login")

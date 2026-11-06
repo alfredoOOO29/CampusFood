@@ -5,52 +5,63 @@
 
 <nav th:replace="~{layout/base :: navbar}"></nav>
 
-<main class="container mt-5 mb-5">
+<main class="container my-4 my-md-5">
     
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold m-0">👥 Gestión de Usuarios</h2>
-        <a th:href="@{/admin}" class="btn btn-outline-secondary">Volver al Panel</a>
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4 pb-2 border-bottom">
+        <div>
+            <h2 class="fw-bold mb-1">Gestión de Usuarios</h2>
+            <p class="text-muted small mb-0">Administra el acceso de la comunidad de estudiantes y vendedores.</p>
+        </div>
+        <a th:href="@{/admin}" class="btn btn-cf-secondary py-2 px-3 small fw-semibold">
+            <i class="bi bi-arrow-left me-1"></i> Volver al Panel Admin
+        </a>
     </div>
 
     <!-- Alertas -->
-    <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+    <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
         <span th:text="${mensajeExito}"></span>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
         <span th:text="${error}"></span>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
-    <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+    <div class="cf-card overflow-hidden">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
+                <thead class="bg-light">
                     <tr>
-                        <th class="ps-4">ID</th>
-                        <th>Nombre Completo</th>
-                        <th>Email Institucional</th>
-                        <th>Roles</th>
-                        <th>Fecha Registro</th>
-                        <th>Estado</th>
-                        <th class="pe-4 text-center">Acciones</th>
+                        <th class="ps-4 py-3 small text-muted text-uppercase fw-bold">ID</th>
+                        <th class="py-3 small text-muted text-uppercase fw-bold">Estudiante</th>
+                        <th class="py-3 small text-muted text-uppercase fw-bold">Correo Institucional</th>
+                        <th class="py-3 small text-muted text-uppercase fw-bold">Roles</th>
+                        <th class="py-3 small text-muted text-uppercase fw-bold">Fecha Registro</th>
+                        <th class="py-3 small text-muted text-uppercase fw-bold">Estado</th>
+                        <th class="pe-4 py-3 small text-muted text-uppercase fw-bold text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="usuario : ${usuarios}">
-                        <td class="ps-4 text-secondary" th:text="${usuario.id}">1</td>
-                        <td class="fw-semibold" th:text="${usuario.nombre + ' ' + usuario.apellidos}">Nombre Apellido</td>
+                        <td class="ps-4 text-muted fw-bold" th:text="'#' + ${usuario.id}">#1</td>
+                        <td class="fw-bold text-dark" th:text="${usuario.nombre + ' ' + usuario.apellidos}">Nombre Apellido</td>
                         <td th:text="${usuario.email}">correo@utp.edu.pe</td>
                         <td>
-                            <span th:each="rol : ${usuario.roles}" class="badge bg-secondary me-1" th:text="${rol.nombre}">ESTUDIANTE</span>
+                            <span th:each="rol : ${usuario.roles}" class="badge bg-light text-dark border me-1 rounded-pill" th:text="${rol.nombre}">ESTUDIANTE</span>
                         </td>
-                        <td th:text="${#temporals.format(usuario.fechaRegistro, 'dd/MM/yyyy')}">01/01/2026</td>
+                        <td class="small text-secondary" th:text="${#temporals.format(usuario.fechaRegistro, 'dd/MM/yyyy')}">01/01/2026</td>
                         <td>
-                            <span class="badge" th:classappend="${usuario.habilitado ? 'bg-success' : 'bg-danger'}" th:text="${usuario.habilitado ? 'ACTIVO' : 'BLOQUEADO'}">ACTIVO</span>
+                            <span class="badge rounded-pill px-3 py-1 fw-bold" 
+                                  th:classappend="${usuario.habilitado ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle'}" 
+                                  th:text="${usuario.habilitado ? 'ACTIVO' : 'BLOQUEADO'}">ACTIVO</span>
                         </td>
                         <td class="pe-4 text-center">
                             <form th:action="@{/admin/usuarios/{id}/toggle-estado(id=${usuario.id})}" method="post">
-                                <button type="submit" class="btn btn-sm" th:classappend="${usuario.habilitado ? 'btn-outline-danger' : 'btn-outline-success'}" th:text="${usuario.habilitado ? 'Bloquear' : 'Desbloquear'}">
+                                <button type="submit" class="btn btn-sm rounded-pill px-3 fw-bold" 
+                                        th:classappend="${usuario.habilitado ? 'btn-outline-danger' : 'btn-cf-primary'}" 
+                                        th:text="${usuario.habilitado ? 'Bloquear' : 'Desbloquear'}">
                                     Bloquear
                                 </button>
                             </form>

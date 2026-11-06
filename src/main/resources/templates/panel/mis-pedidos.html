@@ -1,74 +1,103 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{layout/base :: head('Mis Pedidos - CampusFood')}"></head>
+<head th:replace="~{layout/base :: head('Mis Compras - CampusFood')}"></head>
 <body>
 
 <nav th:replace="~{layout/base :: navbar}"></nav>
 
-<main class="container mt-5 mb-5">
+<main class="container my-4 my-md-5">
     
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold m-0">Mis Pedidos</h2>
-        <a th:href="@{/panel}" class="btn btn-outline-secondary">Volver al Panel</a>
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4 pb-2 border-bottom">
+        <div>
+            <h2 class="fw-bold mb-1">Mis Compras y Reservas</h2>
+            <p class="text-muted small mb-0">Rastrea el estado de tus alimentos reservados en el campus.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/panel}" class="btn btn-cf-secondary py-2 px-3 small fw-semibold">
+                <i class="bi bi-grid-fill me-1 text-cf-primary"></i> Volver al Panel
+            </a>
+            <a th:href="@{/catalogo}" class="btn btn-cf-primary py-2 px-3 small fw-semibold">
+                <i class="bi bi-search me-1"></i> Explorar Catálogo
+            </a>
+        </div>
     </div>
 
-    <!-- Mensaje de éxito -->
-    <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+    <!-- Mensajes de feedback -->
+    <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
         <span th:text="${mensajeExito}"></span>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
-    <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+    <!-- Tabla Moderna de Pedidos -->
+    <div class="cf-card overflow-hidden">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
+                <thead class="bg-light">
                     <tr>
-                        <th class="ps-4">Código</th>
-                        <th>Producto</th>
-                        <th>Fecha y Hora</th>
-                        <th>Vendedor</th>
-                        <th>Total</th>
-                        <th>Estado</th>
-                        <th class="pe-4 text-center">Acciones</th>
+                        <th class="ps-4 py-3 small text-muted text-uppercase fw-bold">Código</th>
+                        <th class="py-3 small text-muted text-uppercase fw-bold">Alimento</th>
+                        <th class="py-3 small text-muted text-uppercase fw-bold">Fecha / Hora</th>
+                        <th class="py-3 small text-muted text-uppercase fw-bold">Vendedor</th>
+                        <th class="py-3 small text-muted text-uppercase fw-bold">Total</th>
+                        <th class="py-3 small text-muted text-uppercase fw-bold">Estado</th>
+                        <th class="pe-4 py-3 small text-muted text-uppercase fw-bold text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:if="${pedidos == null or pedidos.isEmpty()}">
-                        <td colspan="7" class="text-center py-5 text-muted">No has realizado ningún pedido todavía.</td>
+                        <td colspan="7" class="text-center py-5 text-muted">
+                            <div class="fs-2 mb-2">🛒</div>
+                            <div class="fw-semibold">No has realizado ninguna compra todavía.</div>
+                            <small>Explora el catálogo y apoya a tus compañeros reservando su comida.</small>
+                        </td>
                     </tr>
                     <tr th:each="pedido : ${pedidos}">
-                        <td class="ps-4 fw-bold text-secondary" th:text="'#' + ${pedido.id}">#1</td>
+                        <td class="ps-4 fw-bold text-cf-primary" th:text="'#' + ${pedido.id}">#1</td>
                         <td>
-                            <div th:each="detalle : ${pedido.detalles}" class="d-flex flex-column">
-                                <span class="fw-semibold text-dark" th:text="${detalle.producto.nombre}">Nombre Prod</span>
-                                <small class="text-muted" th:text="'Cant: ' + ${detalle.cantidad} + ' x S/ ' + ${detalle.precioUnitario}">Cant: 1</small>
+                            <div th:each="detalle : ${pedido.detalles}">
+                                <span class="fw-bold text-dark d-block" th:text="${detalle.producto.nombre}">Hamburguesa</span>
+                                <small class="text-muted" th:text="${detalle.cantidad} + ' und x S/ ' + ${#numbers.formatDecimal(detalle.precioUnitario, 1, 2)}">1 x S/ 8.00</small>
                             </div>
                         </td>
-                        <td th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy HH:mm')}">Fecha</td>
-                        <td th:text="${pedido.vendedor.nombre}">Juan</td>
-                        <td class="fw-bold text-primary" th:text="'S/ ' + ${pedido.total}">S/ 0.00</td>
+                        <td class="small text-secondary" th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy HH:mm')}">Fecha</td>
                         <td>
-                            <span class="badge" 
-                                  th:classappend="${pedido.estado.name() == 'PENDIENTE' ? 'bg-warning text-dark' : 
-                                                 (pedido.estado.name() == 'ACEPTADO' ? 'bg-info text-dark' : 
-                                                 (pedido.estado.name() == 'LISTO' ? 'bg-primary' : 
-                                                 (pedido.estado.name() == 'ENTREGADO' ? 'bg-success' : 'bg-danger')))}"
+                            <span class="badge bg-light text-dark border px-2 py-1 rounded-pill" th:text="${pedido.vendedor.nombre}">Juan</span>
+                        </td>
+                        <td class="fw-bold text-cf-accent fs-6" th:text="'S/ ' + ${#numbers.formatDecimal(pedido.total, 1, 2)}">S/ 0.00</td>
+                        <td>
+                            <span class="badge rounded-pill px-3 py-1 fw-bold" 
+                                  th:classappend="${pedido.estado.name() == 'PENDIENTE' ? 'bg-warning-subtle text-dark border border-warning-subtle' : 
+                                                 (pedido.estado.name() == 'ACEPTADO' ? 'bg-info-subtle text-dark border border-info-subtle' : 
+                                                 (pedido.estado.name() == 'LISTO' ? 'bg-primary-subtle text-primary border border-primary-subtle' : 
+                                                 (pedido.estado.name() == 'ENTREGADO' ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle')))}"
                                   th:text="${pedido.estado}">PENDIENTE</span>
                         </td>
                         <td class="pe-4 text-center">
-                            <!-- Acciones Comprador -->
-                            <div class="d-flex justify-content-center gap-1">
-                                <form th:if="${pedido.estado.name() == 'PENDIENTE' or pedido.estado.name() == 'ACEPTADO'}" th:action="@{/panel/pedidos/{id}/estado(id=${pedido.id})}" method="post">
+                            <div class="d-flex justify-content-center gap-2">
+                                <form th:if="${pedido.estado.name() == 'PENDIENTE' or pedido.estado.name() == 'ACEPTADO'}" 
+                                      th:action="@{/panel/pedidos/{id}/estado(id=${pedido.id})}" 
+                                      method="post">
                                     <input type="hidden" name="estado" value="CANCELADO">
                                     <input type="hidden" name="origen" value="pedidos">
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Seguro que deseas cancelar tu compra?')">Cancelar</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3" onclick="return confirm('¿Seguro que deseas cancelar tu reserva?')">
+                                        Cancelar
+                                    </button>
                                 </form>
-                                <form th:if="${pedido.estado.name() == 'LISTO'}" th:action="@{/panel/pedidos/{id}/estado(id=${pedido.id})}" method="post">
+
+                                <form th:if="${pedido.estado.name() == 'LISTO'}" 
+                                      th:action="@{/panel/pedidos/{id}/estado(id=${pedido.id})}" 
+                                      method="post">
                                     <input type="hidden" name="estado" value="ENTREGADO">
                                     <input type="hidden" name="origen" value="pedidos">
-                                    <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('¿Confirmas que recibiste el producto y pagaste?')">Confirmar Entrega</button>
+                                    <button type="submit" class="btn btn-sm btn-cf-primary rounded-pill px-3" onclick="return confirm('¿Confirmas que recibiste el producto y realizaste el pago?')">
+                                        <i class="bi bi-check-circle me-1"></i> Confirmar Recibido
+                                    </button>
                                 </form>
-                                <span th:if="${pedido.estado.name() == 'ENTREGADO' or pedido.estado.name() == 'CANCELADO' or pedido.estado.name() == 'RECHAZADO'}" class="text-muted small">Sin acciones</span>
+
+                                <span th:if="${pedido.estado.name() == 'ENTREGADO' or pedido.estado.name() == 'CANCELADO' or pedido.estado.name() == 'RECHAZADO'}" class="text-muted small">
+                                    Finalizado
+                                </span>
                             </div>
                         </td>
                     </tr>

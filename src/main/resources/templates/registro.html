@@ -5,64 +5,125 @@
 
 <nav th:replace="~{layout/base :: navbar}"></nav>
 
-<main class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="card shadow-sm border-0 rounded-4">
-                <div class="card-body p-4 p-md-5">
-                    <h3 class="text-center mb-2 fw-bold">Crear una cuenta</h3>
-                    <p class="text-center text-muted small mb-4">Únete a la comunidad de CampusFood. Solo para estudiantes verificados.</p>
-                    
-                    <div th:if="${errorRegistro}" class="alert alert-danger" th:text="${errorRegistro}"></div>
-                    
-                    <form th:action="@{/registro}" method="post" th:object="${registroDTO}">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="nombre" class="form-label">Nombre</label>
-                                <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
-                                <div class="text-danger small" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="apellidos" class="form-label">Apellidos</label>
-                                <input type="text" class="form-control" id="apellidos" th:field="*{apellidos}" required>
-                                <div class="text-danger small" th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}"></div>
-                            </div>
-                        </div>
+<main class="cf-auth-container">
+    <div class="cf-auth-card" style="max-width: 980px;">
+        <div class="row g-0">
+            
+            <!-- PANEL IZQUIERDO: Verde Oscuro con Branding -->
+            <div class="col-lg-5 cf-auth-banner">
+                <div class="mb-5">
+                    <a class="cf-logo cf-logo-light mb-3" th:href="@{/}">
+                        <span class="cf-logo-icon">
+                            <i class="bi bi-egg-fried"></i>
+                        </span>
+                        <span>Campus<span class="highlight">Food</span></span>
+                    </a>
+                    <h3 class="fw-bold text-white mt-4" style="line-height: 1.3;">Únete a CampusFood</h3>
+                    <p class="text-white-50 small mt-2">Crea tu cuenta universitaria con tu correo institucional y empieza a comprar o vender alimentos en el campus.</p>
+                </div>
 
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Correo institucional</label>
-                            <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="usuario@utp.edu.pe" required>
-                            <div class="form-text small text-muted">Recibirás un código de 6 dígitos para verificar tu cuenta.</div>
-                            <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="password" th:field="*{password}" required>
-                            <div class="text-danger small" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="passwordConfirm" class="form-label">Confirmar Contraseña</label>
-                            <input type="password" class="form-control" id="passwordConfirm" th:field="*{passwordConfirm}" required>
-                            <div class="text-danger small" th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}"></div>
-                        </div>
-                        
-                        <div class="mb-4 form-check">
-                            <input type="checkbox" class="form-check-input" id="terms" required>
-                            <label class="form-check-label small" for="terms">Acepto los términos y condiciones de la plataforma.</label>
-                        </div>
-                        
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg">Registrarme</button>
-                        </div>
-                    </form>
-                    
-                    <div class="text-center mt-4">
-                        <p class="small text-muted mb-0">¿Ya tienes una cuenta? <a th:href="@{/login}" class="text-decoration-none fw-semibold">Inicia sesión</a></p>
+                <div class="p-3 rounded-4 bg-white-10 text-white mb-4" style="background-color: rgba(255,255,255,0.08);">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <i class="bi bi-shield-check text-success fs-5"></i>
+                        <span class="fw-bold small">Solo Estudiantes UTP</span>
                     </div>
+                    <small class="text-white-50">Recibirás un código de 6 dígitos para validar tu identidad universitaria.</small>
+                </div>
+
+                <!-- Ilustración Vectorial de Campus -->
+                <div class="mt-auto text-center position-relative" style="z-index: 2;">
+                    <svg viewBox="0 0 400 120" class="w-100" style="max-height: 80px; opacity: 0.4;" fill="#ffffff">
+                        <path d="M10 120 V50 H40 V120 H60 V30 H90 V120 H110 V60 H140 V120 H170 V15 H210 V120 H230 V45 H270 V120 H290 V70 H330 V120 H350 V35 H390 V120 Z"/>
+                    </svg>
                 </div>
             </div>
+
+            <!-- PANEL DERECHO: Formulario de Registro -->
+            <div class="col-lg-7 cf-auth-form-wrap">
+                
+                <div class="mb-4">
+                    <h2 class="fw-bold mb-1">Crear una Cuenta</h2>
+                    <p class="text-muted small mb-0">Solo para estudiantes con correo universitario activo.</p>
+                </div>
+
+                <div th:if="${errorRegistro}" class="alert alert-danger py-2 px-3 small rounded-4 mb-3" th:text="${errorRegistro}"></div>
+
+                <form th:action="@{/registro}" method="post" th:object="${registroDTO}">
+                    
+                    <!-- Fila Nombre y Apellidos -->
+                    <div class="row g-2 mb-1">
+                        <div class="col-sm-6">
+                            <label for="nombre" class="form-label small fw-semibold text-secondary">Nombre</label>
+                            <div class="cf-input-group">
+                                <i class="bi bi-person cf-input-icon"></i>
+                                <input type="text" class="form-control" id="nombre" th:field="*{nombre}" placeholder="Tu nombre" required>
+                            </div>
+                            <div class="text-danger small mt-n2 mb-2" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="apellidos" class="form-label small fw-semibold text-secondary">Apellidos</label>
+                            <div class="cf-input-group">
+                                <i class="bi bi-person cf-input-icon"></i>
+                                <input type="text" class="form-control" id="apellidos" th:field="*{apellidos}" placeholder="Tus apellidos" required>
+                            </div>
+                            <div class="text-danger small mt-n2 mb-2" th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}"></div>
+                        </div>
+                    </div>
+
+                    <!-- Correo Institucional -->
+                    <label for="email" class="form-label small fw-semibold text-secondary">Correo institucional</label>
+                    <div class="cf-input-group">
+                        <i class="bi bi-envelope cf-input-icon"></i>
+                        <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="ej. u20261234@utp.edu.pe" required>
+                    </div>
+                    <div class="text-danger small mt-n2 mb-2" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+
+                    <!-- Contraseña -->
+                    <label for="password" class="form-label small fw-semibold text-secondary">Contraseña</label>
+                    <div class="cf-input-group">
+                        <i class="bi bi-lock cf-input-icon"></i>
+                        <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="Mínimo 6 caracteres" required>
+                        <button type="button" class="cf-password-toggle" data-target="password" title="Mostrar contraseña">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div class="text-danger small mt-n2 mb-2" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+
+                    <!-- Confirmar Contraseña -->
+                    <label for="passwordConfirm" class="form-label small fw-semibold text-secondary">Confirmar Contraseña</label>
+                    <div class="cf-input-group">
+                        <i class="bi bi-shield-lock cf-input-icon"></i>
+                        <input type="password" class="form-control" id="passwordConfirm" th:field="*{passwordConfirm}" placeholder="Repite tu contraseña" required>
+                        <button type="button" class="cf-password-toggle" data-target="passwordConfirm" title="Mostrar contraseña">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div class="text-danger small mt-n2 mb-2" th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}"></div>
+
+                    <!-- Términos -->
+                    <div class="mb-4 form-check">
+                        <input type="checkbox" class="form-check-input" id="terms" required>
+                        <label class="form-check-label small text-muted" for="terms">Acepto las normas de convivencia y términos de CampusFood.</label>
+                    </div>
+
+                    <!-- Botón Registrarme -->
+                    <button type="submit" class="btn btn-cf-primary w-100 py-3 fw-bold fs-6">
+                        <span>Registrarme</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
+
+                </form>
+
+                <div class="text-center mt-4 pt-3 border-top">
+                    <p class="small text-muted mb-0">
+                        ¿Ya tienes una cuenta? 
+                        <a th:href="@{/login}" class="text-cf-accent fw-bold text-decoration-none">Inicia sesión</a>
+                    </p>
+                </div>
+
+            </div>
+
         </div>
     </div>
 </main>

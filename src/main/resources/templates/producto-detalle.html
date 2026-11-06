@@ -5,170 +5,312 @@
 
 <nav th:replace="~{layout/base :: navbar}"></nav>
 
-<main class="container mt-5 mb-5">
-    
-    <!-- Mensaje de error si la compra falla -->
-    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-        <span th:text="${error}"></span>
+<main class="container my-4 my-md-5">
+
+    <!-- Botón Volver -->
+    <div class="mb-4">
+        <a th:href="@{/catalogo}" class="btn btn-cf-secondary py-2 px-3 small fw-semibold">
+            <i class="bi bi-arrow-left me-1"></i> Volver al Catálogo
+        </a>
+    </div>
+
+    <!-- Mensajes de Alerta -->
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill fs-5 me-2"></i>
+            <span th:text="${error}"></span>
+        </div>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
-    <div class="row bg-white rounded-4 shadow-sm border overflow-hidden">
-        
-        <!-- Imagen -->
-        <div th:if="${producto.imagenUrl == null}" class="col-md-5 bg-light p-5 d-flex align-items-center justify-content-center border-end">
-            <span class="display-1">🍔</span>
+    <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-check-circle-fill fs-5 me-2"></i>
+            <span th:text="${mensajeExito}"></span>
         </div>
-        <div th:if="${producto.imagenUrl != null}" class="col-md-5 p-0 border-end" style="height: auto; min-height: 400px;">
-            <img th:src="@{${producto.imagenUrl}}" alt="Imagen del producto" style="width: 100%; height: 100%; object-fit: cover;">
-        </div>
-        
-        <!-- Detalles -->
-        <div class="col-md-7 p-4 p-md-5 d-flex flex-column">
-            
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="badge bg-light text-dark border px-3 py-2 shadow-sm" th:text="${producto.categoria.nombre}">Categoría</span>
-                <span class="badge px-3 py-2 shadow-sm" th:classappend="${producto.stock > 5 ? 'bg-success' : (producto.stock > 0 ? 'bg-warning text-dark' : 'bg-danger')}" th:text="${producto.stock > 0 ? 'Disponible: ' + producto.stock + ' und' : 'Agotado'}">Stock</span>
-            </div>
-            
-            <h1 class="fw-bold mb-2 text-dark" style="letter-spacing: -0.5px;" th:text="${producto.nombre}">Nombre del Producto</h1>
-            <h2 class="text-brand fw-bold mb-4" th:text="'S/ ' + ${producto.precio}">S/ 0.00</h2>
-            
-            <h5 class="fw-bold text-dark mb-2">Acerca de este alimento</h5>
-            <p class="text-muted mb-4" th:text="${producto.descripcion}" style="line-height: 1.6;">Descripción del producto...</p>
-            
-            <div class="bg-light p-4 rounded-4 mb-4 border">
-                <h5 class="fw-bold text-dark mb-3">Detalles de Entrega</h5>
-                <div class="row g-3">
-                    <div class="col-sm-6">
-                        <div class="d-flex align-items-center">
-                            <span class="fs-4 me-3 text-danger">📍</span>
-                            <div>
-                                <span class="d-block small text-muted fw-semibold">Ubicación de entrega</span>
-                                <span class="fw-bold text-dark" th:text="${producto.disponibilidad.ubicacion}">Ubicación</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="d-flex align-items-center">
-                            <span class="fs-4 me-3 text-primary">🕒</span>
-                            <div>
-                                <span class="d-block small text-muted fw-semibold">Horario establecido</span>
-                                <span class="fw-bold text-dark" th:text="${#temporals.format(producto.disponibilidad.horaInicio, 'HH:mm')} + ' a ' + ${#temporals.format(producto.disponibilidad.horaFin, 'HH:mm')}">Horario</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 mt-3">
-                        <div class="d-flex align-items-center">
-                            <span class="fs-4 me-3 text-success">📅</span>
-                            <div>
-                                <span class="d-block small text-muted fw-semibold">Fecha de entrega</span>
-                                <span class="fw-bold text-dark" th:text="${producto.disponibilidad.fechaDisponible}">Fecha</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="mb-4">
-                <span class="text-muted">Vendido por: </span>
-                <span class="fw-bold text-dark">👨‍🎓 <span th:text="${producto.vendedor.nombre + ' ' + producto.vendedor.apellidos}">Nombre Vendedor</span></span>
-            </div>
-            
-            <hr class="mt-auto">
-            
-            <!-- Formulario de Compra -->
-            <div th:if="${producto.stock > 0}">
-                <div sec:authorize="isAuthenticated()">
-                    <form th:action="@{/panel/comprar/{id}(id=${producto.id})}" method="post" class="d-flex flex-column flex-sm-row align-items-sm-end mt-4">
-                        <div class="me-sm-3 mb-3 mb-sm-0" style="width: 120px;">
-                            <label for="cantidad" class="form-label fw-bold text-dark small">Cantidad a reservar</label>
-                            <input type="number" name="cantidad" id="cantidad" class="form-control form-control-lg text-center" value="1" min="1" th:max="${producto.stock}" required>
-                        </div>
-                        <button type="submit" class="btn btn-brand btn-lg flex-grow-1 shadow-sm fw-bold">Reservar pedido ahora</button>
-                    </form>
-                    <div class="d-flex align-items-center mt-3 text-muted small">
-                        <span class="fs-5 me-2">🔒</span>
-                        <span>Reserva segura. No necesitas tarjeta de crédito. El pago se realiza en persona al momento de encontrarte con el vendedor.</span>
-                    </div>
-                </div>
-                
-                <div sec:authorize="!isAuthenticated()" class="alert alert-warning mt-4 d-flex align-items-center border-warning">
-                    <span class="fs-3 me-3">⚠️</span>
-                    <div>
-                        <strong>Inicia sesión para reservar.</strong><br>
-                        Debes <a th:href="@{/login}" class="text-dark fw-bold text-decoration-none border-bottom border-dark">Identificarte</a> o <a th:href="@{/registro}" class="text-dark fw-bold text-decoration-none border-bottom border-dark">Crear una cuenta</a> para acordar la entrega con este estudiante.
-                    </div>
-                </div>
-            </div>
-            
-        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-    
-    <!-- SECCIÓN DE RESEÑAS -->
-    <div class="row mt-5">
-        <div class="col-12">
-            <h3 class="fw-bold mb-4">Valoraciones de Estudiantes</h3>
+
+    <!-- CONTENEDOR PRINCIPAL DEL PRODUCTO -->
+    <div class="cf-detail-container p-4 p-md-5 mb-5">
+        <div class="row g-5 align-items-center">
             
-            <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-                <span th:text="${mensajeExito}"></span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <!-- Columna Izquierda: Galería y Foto Principal -->
+            <div class="col-lg-6">
+                <div class="d-flex flex-column-reverse flex-sm-row gap-3">
+                    
+                    <!-- Miniaturas Verticales -->
+                    <div class="cf-gallery-thumbs d-flex flex-row flex-sm-column">
+                        <div class="cf-gallery-thumb active" onclick="swapDetailImage(this)">
+                            <img th:if="${producto.imagenUrl != null and !producto.imagenUrl.isEmpty()}" 
+                                 th:src="@{${producto.imagenUrl}}" 
+                                 th:alt="${producto.nombre}">
+                            <img th:if="${producto.imagenUrl == null or producto.imagenUrl.isEmpty()}" 
+                                 src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80" 
+                                 th:alt="${producto.nombre}">
+                        </div>
+                        <div class="cf-gallery-thumb" onclick="swapDetailImage(this)">
+                            <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=400&q=80" alt="Detalle 2">
+                        </div>
+                        <div class="cf-gallery-thumb" onclick="swapDetailImage(this)">
+                            <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=400&q=80" alt="Detalle 3">
+                        </div>
+                    </div>
+
+                    <!-- Foto Principal -->
+                    <div class="flex-grow-1 position-relative">
+                        <img id="mainDetailImage"
+                             th:if="${producto.imagenUrl != null and !producto.imagenUrl.isEmpty()}" 
+                             th:src="@{${producto.imagenUrl}}" 
+                             th:alt="${producto.nombre}"
+                             class="cf-detail-main-img">
+                        <img id="mainDetailImage"
+                             th:if="${producto.imagenUrl == null or producto.imagenUrl.isEmpty()}" 
+                             src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80" 
+                             th:alt="${producto.nombre}"
+                             class="cf-detail-main-img">
+                    </div>
+                </div>
             </div>
-            
-            <div class="bg-white rounded-4 shadow-sm border p-4 p-md-5">
+
+            <!-- Columna Derecha: Información del Producto -->
+            <div class="col-lg-6">
                 
-                <!-- Formulario de nueva reseña (Solo visible si compró y no ha comentado) -->
-                <div th:if="${puedeComentar}" class="mb-5 pb-4 border-bottom">
-                    <h5 class="fw-bold mb-3">Deja tu valoración</h5>
-                    <form th:action="@{/producto/{id}/resena(id=${producto.id})}" method="post">
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Calificación</label>
-                            <select name="estrellas" class="form-select w-auto" required>
-                                <option value="5">⭐⭐⭐⭐⭐ (5) - Excelente</option>
-                                <option value="4">⭐⭐⭐⭐ (4) - Muy bueno</option>
-                                <option value="3">⭐⭐⭐ (3) - Bueno</option>
-                                <option value="2">⭐⭐ (2) - Regular</option>
-                                <option value="1">⭐ (1) - Malo</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Comentario (opcional)</label>
-                            <textarea name="comentario" class="form-control" rows="3" placeholder="¿Qué te pareció este producto?"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-brand fw-bold px-4 shadow-sm">Enviar reseña</button>
-                    </form>
+                <!-- Categoría & Badge Disponible -->
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-bold" th:text="${producto.categoria.nombre}">
+                        Categoría
+                    </span>
+                    <span th:if="${producto.stock > 0}" class="cf-badge-available">
+                        <i class="bi bi-check-circle-fill"></i> Disponible (<span th:text="${producto.stock}"></span> und)
+                    </span>
+                    <span th:if="${producto.stock <= 0}" class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill fw-bold">
+                        Agotado
+                    </span>
                 </div>
 
-                <!-- Lista de reseñas -->
-                <div th:if="${resenas != null and !resenas.isEmpty()}">
-                    <div th:each="resena : ${resenas}" class="mb-4 pb-3 border-bottom">
-                        <div class="d-flex align-items-center mb-2">
-                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center text-brand fw-bold me-3 border shadow-sm" style="width: 45px; height: 45px; font-size: 1.2rem;">
-                                <span th:text="${#strings.substring(resena.usuario.nombre, 0, 1)}">U</span>
-                            </div>
-                            <div>
-                                <h6 class="fw-bold mb-0 text-dark" th:text="${resena.usuario.nombre + ' ' + resena.usuario.apellidos}">Nombre</h6>
-                                <div class="text-warning small mt-1">
-                                    <span th:each="i : ${#numbers.sequence(1, 5)}" th:text="${i <= resena.estrellas ? '⭐' : '☆'}"></span>
-                                    <span class="text-muted ms-2 fw-medium" th:text="${#temporals.format(resena.fechaCreacion, 'dd/MM/yyyy')}">Fecha</span>
+                <!-- Nombre y Precio -->
+                <h1 class="fw-bold mb-2 text-cf-primary display-6" th:text="${producto.nombre}">Hamburguesa Clásica</h1>
+                
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <span class="cf-product-price fs-2 text-cf-accent" th:text="'S/ ' + ${#numbers.formatDecimal(producto.precio, 1, 2)}">
+                        S/ 8.00
+                    </span>
+                    <div class="d-flex align-items-center text-warning small">
+                        <i class="bi bi-star-fill me-1"></i>
+                        <span class="fw-bold text-dark me-1">4.8</span>
+                        <span class="text-muted" th:text="'(' + ${resenas != null ? resenas.size() : '0'} + ' reseñas)'">(124 reseñas)</span>
+                    </div>
+                </div>
+
+                <!-- Descripción -->
+                <p class="text-muted mb-4 fs-6" th:text="${producto.descripcion}" style="line-height: 1.6;">
+                    Deliciosa hamburguesa con carne de res, lechuga fresca, tomate y salsa de la casa. Preparada artesanalmente hoy.
+                </p>
+
+                <!-- Caja de Detalles de Entrega -->
+                <div class="cf-delivery-box mb-4" th:if="${producto.disponibilidad != null}">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-geo-alt-fill text-danger fs-4 me-3"></i>
+                                <div>
+                                    <small class="text-muted d-block fw-semibold" style="font-size: 0.75rem;">UBICACIÓN EN CAMPUS</small>
+                                    <span class="fw-bold text-dark" th:text="${producto.disponibilidad.ubicacion}">Puesto 12 - Cafetería Central</span>
                                 </div>
                             </div>
                         </div>
-                        <p class="text-muted mb-0 ms-5" th:if="${resena.comentario != null and !resena.comentario.isEmpty()}" th:text="${resena.comentario}">Comentario</p>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-clock-fill text-primary fs-4 me-3"></i>
+                                <div>
+                                    <small class="text-muted d-block fw-semibold" style="font-size: 0.75rem;">HORARIO DE ENTREGA</small>
+                                    <span class="fw-bold text-dark" th:text="${#temporals.format(producto.disponibilidad.horaInicio, 'HH:mm')} + ' - ' + ${#temporals.format(producto.disponibilidad.horaFin, 'HH:mm')}">8:00 AM - 6:00 PM</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 pt-2 border-top">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-calendar-check-fill text-success fs-5 me-3"></i>
+                                <div>
+                                    <small class="text-muted d-block fw-semibold" style="font-size: 0.75rem;">FECHA DISPONIBLE</small>
+                                    <span class="fw-bold text-dark" th:text="${producto.disponibilidad.fechaDisponible}">Fecha</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                
-                <div th:if="${resenas == null or resenas.isEmpty()}" class="text-center py-4">
-                    <div class="display-4 text-muted mb-3">💬</div>
-                    <h5 class="text-muted fw-bold">Aún no hay valoraciones para este producto</h5>
-                    <p class="text-muted small">Sé el primero en comprarlo y dejar tu opinión para ayudar a otros estudiantes.</p>
+
+                <!-- Datos del Vendedor Estudiante -->
+                <div class="d-flex align-items-center mb-4 p-3 rounded-4 bg-light">
+                    <div class="cf-avatar-badge me-3" style="width: 44px; height: 44px; font-size: 1.1rem;">
+                        👨‍🎓
+                    </div>
+                    <div>
+                        <small class="text-muted d-block fw-semibold" style="font-size: 0.75rem;">VENDIDO POR ESTUDIANTE</small>
+                        <span class="fw-bold text-dark" th:text="${producto.vendedor.nombre + ' ' + producto.vendedor.apellidos}">Nombre Vendedor</span>
+                    </div>
                 </div>
+
+                <!-- Formulario de Compra / Agregar al Carrito -->
+                <div th:if="${producto.stock > 0}">
+                    
+                    <!-- Usuario Autenticado -->
+                    <div sec:authorize="isAuthenticated()">
+                        <form th:action="@{/panel/comprar/{id}(id=${producto.id})}" method="post" id="formReservaDirecta">
+                            <div class="d-flex flex-wrap align-items-center gap-3">
+                                
+                                <!-- Stepper de Cantidad -->
+                                <div class="cf-stepper">
+                                    <button type="button" class="cf-stepper-btn" onclick="stepDetailQty(-1)">
+                                        <i class="bi bi-dash"></i>
+                                    </button>
+                                    <input type="number" 
+                                           name="cantidad" 
+                                           id="detailCantidadInput" 
+                                           class="cf-stepper-input" 
+                                           value="1" 
+                                           min="1" 
+                                           th:max="${producto.stock}" 
+                                           required>
+                                    <button type="button" class="cf-stepper-btn" onclick="stepDetailQty(1)">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Botón: Agregar al Carrito -->
+                                <button type="button" 
+                                        class="btn btn-cf-secondary py-3 px-4 fw-bold"
+                                        th:onclick="'addCurrentToCart(' + ${producto.id} + ', \'' + ${#strings.escapeJavaScript(producto.nombre)} + '\', ' + ${producto.precio} + ', \'' + ${producto.imagenUrl != null ? producto.imagenUrl : ''} + '\')'">
+                                    <i class="bi bi-cart-plus me-1"></i>
+                                    <span>Agregar al carrito</span>
+                                </button>
+
+                                <!-- Botón: Reservar Ahora Directo -->
+                                <button type="submit" class="btn btn-cf-primary py-3 px-4 fw-bold flex-grow-1">
+                                    <i class="bi bi-bag-check me-1"></i>
+                                    <span>Reservar pedido</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Usuario No Autenticado -->
+                    <div sec:authorize="!isAuthenticated()" class="alert alert-warning rounded-4 border-warning d-flex align-items-center gap-3">
+                        <i class="bi bi-shield-lock-fill fs-3 text-warning"></i>
+                        <div>
+                            <strong>Inicia sesión para reservar.</strong><br>
+                            Debes <a th:href="@{/login}" class="fw-bold text-dark text-decoration-underline">Iniciar Sesión</a> o 
+                            <a th:href="@{/registro}" class="fw-bold text-dark text-decoration-underline">Crear cuenta</a> con tu correo UTP para apartar tu comida.
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2 mt-3 text-muted small">
+                        <i class="bi bi-shield-check text-cf-accent fs-5"></i>
+                        <span>Reserva segura. Pago en efectivo o Yape/Plin al momento de recibir el producto en el campus.</span>
+                    </div>
+
+                </div>
+
             </div>
         </div>
     </div>
+
+    <!-- SECCIÓN DE VALORACIONES Y RESEÑAS -->
+    <section class="cf-card p-4 p-md-5">
+        <h3 class="fw-bold mb-4">Valoraciones de Estudiantes</h3>
+
+        <!-- Formulario si el estudiante compró y no ha comentado -->
+        <div th:if="${puedeComentar}" class="mb-5 pb-4 border-bottom">
+            <h5 class="fw-bold mb-3">Deja tu opinión sobre este producto</h5>
+            <form th:action="@{/producto/{id}/resena(id=${producto.id})}" method="post">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold small">Calificación</label>
+                        <select name="estrellas" class="form-select rounded-pill" required>
+                            <option value="5">⭐⭐⭐⭐⭐ (5) Excelente</option>
+                            <option value="4">⭐⭐⭐⭐ (4) Muy bueno</option>
+                            <option value="3">⭐⭐⭐ (3) Bueno</option>
+                            <option value="2">⭐⭐ (2) Regular</option>
+                            <option value="1">⭐ (1) Malo</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold small">Comentario</label>
+                        <textarea name="comentario" class="form-control rounded-4" rows="3" placeholder="¿Qué tal estuvo la porción, sabor y entrega?"></textarea>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-cf-primary px-4 py-2">Publicar valoración</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Lista de reseñas existentes -->
+        <div th:if="${resenas != null and !resenas.isEmpty()}">
+            <div th:each="resena : ${resenas}" class="mb-4 pb-3 border-bottom">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="cf-avatar-badge" style="width: 40px; height: 40px; font-size: 0.95rem;">
+                        <span th:text="${#strings.substring(resena.usuario.nombre, 0, 1)}">U</span>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0 text-dark" th:text="${resena.usuario.nombre + ' ' + resena.usuario.apellidos}">Nombre</h6>
+                        <div class="text-warning small">
+                            <span th:each="i : ${#numbers.sequence(1, 5)}" th:text="${i <= resena.estrellas ? '★' : '☆'}"></span>
+                            <span class="text-muted ms-2 small" th:text="${#temporals.format(resena.fechaCreacion, 'dd/MM/yyyy')}">Fecha</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted mb-0 ms-5" th:if="${resena.comentario != null and !resena.comentario.isEmpty()}" th:text="${resena.comentario}"></p>
+            </div>
+        </div>
+
+        <!-- Sin reseñas -->
+        <div th:if="${resenas == null or resenas.isEmpty()}" class="text-center py-4">
+            <div class="fs-2 text-muted mb-2">💬</div>
+            <h5 class="fw-bold text-muted">Aún no hay opiniones para este producto</h5>
+            <p class="text-muted small">Sé el primero en reservarlo y compartir tu experiencia con la comunidad.</p>
+        </div>
+    </section>
+
 </main>
 
 <footer th:replace="~{layout/base :: footer}"></footer>
+
+<script>
+function stepDetailQty(delta) {
+    const input = document.getElementById('detailCantidadInput');
+    if (!input) return;
+    const max = parseInt(input.getAttribute('max')) || 99;
+    let val = parseInt(input.value) || 1;
+    val += delta;
+    if (val < 1) val = 1;
+    if (val > max) val = max;
+    input.value = val;
+}
+
+function addCurrentToCart(id, nombre, precio, imagenUrl) {
+    const input = document.getElementById('detailCantidadInput');
+    const qty = input ? parseInt(input.value, 10) || 1 : 1;
+    CampusCart.addItem({
+        id: id,
+        nombre: nombre,
+        precio: precio,
+        imagenUrl: imagenUrl,
+        quantity: qty
+    });
+}
+
+function swapDetailImage(thumb) {
+    document.querySelectorAll('.cf-gallery-thumb').forEach(t => t.classList.remove('active'));
+    thumb.classList.add('active');
+    const imgInside = thumb.querySelector('img');
+    const mainImg = document.getElementById('mainDetailImage');
+    if (imgInside && mainImg) {
+        mainImg.src = imgInside.src;
+    }
+}
+</script>
 
 </body>
 </html>

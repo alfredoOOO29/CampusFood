@@ -1,102 +1,122 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{layout/base :: head('Publicar Producto - CampusFood')}"></head>
+<head th:replace="~{layout/base :: head('Publicar Alimento - CampusFood')}"></head>
 <body>
 
 <nav th:replace="~{layout/base :: navbar}"></nav>
 
-<main class="container mt-4 mb-5">
+<main class="container my-4 my-md-5">
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <div class="card shadow-sm border-0 rounded-4">
-                <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
-                    <h3 class="fw-bold mb-0">Publicar un alimento</h3>
-                    <p class="text-muted small">Completa los detalles para que otros estudiantes puedan comprarte.</p>
+            <div class="cf-card p-4 p-md-5">
+                
+                <div class="mb-4 pb-2 border-bottom">
+                    <span class="badge bg-cf-light text-cf-accent rounded-pill px-3 py-1 fw-bold mb-2">Comunidad Vendedora</span>
+                    <h2 class="fw-bold mb-1">Publicar un Alimento</h2>
+                    <p class="text-muted small mb-0">Completa la ficha para que otros estudiantes puedan reservarte comida en el campus.</p>
                 </div>
-                <div class="card-body p-4">
+
+                <div th:if="${errorProducto}" class="alert alert-danger alert-dismissible fade show rounded-4" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <span th:text="${errorProducto}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <form th:action="@{/panel/productos/nuevo}" method="post" th:object="${productoDTO}" enctype="multipart/form-data">
                     
-                    <div th:if="${errorProducto}" class="alert alert-danger" th:text="${errorProducto}"></div>
+                    <h5 class="fw-bold mb-3 text-cf-primary">1. Información del Producto</h5>
                     
-                    <form th:action="@{/panel/productos/nuevo}" method="post" th:object="${productoDTO}" enctype="multipart/form-data">
-                        
-                        <h5 class="fw-semibold mb-3 text-primary">Información del Producto</h5>
-                        <div class="row g-3">
-                            <div class="col-md-12 mb-2">
-                                <label for="imagen" class="form-label">Foto del producto (opcional)</label>
-                                <input class="form-control" type="file" id="imagen" th:field="*{imagen}" accept="image/png, image/jpeg, image/jpg">
-                                <div class="text-danger small" th:if="${#fields.hasErrors('imagen')}" th:errors="*{imagen}"></div>
-                            </div>
-                            
-                            <div class="col-md-8">
-                                <label for="nombre" class="form-label">Nombre del producto</label>
-                                <input type="text" class="form-control" id="nombre" th:field="*{nombre}" placeholder="Ej: Pan con pollo y papas" required>
-                                <div class="text-danger small" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="categoriaId" class="form-label">Categoría</label>
-                                <select class="form-select" id="categoriaId" th:field="*{categoriaId}" required>
-                                    <option value="" disabled selected>Selecciona...</option>
-                                    <option th:each="cat : ${categorias}" th:value="${cat.id}" th:text="${cat.nombre}"></option>
-                                </select>
-                                <div class="text-danger small" th:if="${#fields.hasErrors('categoriaId')}" th:errors="*{categoriaId}"></div>
-                            </div>
-                            
-                            <div class="col-12">
-                                <label for="descripcion" class="form-label">Descripción</label>
-                                <textarea class="form-control" id="descripcion" th:field="*{descripcion}" rows="2" placeholder="Describe los ingredientes, tamaño, si es picante, etc." required></textarea>
-                                <div class="text-danger small" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <label for="precio" class="form-label">Precio (S/)</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">S/</span>
-                                    <input type="number" step="0.10" min="0" class="form-control" id="precio" th:field="*{precio}" required>
-                                </div>
-                                <div class="text-danger small" th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}"></div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="stock" class="form-label">Stock disponible</label>
-                                <input type="number" min="1" class="form-control" id="stock" th:field="*{stock}" required>
-                                <div class="text-danger small" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></div>
-                            </div>
+                    <div class="row g-3 mb-4">
+                        <!-- Foto -->
+                        <div class="col-12">
+                            <label for="imagen" class="form-label fw-semibold small">Foto del alimento (opcional)</label>
+                            <input class="form-control rounded-4" type="file" id="imagen" th:field="*{imagen}" accept="image/png, image/jpeg, image/jpg">
+                            <div class="form-text small text-muted">Sube una foto atractiva y clara para aumentar tus reservas.</div>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('imagen')}" th:errors="*{imagen}"></div>
                         </div>
 
-                        <hr class="my-4">
-                        
-                        <h5 class="fw-semibold mb-3 text-primary">Disponibilidad y Entrega</h5>
-                        <div class="row g-3">
-                            <div class="col-12">
-                                <label for="ubicacion" class="form-label">Ubicación exacta en el campus</label>
-                                <input type="text" class="form-control" id="ubicacion" th:field="*{ubicacion}" placeholder="Ej: Mesas frente al Pabellón B" required>
-                                <div class="text-danger small" th:if="${#fields.hasErrors('ubicacion')}" th:errors="*{ubicacion}"></div>
-                            </div>
-                            
-                            <div class="col-md-4">
-                                <label for="fechaDisponible" class="form-label">Fecha de venta</label>
-                                <input type="date" class="form-control" id="fechaDisponible" th:field="*{fechaDisponible}" required>
-                                <div class="text-danger small" th:if="${#fields.hasErrors('fechaDisponible')}" th:errors="*{fechaDisponible}"></div>
-                            </div>
-                            
-                            <div class="col-md-4">
-                                <label for="horaInicio" class="form-label">Hora inicio</label>
-                                <input type="time" class="form-control" id="horaInicio" th:field="*{horaInicio}" required>
-                                <div class="text-danger small" th:if="${#fields.hasErrors('horaInicio')}" th:errors="*{horaInicio}"></div>
-                            </div>
-                            
-                            <div class="col-md-4">
-                                <label for="horaFin" class="form-label">Hora fin</label>
-                                <input type="time" class="form-control" id="horaFin" th:field="*{horaFin}" required>
-                                <div class="text-danger small" th:if="${#fields.hasErrors('horaFin')}" th:errors="*{horaFin}"></div>
-                            </div>
+                        <!-- Nombre -->
+                        <div class="col-md-8">
+                            <label for="nombre" class="form-label fw-semibold small">Nombre del producto</label>
+                            <input type="text" class="form-control rounded-pill" id="nombre" th:field="*{nombre}" placeholder="Ej: Hamburguesa Clásica con Papas" required>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
                         </div>
 
-                        <div class="d-flex justify-content-end mt-4">
-                            <a th:href="@{/panel}" class="btn btn-outline-secondary me-2">Cancelar</a>
-                            <button type="submit" class="btn btn-primary px-4">Publicar Producto</button>
+                        <!-- Categoría -->
+                        <div class="col-md-4">
+                            <label for="categoriaId" class="form-label fw-semibold small">Categoría</label>
+                            <select class="form-select rounded-pill" id="categoriaId" th:field="*{categoriaId}" required>
+                                <option value="" disabled selected>Selecciona...</option>
+                                <option th:each="cat : ${categorias}" th:value="${cat.id}" th:text="${cat.nombre}"></option>
+                            </select>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('categoriaId')}" th:errors="*{categoriaId}"></div>
                         </div>
-                    </form>
-                </div>
+
+                        <!-- Descripción -->
+                        <div class="col-12">
+                            <label for="descripcion" class="form-label fw-semibold small">Descripción detallada</label>
+                            <textarea class="form-control rounded-4" id="descripcion" th:field="*{descripcion}" rows="3" placeholder="Describe ingredientes, porciones, si incluye cremas o servilletas..." required></textarea>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
+                        </div>
+
+                        <!-- Precio -->
+                        <div class="col-md-6">
+                            <label for="precio" class="form-label fw-semibold small">Precio unitario (S/)</label>
+                            <div class="input-group">
+                                <span class="input-group-text rounded-start-pill bg-light border-end-0 fw-bold">S/</span>
+                                <input type="number" step="0.50" min="0.50" class="form-control rounded-end-pill" id="precio" th:field="*{precio}" placeholder="8.00" required>
+                            </div>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}"></div>
+                        </div>
+
+                        <!-- Stock -->
+                        <div class="col-md-6">
+                            <label for="stock" class="form-label fw-semibold small">Stock inicial disponible</label>
+                            <input type="number" min="1" class="form-control rounded-pill" id="stock" th:field="*{stock}" placeholder="10" required>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></div>
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold mb-3 text-cf-primary border-top pt-4">2. Ubicación y Horario de Entrega</h5>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label for="ubicacion" class="form-label fw-semibold small">Lugar exacto de encuentro en el campus</label>
+                            <div class="input-group">
+                                <span class="input-group-text rounded-start-pill bg-light border-end-0"><i class="bi bi-geo-alt-fill text-danger"></i></span>
+                                <input type="text" class="form-control rounded-end-pill" id="ubicacion" th:field="*{ubicacion}" placeholder="Ej: Mesas de descanso frente al Pabellón B" required>
+                            </div>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('ubicacion')}" th:errors="*{ubicacion}"></div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="fechaDisponible" class="form-label fw-semibold small">Fecha de entrega</label>
+                            <input type="date" class="form-control rounded-pill" id="fechaDisponible" th:field="*{fechaDisponible}" required>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('fechaDisponible')}" th:errors="*{fechaDisponible}"></div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="horaInicio" class="form-label fw-semibold small">Hora inicio</label>
+                            <input type="time" class="form-control rounded-pill" id="horaInicio" th:field="*{horaInicio}" required>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('horaInicio')}" th:errors="*{horaInicio}"></div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="horaFin" class="form-label fw-semibold small">Hora fin</label>
+                            <input type="time" class="form-control rounded-pill" id="horaFin" th:field="*{horaFin}" required>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('horaFin')}" th:errors="*{horaFin}"></div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                        <a th:href="@{/panel}" class="btn btn-cf-secondary py-2 px-4 fw-semibold">Cancelar</a>
+                        <button type="submit" class="btn btn-cf-primary py-2 px-4 fw-bold">
+                            <i class="bi bi-cloud-arrow-up-fill me-1"></i> Publicar Alimento
+                        </button>
+                    </div>
+
+                </form>
+
             </div>
         </div>
     </div>

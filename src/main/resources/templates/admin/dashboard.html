@@ -5,80 +5,90 @@
 
 <nav th:replace="~{layout/base :: navbar}"></nav>
 
-<div class="container-fluid mt-4 mb-5">
-    <div class="row">
+<div class="container my-4 my-md-5">
+    <div class="row g-4">
         <!-- Sidebar de Admin -->
-        <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar rounded-4 shadow-sm border p-3 mb-4 mb-md-0 me-md-4">
-            <h5 class="fw-bold text-brand mb-4 px-2">⚙️ Administración</h5>
-            <ul class="nav flex-column gap-2">
-                <li class="nav-item">
-                    <a class="nav-link active bg-brand text-white rounded-3 px-3 py-2 fw-bold shadow-sm" th:href="@{/admin}">📊 Panel Principal</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark rounded-3 px-3 py-2 transition-hover" th:href="@{/admin/usuarios}">👥 Usuarios</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark rounded-3 px-3 py-2 transition-hover" th:href="@{/admin/productos}">🍔 Productos</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark rounded-3 px-3 py-2 transition-hover" th:href="@{/admin/reclamos}">⚖️ Reclamos y Strikes</a>
-                </li>
-            </ul>
-        </div>
+        <aside class="col-lg-3">
+            <div class="cf-card p-3">
+                <h5 class="fw-bold text-cf-primary mb-3 px-2">
+                    <i class="bi bi-shield-lock-fill me-1 text-danger"></i> Administración
+                </h5>
+                <ul class="nav flex-column gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link active bg-cf-primary text-white rounded-pill px-3 py-2 fw-bold shadow-sm" th:href="@{/admin}">
+                            <i class="bi bi-speedometer2 me-2"></i> Panel Principal
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark rounded-pill px-3 py-2 fw-medium" th:href="@{/admin/usuarios}">
+                            <i class="bi bi-people me-2 text-primary"></i> Usuarios
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark rounded-pill px-3 py-2 fw-medium" th:href="@{/admin/productos}">
+                            <i class="bi bi-egg-fried me-2 text-success"></i> Productos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark rounded-pill px-3 py-2 fw-medium" th:href="@{/admin/reclamos}">
+                            <i class="bi bi-exclamation-octagon me-2 text-danger"></i> Reclamos y Strikes
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
 
         <!-- Main Content -->
-        <main class="col-md-8 col-lg-9">
+        <main class="col-lg-9">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
                     <h2 class="fw-bold mb-1 text-dark">Panel de Control</h2>
-                    <p class="text-muted mb-0">Resumen del estado general de la plataforma CampusFood.</p>
+                    <p class="text-muted small mb-0">Resumen y métricas globales de la plataforma CampusFood.</p>
                 </div>
             </div>
             
             <!-- Cards de Métricas -->
-            <div class="row g-4 mb-5">
+            <div class="row g-3 mb-4">
                 <div class="col-md-4">
-                    <div class="card shadow-sm border-0 h-100 rounded-4" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);">
-                        <div class="card-body p-4 d-flex justify-content-between align-items-center text-white">
-                            <div>
-                                <h6 class="fw-semibold text-white-50 text-uppercase mb-1" style="letter-spacing: 1px;">Usuarios Totales</h6>
-                                <h2 class="display-5 fw-bold mb-0" th:text="${totalUsuarios}">0</h2>
-                            </div>
-                            <div class="display-4 opacity-50">👥</div>
+                    <div class="cf-kpi-card">
+                        <div class="cf-kpi-icon blue">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                        <div>
+                            <div class="cf-kpi-label">Usuarios Totales</div>
+                            <div class="cf-kpi-value" th:text="${totalUsuarios}">0</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="card shadow-sm border-0 h-100 rounded-4" style="background: linear-gradient(135deg, #198754 0%, #146c43 100%);">
-                        <div class="card-body p-4 d-flex justify-content-between align-items-center text-white">
-                            <div>
-                                <h6 class="fw-semibold text-white-50 text-uppercase mb-1" style="letter-spacing: 1px;">Alimentos Publicados</h6>
-                                <h2 class="display-5 fw-bold mb-0" th:text="${totalProductos}">0</h2>
-                            </div>
-                            <div class="display-4 opacity-50">🍔</div>
+                    <div class="cf-kpi-card">
+                        <div class="cf-kpi-icon green">
+                            <i class="bi bi-shop"></i>
+                        </div>
+                        <div>
+                            <div class="cf-kpi-label">Alimentos Activos</div>
+                            <div class="cf-kpi-value" th:text="${totalProductos}">0</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="card shadow-sm border-0 h-100 rounded-4" style="background: linear-gradient(135deg, #fd7e14 0%, #e8590c 100%);">
-                        <div class="card-body p-4 d-flex justify-content-between align-items-center text-white">
-                            <div>
-                                <h6 class="fw-semibold text-white-50 text-uppercase mb-1" style="letter-spacing: 1px;">Pedidos Generados</h6>
-                                <h2 class="display-5 fw-bold mb-0" th:text="${totalPedidos}">0</h2>
-                            </div>
-                            <div class="display-4 opacity-50">📦</div>
+                    <div class="cf-kpi-card">
+                        <div class="cf-kpi-icon amber">
+                            <i class="bi bi-bag-check-fill"></i>
+                        </div>
+                        <div>
+                            <div class="cf-kpi-label">Pedidos Generados</div>
+                            <div class="cf-kpi-value" th:text="${totalPedidos}">0</div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Gráfico de Actividad -->
-            <div class="card shadow-sm border-0 rounded-4 mb-5">
-                <div class="card-body p-4 p-md-5">
-                    <h5 class="fw-bold mb-4 text-dark">Actividad de la Plataforma</h5>
-                    <div style="position: relative; height:30vh; width:100%">
-                        <canvas id="statsChart"></canvas>
-                    </div>
+            <div class="cf-card p-4 p-md-5 mb-4">
+                <h5 class="fw-bold mb-4 text-dark">Actividad de la Plataforma</h5>
+                <div style="position: relative; height:32vh; width:100%">
+                    <canvas id="statsChart"></canvas>
                 </div>
             </div>
             
@@ -103,11 +113,11 @@
                         /*[[${totalPedidos}]]*/ 0
                     ],
                     backgroundColor: [
-                        'rgba(13, 110, 253, 0.8)',
-                        'rgba(25, 135, 84, 0.8)',
-                        'rgba(253, 126, 20, 0.8)'
+                        'rgba(15, 62, 46, 0.85)',
+                        'rgba(22, 163, 74, 0.85)',
+                        'rgba(245, 158, 11, 0.85)'
                     ],
-                    borderRadius: 8,
+                    borderRadius: 10,
                     borderSkipped: false
                 }]
             },
@@ -117,12 +127,12 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        grid: { borderDash: [5, 5], color: '#e9ecef' },
-                        ticks: { stepSize: 1, font: { family: 'Inter' } }
+                        grid: { borderDash: [4, 4], color: '#e5e9e5' },
+                        ticks: { stepSize: 1, font: { family: 'Plus Jakarta Sans' } }
                     },
                     x: {
                         grid: { display: false },
-                        ticks: { font: { family: 'Inter', weight: '600' } }
+                        ticks: { font: { family: 'Plus Jakarta Sans', weight: '600' } }
                     }
                 },
                 plugins: {

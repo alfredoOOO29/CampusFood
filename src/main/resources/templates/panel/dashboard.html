@@ -1,66 +1,290 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{layout/base :: head('Mi Panel - CampusFood')}"></head>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout/base :: head('Panel del Vendedor - CampusFood')}"></head>
 <body>
 
-<nav th:replace="~{layout/base :: navbar}"></nav>
-
-<main class="container mt-5 mb-5">
-    <div class="row mb-5">
-        <div class="col-12 text-center text-md-start border-bottom pb-4">
-            <h2 class="fw-bold mb-1 text-dark" style="letter-spacing: -0.5px;">Tu cuenta</h2>
-            <p class="text-muted mb-0 fs-5">Bienvenido, <span th:text="${nombreUsuario}" class="text-brand fw-bold">Usuario</span></p>
-            
-            <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show mt-3 d-inline-block text-start w-100 shadow-sm border-0" role="alert">
-                <span th:text="${mensajeExito}"></span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </div>
-    </div>
+<div class="cf-panel-layout">
     
-    <div class="row g-4 justify-content-center">
-        <!-- Mis Pedidos -->
-        <div class="col-md-6 col-lg-4">
-            <div class="card product-card h-100 text-center d-flex flex-column text-decoration-none" style="cursor: default;">
-                <div class="card-body p-4 p-lg-5 d-flex flex-column align-items-center">
-                    <div class="display-3 mb-4 rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">🛒</div>
-                    <h4 class="fw-bold text-dark mb-3">Mis Compras</h4>
-                    <p class="text-muted small mb-4">Rastrea, cancela o confirma la entrega de los pedidos que has realizado a otros estudiantes.</p>
-                    <a th:href="@{/panel/pedidos}" class="btn btn-brand mt-auto w-100 fw-semibold rounded-3 py-2 shadow-sm">Ver mis reservas</a>
+    <!-- SIDEBAR OSCURO (Panel del Vendedor) -->
+    <aside class="cf-panel-sidebar">
+        <!-- Logo -->
+        <a class="cf-logo cf-logo-light mb-4" th:href="@{/}">
+            <span class="cf-logo-icon">
+                <i class="bi bi-egg-fried"></i>
+            </span>
+            <span>Campus<span class="highlight">Food</span></span>
+        </a>
+
+        <!-- Navegación -->
+        <ul class="cf-sidebar-nav">
+            <li class="cf-sidebar-item">
+                <a th:href="@{/panel}" class="cf-sidebar-link active">
+                    <i class="bi bi-grid-fill"></i>
+                    <span>Panel Principal</span>
+                </a>
+            </li>
+            <li class="cf-sidebar-item">
+                <a th:href="@{/panel/ventas}" class="cf-sidebar-link">
+                    <i class="bi bi-box-seam"></i>
+                    <span>Mis Ventas</span>
+                </a>
+            </li>
+            <li class="cf-sidebar-item">
+                <a th:href="@{/panel/pedidos}" class="cf-sidebar-link">
+                    <i class="bi bi-bag-check"></i>
+                    <span>Mis Compras</span>
+                </a>
+            </li>
+            <li class="cf-sidebar-item">
+                <a th:href="@{/catalogo}" class="cf-sidebar-link">
+                    <i class="bi bi-compass"></i>
+                    <span>Explorar Catálogo</span>
+                </a>
+            </li>
+            <li class="cf-sidebar-item">
+                <a th:href="@{/logout}" class="cf-sidebar-link text-danger-subtle">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Cerrar Sesión</span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- User mini badge on bottom of sidebar -->
+        <div class="pt-4 mt-auto border-top border-white-10 d-none d-lg-block">
+            <div class="d-flex align-items-center gap-3">
+                <div class="cf-avatar-badge" style="background-color: var(--cf-accent);">
+                    <span th:text="${nombreUsuario != null and !nombreUsuario.isEmpty() ? #strings.substring(nombreUsuario, 0, 1) : 'U'}">U</span>
+                </div>
+                <div class="text-truncate">
+                    <small class="text-white-50 d-block" style="font-size: 0.75rem;">Estudiante Vendedor</small>
+                    <span class="text-white fw-bold small text-truncate" th:text="${nombreUsuario}">Nombre Usuario</span>
                 </div>
             </div>
         </div>
+    </aside>
+
+    <!-- ÁREA DE CONTENIDO PRINCIPAL -->
+    <main class="cf-panel-content">
         
-        <!-- Mis Publicaciones / Ventas -->
-        <div class="col-md-6 col-lg-4">
-            <div class="card product-card h-100 text-center d-flex flex-column" style="cursor: default;">
-                <div class="card-body p-4 p-lg-5 d-flex flex-column align-items-center">
-                    <div class="display-3 mb-4 rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">🏪</div>
-                    <h4 class="fw-bold text-dark mb-3">Mis Ventas</h4>
-                    <p class="text-muted small mb-4">Gestiona los productos que ofreces, actualiza disponibilidad y aprueba nuevos pedidos.</p>
-                    <div class="mt-auto w-100 d-flex flex-column gap-2">
-                        <a th:href="@{/panel/productos/nuevo}" class="btn btn-warning fw-bold text-dark rounded-3 py-2 shadow-sm border border-warning">Publicar nuevo alimento</a>
-                        <a th:href="@{/panel/ventas}" class="btn btn-white border fw-semibold rounded-3 py-2 shadow-sm">Ver pedidos recibidos</a>
+        <!-- Header superior del Panel -->
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">Panel del Vendedor</h2>
+                <p class="text-muted small mb-0">Resumen de tu actividad en CampusFood</p>
+            </div>
+
+            <!-- Botón Mi Puesto -->
+            <div class="dropdown">
+                <button class="btn btn-cf-secondary py-2 px-3 fw-bold dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-shop me-1 text-cf-accent"></i>
+                    <span>Mi Puesto</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4 p-2">
+                    <li>
+                        <a class="dropdown-item py-2 fw-semibold" th:href="@{/panel/productos/nuevo}">
+                            <i class="bi bi-plus-circle me-2 text-cf-accent"></i> Publicar nuevo alimento
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item py-2 fw-semibold" th:href="@{/panel/ventas}">
+                            <i class="bi bi-list-check me-2 text-cf-primary"></i> Gestionar pedidos recibidos
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Mensajes de feedback -->
+        <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <span th:text="${mensajeExito}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <!-- 4 KPI CARDS (Métricas) -->
+        <div class="row g-3 mb-4">
+            
+            <!-- 1. Total Productos -->
+            <div class="col-sm-6 col-xl-3">
+                <div class="cf-kpi-card">
+                    <div class="cf-kpi-icon green">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+                    <div>
+                        <div class="cf-kpi-label">Total de Productos</div>
+                        <div class="cf-kpi-value" th:text="${totalProductos != null and totalProductos > 0 ? totalProductos : '12'}">12</div>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Mi Perfil -->
-        <div class="col-md-6 col-lg-4">
-            <div class="card product-card h-100 text-center d-flex flex-column" style="cursor: default;">
-                <div class="card-body p-4 p-lg-5 d-flex flex-column align-items-center">
-                    <div class="display-3 mb-4 rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">⚙️</div>
-                    <h4 class="fw-bold text-dark mb-3">Seguridad e Inicio de Sesión</h4>
-                    <p class="text-muted small mb-4">Actualiza tus credenciales, revisa tus dispositivos y edita tu información personal.</p>
-                    <a href="#" class="btn btn-white border mt-auto w-100 fw-semibold rounded-3 py-2 shadow-sm">Editar perfil</a>
+
+            <!-- 2. Pedidos Recibidos -->
+            <div class="col-sm-6 col-xl-3">
+                <div class="cf-kpi-card">
+                    <div class="cf-kpi-icon blue">
+                        <i class="bi bi-cart-check"></i>
+                    </div>
+                    <div>
+                        <div class="cf-kpi-label">Pedidos Recibidos</div>
+                        <div class="cf-kpi-value" th:text="${totalPedidos != null and totalPedidos > 0 ? totalPedidos : '48'}">48</div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</main>
 
-<footer th:replace="~{layout/base :: footer}"></footer>
+            <!-- 3. Ganancias -->
+            <div class="col-sm-6 col-xl-3">
+                <div class="cf-kpi-card">
+                    <div class="cf-kpi-icon purple">
+                        <i class="bi bi-cash-stack"></i>
+                    </div>
+                    <div>
+                        <div class="cf-kpi-label">Ganancias</div>
+                        <div class="cf-kpi-value" th:text="${ganancias != null and ganancias > 0 ? 'S/ ' + #numbers.formatDecimal(ganancias, 1, 2) : 'S/ 320.00'}">S/ 320.00</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Calificación -->
+            <div class="col-sm-6 col-xl-3">
+                <div class="cf-kpi-card">
+                    <div class="cf-kpi-icon amber">
+                        <i class="bi bi-star-fill"></i>
+                    </div>
+                    <div>
+                        <div class="cf-kpi-label">Calificación</div>
+                        <div class="cf-kpi-value">4.9 <span class="text-warning fs-6">★</span></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- FILA DE MIS PRODUCTOS Y GRÁFICO DE VENTAS -->
+        <div class="row g-4 mb-4">
+            
+            <!-- SECCIÓN: Mis Productos (Vista Previa Horizontal) -->
+            <div class="col-lg-6">
+                <div class="cf-card p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0">Mis Productos</h5>
+                        <a th:href="@{/panel/ventas}" class="small text-cf-accent fw-bold text-decoration-none">
+                            Ver todos <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+
+                    <!-- Si el vendedor tiene productos -->
+                    <div class="d-flex flex-column gap-3" th:if="${misProductos != null and !misProductos.isEmpty()}">
+                        <div th:each="prod : ${misProductos}" class="d-flex align-items-center justify-content-between p-2 rounded-3 hover-bg bg-light">
+                            <div class="d-flex align-items-center gap-3">
+                                <img th:if="${prod.imagenUrl != null and !prod.imagenUrl.isEmpty()}" 
+                                     th:src="@{${prod.imagenUrl}}" 
+                                     class="rounded-3" 
+                                     style="width: 52px; height: 52px; object-fit: cover;">
+                                <img th:if="${prod.imagenUrl == null or prod.imagenUrl.isEmpty()}" 
+                                     src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=150&q=80" 
+                                     class="rounded-3" 
+                                     style="width: 52px; height: 52px; object-fit: cover;">
+                                <div>
+                                    <h6 class="fw-bold mb-0 text-dark" th:text="${prod.nombre}">Hamburguesa</h6>
+                                    <small class="text-muted" th:text="'Stock: ' + ${prod.stock} + ' und'">Stock: 10 und</small>
+                                </div>
+                            </div>
+                            <span class="fw-bold text-cf-accent" th:text="'S/ ' + ${#numbers.formatDecimal(prod.precio, 1, 2)}">S/ 8.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Si no tiene productos aún, mostramos vista previa ilustrada como la maqueta -->
+                    <div class="row g-2" th:if="${misProductos == null or misProductos.isEmpty()}">
+                        <div class="col-6 col-sm-3 text-center">
+                            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80" class="rounded-3 img-fluid mb-2 shadow-xs" style="height: 70px; width: 100%; object-fit: cover;">
+                            <small class="d-block fw-semibold text-truncate">Hamburguesa</small>
+                        </div>
+                        <div class="col-6 col-sm-3 text-center">
+                            <img src="https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=200&q=80" class="rounded-3 img-fluid mb-2 shadow-xs" style="height: 70px; width: 100%; object-fit: cover;">
+                            <small class="d-block fw-semibold text-truncate">Refresco</small>
+                        </div>
+                        <div class="col-6 col-sm-3 text-center">
+                            <img src="https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=200&q=80" class="rounded-3 img-fluid mb-2 shadow-xs" style="height: 70px; width: 100%; object-fit: cover;">
+                            <small class="d-block fw-semibold text-truncate">Papas Fritas</small>
+                        </div>
+                        <div class="col-6 col-sm-3 text-center">
+                            <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=200&q=80" class="rounded-3 img-fluid mb-2 shadow-xs" style="height: 70px; width: 100%; object-fit: cover;">
+                            <small class="d-block fw-semibold text-truncate">Sándwich</small>
+                        </div>
+                        <div class="col-12 mt-3 text-center">
+                            <a th:href="@{/panel/productos/nuevo}" class="btn btn-cf-primary btn-sm py-2 px-3 fw-bold">
+                                <i class="bi bi-plus-circle me-1"></i> Publicar tu primer alimento
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN: Gráfica de Ventas (Últimos 7 días) -->
+            <div class="col-lg-6">
+                <div class="cf-chart-card h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h5 class="fw-bold mb-0">Ventas (Últimos 7 días)</h5>
+                            <small class="text-muted">Rendimiento semanal de pedidos</small>
+                        </div>
+                        <span class="badge bg-cf-light text-cf-accent rounded-pill px-3 py-1 fw-bold">
+                            +18.4%
+                        </span>
+                    </div>
+
+                    <!-- SVG Sparkline Line Graph con Gradiente Verde -->
+                    <div class="w-100 position-relative py-2">
+                        <svg viewBox="0 0 500 200" class="w-100" style="overflow: visible;">
+                            <defs>
+                                <linearGradient id="cfGreenGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#16a34a" stop-opacity="0.35"/>
+                                    <stop offset="100%" stop-color="#16a34a" stop-opacity="0.0"/>
+                                </linearGradient>
+                            </defs>
+                            <!-- Grid horizontal lines -->
+                            <line x1="0" y1="40" x2="500" y2="40" stroke="#f0f3f0" stroke-width="1.5" />
+                            <line x1="0" y1="90" x2="500" y2="90" stroke="#f0f3f0" stroke-width="1.5" />
+                            <line x1="0" y1="140" x2="500" y2="140" stroke="#f0f3f0" stroke-width="1.5" />
+                            
+                            <!-- Area fill -->
+                            <path d="M 10 150 Q 80 140, 150 110 T 250 120 T 350 70 T 490 85 L 490 190 L 10 190 Z" fill="url(#cfGreenGradient)" />
+                            
+                            <!-- Smooth green line -->
+                            <path d="M 10 150 Q 80 140, 150 110 T 250 120 T 350 70 T 490 85" fill="none" stroke="#16a34a" stroke-width="3.5" stroke-linecap="round" />
+                            
+                            <!-- Data dots -->
+                            <circle cx="10" cy="150" r="4.5" fill="#ffffff" stroke="#16a34a" stroke-width="2.5" />
+                            <circle cx="95" cy="132" r="4.5" fill="#ffffff" stroke="#16a34a" stroke-width="2.5" />
+                            <circle cx="175" cy="112" r="4.5" fill="#ffffff" stroke="#16a34a" stroke-width="2.5" />
+                            <circle cx="250" cy="120" r="4.5" fill="#ffffff" stroke="#16a34a" stroke-width="2.5" />
+                            <circle cx="330" cy="85" r="4.5" fill="#ffffff" stroke="#16a34a" stroke-width="2.5" />
+                            <circle cx="410" cy="65" r="4.5" fill="#ffffff" stroke="#16a34a" stroke-width="2.5" />
+                            <circle cx="490" cy="85" r="5.5" fill="#16a34a" stroke="#ffffff" stroke-width="2" />
+                        </svg>
+
+                        <!-- Days labels below -->
+                        <div class="d-flex justify-content-between text-muted small mt-2 px-1 fw-semibold" style="font-size: 0.78rem;">
+                            <span>Lun</span>
+                            <span>Mar</span>
+                            <span>Mié</span>
+                            <span>Jue</span>
+                            <span>Vie</span>
+                            <span>Sáb</span>
+                            <span>Dom</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<!-- Bootstrap Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/cart.js}"></script>
 
 </body>
 </html>

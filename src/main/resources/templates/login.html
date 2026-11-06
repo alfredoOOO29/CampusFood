@@ -5,48 +5,107 @@
 
 <nav th:replace="~{layout/base :: navbar}"></nav>
 
-<main class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-5 col-lg-4">
-            <div class="card shadow-sm border-0 rounded-4">
-                <div class="card-body p-4 p-md-5">
-                    <h3 class="text-center mb-4 fw-bold">Bienvenido de nuevo</h3>
-                    
-                    <div th:if="${mensajeExito}" class="alert alert-success" th:text="${mensajeExito}"></div>
-                    <div th:if="${errorLogin}" class="alert alert-danger" th:text="${errorLogin}"></div>
-                    <div th:if="${param.error}" class="alert alert-danger">Credenciales inválidas.</div>
-                    <div th:if="${param.logout}" class="alert alert-info">Has cerrado sesión correctamente.</div>
-                    
-                    <form th:action="@{/login}" method="post">
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Correo institucional</label>
-                            <input type="email" class="form-control" id="username" name="username" placeholder="usuario@utp.edu.pe" required autofocus>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between">
-                                <label for="password" class="form-label">Contraseña</label>
-                                <a href="#" class="text-decoration-none small text-primary">¿Olvidaste tu contraseña?</a>
-                            </div>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
-                        
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="remember-me" name="remember-me">
-                            <label class="form-check-label small" for="remember-me">Recordarme</label>
-                        </div>
-                        
-                        <div class="d-grid mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg">Ingresar</button>
-                        </div>
-                    </form>
-                    
-                    <div class="text-center mt-4">
-                        <p class="small text-muted mb-1">¿No tienes cuenta? <a th:href="@{/registro}" class="text-decoration-none fw-semibold">Regístrate aquí</a></p>
-                        <p class="small text-muted mb-0">¿Tienes un código pendiente? <a th:href="@{/verificar-codigo}" class="text-decoration-none fw-semibold text-brand">Valídalo aquí</a></p>
-                    </div>
+<main class="cf-auth-container">
+    <div class="cf-auth-card">
+        <div class="row g-0">
+            
+            <!-- PANEL IZQUIERDO: Verde Oscuro con Branding e Ilustración de Campus -->
+            <div class="col-lg-5 cf-auth-banner">
+                <div class="mb-5">
+                    <a class="cf-logo cf-logo-light mb-3" th:href="@{/}">
+                        <span class="cf-logo-icon">
+                            <i class="bi bi-egg-fried"></i>
+                        </span>
+                        <span>Campus<span class="highlight">Food</span></span>
+                    </a>
+                    <h3 class="fw-bold text-white mt-4" style="line-height: 1.3;">Tu comunidad gastronómica universitaria</h3>
+                    <p class="text-white-50 small mt-2">Apoya el emprendimiento estudiantil y disfruta de los mejores snacks y comidas en el campus.</p>
+                </div>
+
+                <!-- Ilustración Vectorial de Edificios del Campus -->
+                <div class="mt-auto pt-5 text-center position-relative" style="z-index: 2;">
+                    <svg viewBox="0 0 400 120" class="w-100" style="max-height: 90px; opacity: 0.45;" fill="#ffffff">
+                        <path d="M10 120 V50 H40 V120 H60 V30 H90 V120 H110 V60 H140 V120 H170 V15 H210 V120 H230 V45 H270 V120 H290 V70 H330 V120 H350 V35 H390 V120 Z"/>
+                        <circle cx="190" cy="8" r="5" fill="#ffffff" />
+                    </svg>
                 </div>
             </div>
+
+            <!-- PANEL DERECHO: Formulario Blanco Limpio -->
+            <div class="col-lg-7 cf-auth-form-wrap d-flex flex-column justify-content-center">
+                
+                <div class="mb-4">
+                    <h2 class="fw-bold mb-1">Iniciar Sesión</h2>
+                    <p class="text-muted small mb-0">Accede a tu cuenta de estudiante</p>
+                </div>
+
+                <!-- Alertas de estado -->
+                <div th:if="${mensajeExito}" class="alert alert-success py-2 px-3 small rounded-4 mb-3" th:text="${mensajeExito}"></div>
+                <div th:if="${errorLogin}" class="alert alert-danger py-2 px-3 small rounded-4 mb-3" th:text="${errorLogin}"></div>
+                <div th:if="${param.error}" class="alert alert-danger py-2 px-3 small rounded-4 mb-3">Correo o contraseña incorrectos.</div>
+                <div th:if="${param.logout}" class="alert alert-info py-2 px-3 small rounded-4 mb-3">Has cerrado sesión correctamente.</div>
+
+                <form th:action="@{/login}" method="post">
+                    
+                    <!-- Campo: Correo Institucional -->
+                    <label for="username" class="form-label small fw-semibold text-secondary">Correo institucional</label>
+                    <div class="cf-input-group">
+                        <i class="bi bi-envelope cf-input-icon"></i>
+                        <input type="email" 
+                               class="form-control" 
+                               id="username" 
+                               name="username" 
+                               placeholder="ej. u1234567@utp.edu.pe" 
+                               required 
+                               autofocus>
+                    </div>
+
+                    <!-- Campo: Contraseña con Toggle de Ojo -->
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label for="password" class="form-label small fw-semibold text-secondary mb-0">Contraseña</label>
+                        <a href="#" class="small text-muted text-decoration-none" tabindex="-1">¿Olvidaste tu contraseña?</a>
+                    </div>
+                    <div class="cf-input-group">
+                        <i class="bi bi-lock cf-input-icon"></i>
+                        <input type="password" 
+                               class="form-control" 
+                               id="password" 
+                               name="password" 
+                               placeholder="Tu contraseña" 
+                               required>
+                        <button type="button" class="cf-password-toggle" data-target="password" title="Mostrar/ocultar contraseña">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+
+                    <!-- Recordarme -->
+                    <div class="mb-4 form-check">
+                        <input type="checkbox" class="form-check-input" id="remember-me" name="remember-me">
+                        <label class="form-check-label small text-muted" for="remember-me">Mantener mi sesión iniciada</label>
+                    </div>
+
+                    <!-- Botón Ingresar -->
+                    <button type="submit" class="btn btn-cf-primary w-100 py-3 fw-bold fs-6">
+                        <span>Ingresar</span>
+                        <i class="bi bi-box-arrow-in-right"></i>
+                    </button>
+
+                </form>
+
+                <!-- Enlaces inferiores -->
+                <div class="text-center mt-4 pt-3 border-top">
+                    <p class="small text-muted mb-1">
+                        ¿No tienes una cuenta? 
+                        <a th:href="@{/registro}" class="text-cf-accent fw-bold text-decoration-none">Regístrate aquí</a>
+                    </p>
+                    <p class="small text-muted mb-0">
+                        ¿Tienes un código pendiente? 
+                        <a th:href="@{/verificar-codigo}" class="text-secondary fw-semibold text-decoration-none">Valídalo aquí</a>
+                    </p>
+                </div>
+
+            </div>
+
         </div>
     </div>
 </main>

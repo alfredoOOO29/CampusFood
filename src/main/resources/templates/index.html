@@ -5,49 +5,324 @@
 
 <nav th:replace="~{layout/base :: navbar}"></nav>
 
-<main class="container mt-5 mb-5">
-    <div class="row align-items-center">
-        <div class="col-md-6 text-center text-md-start">
-            <h1 class="display-4 fw-bold mb-3 text-dark" style="letter-spacing: -1px;">La mejor comida en tu universidad</h1>
-            <p class="lead text-muted mb-4" style="line-height: 1.6;">Compra y vende postres, almuerzos y snacks entre estudiantes de manera segura y rápida. Sin intermediarios.</p>
-            <div class="d-flex gap-3 justify-content-center justify-content-md-start">
-                <a th:href="@{/catalogo}" class="btn btn-brand btn-lg px-4 shadow-sm fw-bold">Ver Catálogo</a>
+<main>
+    <!-- HERO SECTION -->
+    <section class="cf-hero">
+        <div class="container">
+            <div class="row align-items-center g-5">
                 
-                <!-- Botones dinámicos según el Rol -->
-                <a sec:authorize="!isAuthenticated()" th:href="@{/registro}" class="btn btn-white border border-2 btn-lg px-4 fw-semibold text-dark shadow-sm">Quiero vender</a>
-                <a sec:authorize="isAuthenticated() and !hasRole('ADMIN')" th:href="@{/panel/productos/nuevo}" class="btn btn-white border border-2 btn-lg px-4 fw-semibold text-dark shadow-sm">Quiero vender</a>
-                <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin}" class="btn btn-dark btn-lg px-4 fw-semibold shadow-sm">⚙️ Ir al Panel</a>
+                <!-- Left: Hero Text & CTAs -->
+                <div class="col-lg-6 text-center text-lg-start">
+                    <h1 class="cf-hero-title">
+                        Campus<span class="highlight">Food</span>
+                    </h1>
+                    <h2 class="cf-hero-subtitle">
+                        Compra y vende alimentos dentro de la universidad
+                    </h2>
+                    <p class="cf-hero-desc">
+                        Conecta con otros estudiantes, descubre comida deliciosa y apoya el emprendimiento de tus compañeros en el campus.
+                    </p>
+                    
+                    <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start cf-hero-actions">
+                        <a th:href="@{/catalogo}" class="btn btn-cf-primary px-4 py-3 fs-6">
+                            <span>Explorar productos</span>
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                        <button type="button" class="btn btn-cf-secondary px-4 py-3 fs-6" data-bs-toggle="modal" data-bs-target="#comoFuncionaModal">
+                            <span>¿Cómo funciona?</span>
+                        </button>
+                    </div>
+
+                    <!-- Extra Trust Metric / Pill -->
+                    <div class="d-flex align-items-center gap-3 mt-4 pt-2 justify-content-center justify-content-lg-start">
+                        <div class="d-flex -space-x-2">
+                            <span class="badge bg-cf-light text-cf-accent rounded-pill px-3 py-2 fw-semibold border border-success-subtle">
+                                <i class="bi bi-shield-check me-1"></i> Comunidad 100% Universitaria UTP
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Hero Graphic / Food Photo -->
+                <div class="col-lg-6">
+                    <div class="cf-hero-image-wrap mx-auto">
+                        <span class="cf-doodle-spark">✨</span>
+                        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80" 
+                             alt="Hamburguesa CampusFood Gourmet" 
+                             class="img-fluid"
+                             loading="eager">
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col-md-6 mt-5 mt-md-0 d-flex justify-content-center">
-            <!-- Espacio para una ilustración o imagen generada posteriormente -->
-            <div class="bg-white p-4 rounded-4 shadow-sm border" style="width: 100%; max-width: 400px;">
-                <h4 class="mb-3">Próximos disponibles</h4>
-                <div class="d-flex align-items-center mb-3">
-                    <div class="bg-light rounded p-2 me-3 fs-3">🥪</div>
-                    <div>
-                        <h6 class="mb-0">Pan con Pollo</h6>
-                        <small class="text-muted">Pabellón B • S/ 4.00</small>
+    </section>
+
+    <!-- SECTION: ¿POR QUÉ ELEGIR CAMPUSFOOD? -->
+    <section id="beneficios" class="cf-features-section bg-white border-top border-bottom py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h3 class="fw-bold mb-2">¿Por qué elegir CampusFood?</h3>
+                <p class="text-muted small">Diseñado para hacer que comer en la universidad sea más fácil, sabroso y seguro.</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- 1. Usuarios Verificados -->
+                <div class="col-sm-6 col-lg-3">
+                    <div class="cf-feature-card">
+                        <div class="cf-feature-icon">
+                            <i class="bi bi-patch-check-fill"></i>
+                        </div>
+                        <h4 class="cf-feature-title">Usuarios verificados</h4>
+                        <p class="cf-feature-desc">(correo universitario institucional)</p>
                     </div>
                 </div>
-                <div class="d-flex align-items-center mb-3">
-                    <div class="bg-light rounded p-2 me-3 fs-3">🍫</div>
-                    <div>
-                        <h6 class="mb-0">Chocotejas</h6>
-                        <small class="text-muted">Biblioteca • S/ 2.00</small>
+
+                <!-- 2. Vendedores del Campus -->
+                <div class="col-sm-6 col-lg-3">
+                    <div class="cf-feature-card">
+                        <div class="cf-feature-icon">
+                            <i class="bi bi-shop"></i>
+                        </div>
+                        <h4 class="cf-feature-title">Vendedores de tu universidad</h4>
+                        <p class="cf-feature-desc">Apoya el talento de tus propios compañeros de clases.</p>
                     </div>
                 </div>
-                <div class="d-flex align-items-center">
-                    <div class="bg-light rounded p-2 me-3 fs-3">🥤</div>
-                    <div>
-                        <h6 class="mb-0">Chicha Morada Helada</h6>
-                        <small class="text-muted">Patio Central • S/ 3.50</small>
+
+                <!-- 3. Ubicación y Horarios -->
+                <div class="col-sm-6 col-lg-3">
+                    <div class="cf-feature-card">
+                        <div class="cf-feature-icon">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <h4 class="cf-feature-title">Ubicación y horarios claros</h4>
+                        <p class="cf-feature-desc">Encuentra a tu vendedor en el pabellón o patio acordado.</p>
                     </div>
                 </div>
+
+                <!-- 4. Compra Rápida y Segura -->
+                <div class="col-sm-6 col-lg-3">
+                    <div class="cf-feature-card">
+                        <div class="cf-feature-icon">
+                            <i class="bi bi-lightning-charge-fill"></i>
+                        </div>
+                        <h4 class="cf-feature-title">Compra rápida y segura</h4>
+                        <p class="cf-feature-desc">Reserva con un clic y paga en persona contra entrega.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: PRODUCTOS DESTACADOS -->
+    <section class="py-5">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-end mb-4">
+                <div>
+                    <span class="text-cf-accent fw-bold small text-uppercase" style="letter-spacing: 1px;">Frescos y disponibles</span>
+                    <h3 class="fw-bold mb-0">Comida destacada en el campus</h3>
+                </div>
+                <a th:href="@{/catalogo}" class="btn btn-cf-secondary py-2 px-3 fw-semibold small">
+                    <span>Ver todo el catálogo</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Grid de Productos -->
+            <div class="row g-4" th:if="${productosDestacados != null and !productosDestacados.isEmpty()}">
+                <div class="col-sm-6 col-lg-3" th:each="producto : ${productosDestacados}">
+                    <div class="cf-product-card">
+                        <!-- Imagen y Badges -->
+                        <div class="cf-product-image-wrap">
+                            <span class="cf-badge-category" th:text="${producto.categoria.nombre}">Comida</span>
+                            <button type="button" class="cf-btn-favorite" title="Guardar en favoritos">
+                                <i class="bi bi-heart"></i>
+                            </button>
+                            <img th:if="${producto.imagenUrl != null and !producto.imagenUrl.isEmpty()}" 
+                                 th:src="@{${producto.imagenUrl}}" 
+                                 th:alt="${producto.nombre}">
+                            <img th:if="${producto.imagenUrl == null or producto.imagenUrl.isEmpty()}" 
+                                 src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80" 
+                                 th:alt="${producto.nombre}">
+                        </div>
+
+                        <!-- Info -->
+                        <div class="cf-product-body">
+                            <h4 class="cf-product-title">
+                                <a th:href="@{/producto/{id}(id=${producto.id})}" th:text="${producto.nombre}">Hamburguesa Clásica</a>
+                            </h4>
+                            <p class="cf-product-desc" th:text="${producto.descripcion}">Deliciosa hamburguesa casera.</p>
+
+                            <div class="cf-product-meta" th:if="${producto.disponibilidad != null}">
+                                <div class="text-truncate mb-1">
+                                    <i class="bi bi-geo-alt-fill"></i>
+                                    <span th:text="${producto.disponibilidad.ubicacion}">Cafetería Central</span>
+                                </div>
+                                <div>
+                                    <i class="bi bi-clock-fill"></i>
+                                    <span th:text="${#temporals.format(producto.disponibilidad.horaInicio, 'HH:mm')} + ' - ' + ${#temporals.format(producto.disponibilidad.horaFin, 'HH:mm')}">12:00 - 15:00</span>
+                                </div>
+                            </div>
+
+                            <div class="cf-product-footer">
+                                <div>
+                                    <span class="d-block text-muted" style="font-size: 0.72rem;">PRECIO</span>
+                                    <span class="cf-product-price" th:text="'S/ ' + ${#numbers.formatDecimal(producto.precio, 1, 2)}">S/ 8.00</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <button type="button" 
+                                            class="btn-cf-cart-circle" 
+                                            title="Agregar al carrito"
+                                            th:onclick="'CampusCart.addItem({id:' + ${producto.id} + ', nombre:\'' + ${#strings.escapeJavaScript(producto.nombre)} + '\', precio:' + ${producto.precio} + ', imagenUrl:\'' + ${producto.imagenUrl != null ? producto.imagenUrl : ''} + '\', quantity:1})'">
+                                        <i class="bi bi-cart3"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fallback Mock Cards if DB has no products yet -->
+            <div class="row g-4" th:if="${productosDestacados == null or productosDestacados.isEmpty()}">
+                <div class="col-sm-6 col-lg-3">
+                    <div class="cf-product-card">
+                        <div class="cf-product-image-wrap">
+                            <span class="cf-badge-category">Comida rápida</span>
+                            <button type="button" class="cf-btn-favorite"><i class="bi bi-heart"></i></button>
+                            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80" alt="Hamburguesa Clásica">
+                        </div>
+                        <div class="cf-product-body">
+                            <h4 class="cf-product-title"><a th:href="@{/catalogo}">Hamburguesa Clásica</a></h4>
+                            <p class="cf-product-desc">Carne de res, queso cheddar fundido y vegetales frescos.</p>
+                            <div class="cf-product-meta">
+                                <div><i class="bi bi-geo-alt-fill"></i> Pabellón B - Cafetería</div>
+                            </div>
+                            <div class="cf-product-footer">
+                                <div><span class="cf-product-price">S/ 8.00</span></div>
+                                <a th:href="@{/catalogo}" class="btn-cf-cart-circle"><i class="bi bi-cart3"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="cf-product-card">
+                        <div class="cf-product-image-wrap">
+                            <span class="cf-badge-category">Bebidas</span>
+                            <button type="button" class="cf-btn-favorite"><i class="bi bi-heart"></i></button>
+                            <img src="https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=400&q=80" alt="Refresco Natural">
+                        </div>
+                        <div class="cf-product-body">
+                            <h4 class="cf-product-title"><a th:href="@{/catalogo}">Refresco Natural</a></h4>
+                            <p class="cf-product-desc">Jugo de maracuyá helado preparado en el día.</p>
+                            <div class="cf-product-meta">
+                                <div><i class="bi bi-geo-alt-fill"></i> Patio Central</div>
+                            </div>
+                            <div class="cf-product-footer">
+                                <div><span class="cf-product-price">S/ 4.00</span></div>
+                                <a th:href="@{/catalogo}" class="btn-cf-cart-circle"><i class="bi bi-cart3"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="cf-product-card">
+                        <div class="cf-product-image-wrap">
+                            <span class="cf-badge-category">Snacks</span>
+                            <button type="button" class="cf-btn-favorite"><i class="bi bi-heart"></i></button>
+                            <img src="https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=400&q=80" alt="Papas Fritas">
+                        </div>
+                        <div class="cf-product-body">
+                            <h4 class="cf-product-title"><a th:href="@{/catalogo}">Papas Fritas</a></h4>
+                            <p class="cf-product-desc">Porción crocante con cremas universitarias.</p>
+                            <div class="cf-product-meta">
+                                <div><i class="bi bi-geo-alt-fill"></i> Pabellón A</div>
+                            </div>
+                            <div class="cf-product-footer">
+                                <div><span class="cf-product-price">S/ 5.00</span></div>
+                                <a th:href="@{/catalogo}" class="btn-cf-cart-circle"><i class="bi bi-cart3"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="cf-product-card">
+                        <div class="cf-product-image-wrap">
+                            <span class="cf-badge-category">Postres</span>
+                            <button type="button" class="cf-btn-favorite"><i class="bi bi-heart"></i></button>
+                            <img src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=400&q=80" alt="Brownie Casero">
+                        </div>
+                        <div class="cf-product-body">
+                            <h4 class="cf-product-title"><a th:href="@{/catalogo}">Brownie Casero</a></h4>
+                            <p class="cf-product-desc">Chocolate puro con nueces y centro suave.</p>
+                            <div class="cf-product-meta">
+                                <div><i class="bi bi-geo-alt-fill"></i> Biblioteca Central</div>
+                            </div>
+                            <div class="cf-product-footer">
+                                <div><span class="cf-product-price">S/ 6.00</span></div>
+                                <a th:href="@{/catalogo}" class="btn-cf-cart-circle"><i class="bi bi-cart3"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: CATEGORÍAS POPULARES -->
+    <section class="py-5 bg-white border-top">
+        <div class="container text-center">
+            <h3 class="fw-bold mb-4">Explora por Categorías</h3>
+            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                <a th:href="@{/catalogo}" class="btn btn-cf-secondary rounded-pill py-2 px-3 fw-semibold">
+                    🥣 Todas
+                </a>
+                <a th:each="cat : ${categorias}" 
+                   th:href="@{/catalogo(categoria=${cat.id})}" 
+                   class="btn btn-cf-secondary rounded-pill py-2 px-3 fw-semibold">
+                    <span th:text="${cat.nombre}">Categoría</span>
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- MODAL: ¿CÓMO FUNCIONA? -->
+<div class="modal fade" id="comoFuncionaModal" tabindex="-1" aria-labelledby="comoFuncionaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg p-3">
+            <div class="modal-header border-0 pb-0">
+                <h4 class="modal-title fw-bold" id="comoFuncionaModalLabel">¿Cómo funciona CampusFood?</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-4">
+                <div class="d-flex gap-3 mb-4">
+                    <div class="cf-feature-icon" style="width: 44px; height: 44px; font-size: 1.1rem; flex-shrink: 0;">1</div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Explora los alimentos</h6>
+                        <p class="small text-muted mb-0">Revisa qué postres, snacks, almuerzos o bebidas tienen disponibles los estudiantes vendedores el día de hoy.</p>
+                    </div>
+                </div>
+                <div class="d-flex gap-3 mb-4">
+                    <div class="cf-feature-icon" style="width: 44px; height: 44px; font-size: 1.1rem; flex-shrink: 0;">2</div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Reserva en línea</h6>
+                        <p class="small text-muted mb-0">Elige la cantidad deseada y confirma tu pedido con tu cuenta de correo universitario. Sin comisiones.</p>
+                    </div>
+                </div>
+                <div class="d-flex gap-3">
+                    <div class="cf-feature-icon" style="width: 44px; height: 44px; font-size: 1.1rem; flex-shrink: 0;">3</div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Encuéntrate y paga en persona</h6>
+                        <p class="small text-muted mb-0">Acude a la ubicación acordada (pabellón, cafetería, mesas) a la hora fijada, recoge tu comida y paga al vendedor.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-cf-primary w-100 py-2" data-bs-dismiss="modal">¡Entendido, quiero empezar!</button>
             </div>
         </div>
     </div>
-</main>
+</div>
 
 <footer th:replace="~{layout/base :: footer}"></footer>
 

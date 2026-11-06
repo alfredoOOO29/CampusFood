@@ -1,0 +1,1103 @@
+/* ==========================================================================
+   CampusFood - Modern University Food Platform Stylesheet
+   Designed as a Senior UI/UX & Frontend Design System
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  /* Brand Colors - Forest & Emerald Theme */
+  --cf-primary: #0f3e2e;          /* Deep Forest Green (Brand Main) */
+  --cf-primary-dark: #09261c;     /* Darker shade for active/hover */
+  --cf-primary-light: #1b5742;    /* Medium forest green */
+  --cf-primary-hover: #134e3a;
+
+  --cf-accent: #16a34a;           /* Fresh Emerald Green */
+  --cf-accent-hover: #15803d;     /* Darker Emerald */
+  --cf-accent-light: #dcfce7;     /* Soft Mint / Light Green Accent */
+  --cf-accent-soft: #f0fdf4;      /* Ultra-light green tint */
+  --cf-accent-text: #166534;      /* Deep green for text on light backgrounds */
+
+  --cf-warning: #f59e0b;          /* Star & Alert Amber */
+  --cf-danger: #ef4444;           /* Destructive Red */
+  --cf-danger-light: #fee2e2;
+
+  /* Neutrals & Surfaces */
+  --cf-bg: #f8faf8;               /* Warm Light Ivory / Bone Canvas */
+  --cf-surface: #ffffff;          /* Card & Modal Background */
+  --cf-surface-secondary: #f3f5f3;/* Subtle container background */
+  --cf-border: #e7ebe7;           /* Subtle card & input border */
+  --cf-border-focus: #16a34a;     /* Focus outline */
+
+  /* Text & Typography */
+  --cf-font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --cf-text-primary: #111915;     /* High-contrast dark green-slate */
+  --cf-text-secondary: #4b5852;   /* Medium contrast secondary text */
+  --cf-text-muted: #73827a;       /* Subtle muted text */
+  --cf-text-white: #ffffff;
+
+  /* Radii */
+  --cf-radius-xs: 6px;
+  --cf-radius-sm: 10px;
+  --cf-radius-md: 14px;
+  --cf-radius-lg: 20px;
+  --cf-radius-xl: 28px;
+  --cf-radius-pill: 9999px;
+
+  /* Shadows */
+  --cf-shadow-xs: 0 1px 3px rgba(15, 62, 46, 0.04);
+  --cf-shadow-sm: 0 4px 12px rgba(15, 62, 46, 0.05);
+  --cf-shadow-md: 0 10px 25px rgba(15, 62, 46, 0.07);
+  --cf-shadow-lg: 0 20px 40px rgba(15, 62, 46, 0.10);
+  --cf-shadow-hover: 0 14px 30px rgba(15, 62, 46, 0.12);
+
+  /* Transitions */
+  --cf-transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   Global Reset & Base
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--cf-font);
+  background-color: var(--cf-bg);
+  color: var(--cf-text-primary);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--cf-text-primary);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: var(--cf-primary);
+  text-decoration: none;
+  transition: var(--cf-transition);
+}
+a:hover {
+  color: var(--cf-accent);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ==========================================================================
+   Brand & Utilities
+   ========================================================================== */
+.text-cf-primary { color: var(--cf-primary) !important; }
+.text-cf-accent { color: var(--cf-accent) !important; }
+.text-cf-muted { color: var(--cf-text-muted) !important; }
+.bg-cf-primary { background-color: var(--cf-primary) !important; }
+.bg-cf-accent { background-color: var(--cf-accent) !important; }
+.bg-cf-light { background-color: var(--cf-accent-light) !important; }
+.bg-cf-soft { background-color: var(--cf-accent-soft) !important; }
+
+/* Custom Brand Logo */
+.cf-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: -0.03em;
+  color: var(--cf-text-primary);
+  text-decoration: none;
+}
+.cf-logo-icon {
+  width: 36px;
+  height: 36px;
+  background-color: var(--cf-primary);
+  color: #fff;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  box-shadow: 0 4px 10px rgba(15, 62, 46, 0.2);
+}
+.cf-logo span.highlight {
+  color: var(--cf-accent);
+}
+.cf-logo-light {
+  color: #ffffff !important;
+}
+.cf-logo-light .cf-logo-icon {
+  background-color: var(--cf-accent);
+}
+.cf-logo-light span.highlight {
+  color: #86efac;
+}
+
+/* ==========================================================================
+   Navbar Styles
+   ========================================================================== */
+.cf-navbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--cf-border);
+  padding: 14px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  transition: var(--cf-transition);
+}
+.cf-navbar.scrolled {
+  box-shadow: var(--cf-shadow-sm);
+}
+
+.cf-nav-links .nav-link {
+  color: var(--cf-text-secondary);
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 8px 16px;
+  border-radius: var(--cf-radius-pill);
+  transition: var(--cf-transition);
+}
+.cf-nav-links .nav-link:hover {
+  color: var(--cf-primary);
+  background-color: var(--cf-accent-soft);
+}
+.cf-nav-links .nav-link.active {
+  color: var(--cf-primary);
+  font-weight: 700;
+}
+
+/* Navbar Search Input */
+.cf-navbar-search {
+  position: relative;
+  max-width: 380px;
+  width: 100%;
+}
+.cf-navbar-search input {
+  width: 100%;
+  border-radius: var(--cf-radius-pill);
+  border: 1px solid var(--cf-border);
+  padding: 9px 18px 9px 40px;
+  font-size: 0.9rem;
+  background-color: var(--cf-surface-secondary);
+  transition: var(--cf-transition);
+}
+.cf-navbar-search input:focus {
+  background-color: #ffffff;
+  border-color: var(--cf-accent);
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+  outline: none;
+}
+.cf-navbar-search .search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--cf-text-muted);
+  pointer-events: none;
+  font-size: 0.95rem;
+}
+
+/* Action Icons (Notification Bell & Cart) */
+.cf-icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--cf-border);
+  background-color: #ffffff;
+  color: var(--cf-text-primary);
+  position: relative;
+  transition: var(--cf-transition);
+}
+.cf-icon-btn:hover {
+  background-color: var(--cf-accent-soft);
+  color: var(--cf-primary);
+  border-color: var(--cf-accent-light);
+  transform: translateY(-2px);
+}
+.cf-icon-btn .badge-dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: var(--cf-accent);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
+}
+
+/* User Avatar Badge */
+.cf-avatar-badge {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: var(--cf-primary);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.88rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.5px;
+  box-shadow: var(--cf-shadow-xs);
+  transition: var(--cf-transition);
+}
+.cf-avatar-badge:hover {
+  transform: scale(1.05);
+  box-shadow: var(--cf-shadow-sm);
+}
+
+.dropdown-toggle-no-caret {
+  cursor: pointer;
+  outline: none;
+}
+.dropdown-toggle-no-caret::after {
+  display: none !important;
+}
+
+.cf-navbar .dropdown-menu {
+  z-index: 1060;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+.btn-cf-primary {
+  background-color: var(--cf-primary);
+  border: 1px solid var(--cf-primary);
+  color: #ffffff !important;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 10px 24px;
+  border-radius: var(--cf-radius-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: var(--cf-transition);
+  box-shadow: var(--cf-shadow-sm);
+}
+.btn-cf-primary:hover {
+  background-color: var(--cf-primary-hover);
+  border-color: var(--cf-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--cf-shadow-md);
+}
+.btn-cf-primary:active {
+  transform: translateY(0);
+}
+
+.btn-cf-secondary {
+  background-color: #ffffff;
+  border: 1.5px solid var(--cf-border);
+  color: var(--cf-text-primary) !important;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 10px 24px;
+  border-radius: var(--cf-radius-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: var(--cf-transition);
+  box-shadow: var(--cf-shadow-xs);
+}
+.btn-cf-secondary:hover {
+  background-color: var(--cf-accent-soft);
+  border-color: var(--cf-accent);
+  color: var(--cf-accent-text) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--cf-shadow-sm);
+}
+
+.btn-cf-accent {
+  background-color: var(--cf-accent);
+  border: 1px solid var(--cf-accent);
+  color: #ffffff !important;
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: var(--cf-radius-pill);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: var(--cf-transition);
+}
+.btn-cf-accent:hover {
+  background-color: var(--cf-accent-hover);
+  border-color: var(--cf-accent-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--cf-shadow-sm);
+}
+
+/* Small Quick Add to Cart Circular Button (Catalog Card) */
+.btn-cf-cart-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--cf-primary);
+  color: #ffffff;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  transition: var(--cf-transition);
+  box-shadow: var(--cf-shadow-xs);
+  cursor: pointer;
+}
+.btn-cf-cart-circle:hover {
+  background-color: var(--cf-accent);
+  color: #ffffff;
+  transform: scale(1.1);
+  box-shadow: var(--cf-shadow-sm);
+}
+
+/* ==========================================================================
+   Cards & Surfaces
+   ========================================================================== */
+.cf-card {
+  background-color: var(--cf-surface);
+  border: 1px solid var(--cf-border);
+  border-radius: var(--cf-radius-lg);
+  box-shadow: var(--cf-shadow-sm);
+  transition: var(--cf-transition);
+}
+
+/* Product Card (Catalog & Home) */
+.cf-product-card {
+  background-color: var(--cf-surface);
+  border: 1px solid var(--cf-border);
+  border-radius: var(--cf-radius-lg);
+  overflow: hidden;
+  transition: var(--cf-transition);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+.cf-product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--cf-shadow-hover);
+  border-color: #d1d8d1;
+}
+
+.cf-product-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 190px;
+  background-color: #f1f4f1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cf-product-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.cf-product-card:hover .cf-product-image-wrap img {
+  transform: scale(1.05);
+}
+
+/* Badges on Product Image */
+.cf-badge-category {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background-color: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(4px);
+  color: var(--cf-text-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--cf-radius-pill);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: var(--cf-shadow-xs);
+  z-index: 2;
+}
+
+.cf-btn-favorite {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  transition: var(--cf-transition);
+  box-shadow: var(--cf-shadow-xs);
+  z-index: 2;
+  cursor: pointer;
+}
+.cf-btn-favorite:hover, .cf-btn-favorite.active {
+  color: #ef4444;
+  background-color: #ffffff;
+  transform: scale(1.1);
+}
+
+.cf-product-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+.cf-product-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--cf-text-primary);
+  line-height: 1.35;
+}
+.cf-product-title a {
+  color: inherit;
+}
+.cf-product-title a:hover {
+  color: var(--cf-accent);
+}
+.cf-product-desc {
+  font-size: 0.85rem;
+  color: var(--cf-text-muted);
+  line-height: 1.4;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cf-product-meta {
+  background-color: var(--cf-surface-secondary);
+  border-radius: var(--cf-radius-sm);
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  color: var(--cf-text-secondary);
+  margin-bottom: 12px;
+  margin-top: auto;
+}
+.cf-product-meta i {
+  color: var(--cf-accent);
+  margin-right: 4px;
+}
+
+.cf-product-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid var(--cf-border);
+}
+.cf-product-price {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--cf-primary);
+  letter-spacing: -0.02em;
+}
+
+/* ==========================================================================
+   Hero Section (Landing / Inicio)
+   ========================================================================== */
+.cf-hero {
+  padding: 60px 0 80px 0;
+  position: relative;
+  overflow: hidden;
+}
+.cf-hero-title {
+  font-size: clamp(2.5rem, 5vw, 3.8rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+}
+.cf-hero-title span.highlight {
+  color: var(--cf-accent);
+}
+.cf-hero-subtitle {
+  font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+  font-weight: 700;
+  color: var(--cf-text-primary);
+  margin-bottom: 14px;
+  line-height: 1.3;
+}
+.cf-hero-desc {
+  font-size: 1.1rem;
+  color: var(--cf-text-secondary);
+  max-width: 500px;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+.cf-hero-image-wrap {
+  position: relative;
+  text-align: center;
+}
+.cf-hero-image-wrap img {
+  border-radius: var(--cf-radius-xl);
+  box-shadow: var(--cf-shadow-lg);
+  max-height: 420px;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.cf-hero-image-wrap:hover img {
+  transform: translateY(-6px) scale(1.02);
+}
+
+/* Curved doodle accents */
+.cf-doodle-spark {
+  position: absolute;
+  top: -20px;
+  right: 10%;
+  color: var(--cf-accent);
+  font-size: 2rem;
+  animation: floatSlow 4s ease-in-out infinite alternate;
+}
+@keyframes floatSlow {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(-10px) rotate(8deg); }
+}
+
+/* ==========================================================================
+   Feature / Value Proposition Cards ("¿Por qué elegir CampusFood?")
+   ========================================================================== */
+.cf-features-section {
+  padding: 40px 0 60px 0;
+}
+.cf-feature-card {
+  background-color: #ffffff;
+  border: 1px solid var(--cf-border);
+  border-radius: var(--cf-radius-lg);
+  padding: 24px 20px;
+  text-align: center;
+  transition: var(--cf-transition);
+  height: 100%;
+  box-shadow: var(--cf-shadow-sm);
+}
+.cf-feature-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--cf-accent-light);
+  box-shadow: var(--cf-shadow-md);
+}
+.cf-feature-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: var(--cf-accent-light);
+  color: var(--cf-accent-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+.cf-feature-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--cf-text-primary);
+  margin-bottom: 6px;
+}
+.cf-feature-desc {
+  font-size: 0.85rem;
+  color: var(--cf-text-muted);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* ==========================================================================
+   Catalog Styles (Sidebar & Pills)
+   ========================================================================== */
+.cf-sidebar-categories {
+  background-color: #ffffff;
+  border: 1px solid var(--cf-border);
+  border-radius: var(--cf-radius-lg);
+  padding: 20px 16px;
+  box-shadow: var(--cf-shadow-sm);
+  position: sticky;
+  top: 90px;
+}
+.cf-sidebar-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  padding: 0 8px 14px 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--cf-border);
+}
+.cf-category-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: var(--cf-radius-pill);
+  color: var(--cf-text-secondary);
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-decoration: none;
+  transition: var(--cf-transition);
+  margin-bottom: 4px;
+}
+.cf-category-pill:hover {
+  background-color: var(--cf-surface-secondary);
+  color: var(--cf-primary);
+  transform: translateX(4px);
+}
+.cf-category-pill.active {
+  background-color: var(--cf-accent-light);
+  color: var(--cf-accent-text);
+  font-weight: 700;
+}
+.cf-category-pill .cat-icon {
+  font-size: 1.1rem;
+  width: 24px;
+  text-align: center;
+}
+
+/* ==========================================================================
+   Product Detail Screen
+   ========================================================================== */
+.cf-detail-container {
+  background-color: #ffffff;
+  border: 1px solid var(--cf-border);
+  border-radius: var(--cf-radius-xl);
+  overflow: hidden;
+  box-shadow: var(--cf-shadow-md);
+}
+.cf-gallery-thumbs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.cf-gallery-thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--cf-radius-sm);
+  border: 2px solid var(--cf-border);
+  cursor: pointer;
+  overflow: hidden;
+  transition: var(--cf-transition);
+}
+.cf-gallery-thumb:hover, .cf-gallery-thumb.active {
+  border-color: var(--cf-accent);
+  box-shadow: var(--cf-shadow-xs);
+}
+.cf-gallery-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cf-detail-main-img {
+  width: 100%;
+  height: 380px;
+  border-radius: var(--cf-radius-lg);
+  object-fit: cover;
+  box-shadow: var(--cf-shadow-sm);
+}
+
+.cf-badge-available {
+  background-color: var(--cf-accent-light);
+  color: var(--cf-accent-text);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 6px 14px;
+  border-radius: var(--cf-radius-pill);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Quantity Stepper [- 1 +] */
+.cf-stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid var(--cf-border);
+  border-radius: var(--cf-radius-pill);
+  background-color: var(--cf-surface-secondary);
+  padding: 4px;
+}
+.cf-stepper-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 1px solid var(--cf-border);
+  color: var(--cf-text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: var(--cf-transition);
+}
+.cf-stepper-btn:hover {
+  background-color: var(--cf-primary);
+  color: #ffffff;
+  border-color: var(--cf-primary);
+}
+.cf-stepper-input {
+  width: 44px;
+  border: none;
+  background: transparent;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--cf-text-primary);
+}
+.cf-stepper-input:focus {
+  outline: none;
+}
+
+/* Delivery Details Info Box */
+.cf-delivery-box {
+  background-color: var(--cf-surface-secondary);
+  border: 1px solid var(--cf-border);
+  border-radius: var(--cf-radius-md);
+  padding: 16px 20px;
+}
+
+/* ==========================================================================
+   Cart Screen (Tu Carrito)
+   ========================================================================== */
+.cf-cart-item {
+  background-color: #ffffff;
+  border: 1px solid var(--cf-border);
+  border-radius: var(--cf-radius-lg);
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  transition: var(--cf-transition);
+  box-shadow: var(--cf-shadow-xs);
+}
+.cf-cart-item:hover {
+  box-shadow: var(--cf-shadow-sm);
+  border-color: #d1d8d1;
+}
+.cf-cart-thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--cf-radius-md);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.cf-cart-summary-card {
+  background-color: #ffffff;
+  border: 1px solid var(--cf-border);
+  border-radius: var(--cf-radius-lg);
+  padding: 24px;
+  box-shadow: var(--cf-shadow-sm);
+  position: sticky;
+  top: 90px;
+}
+
+/* ==========================================================================
+   Seller Panel (Dashboard Vendedor)
+   ========================================================================== */
+.cf-panel-layout {
+  display: flex;
+  min-height: calc(100vh - 70px);
+}
+.cf-panel-sidebar {
+  width: 260px;
+  background-color: var(--cf-primary);
+  color: #ffffff;
+  padding: 28px 18px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+.cf-panel-content {
+  flex-grow: 1;
+  padding: 32px;
+  background-color: var(--cf-bg);
+  overflow-y: auto;
+}
+
+.cf-sidebar-nav {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0 auto 0;
+}
+.cf-sidebar-item {
+  margin-bottom: 6px;
+}
+.cf-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-radius: var(--cf-radius-pill);
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 500;
+  font-size: 0.92rem;
+  transition: var(--cf-transition);
+}
+.cf-sidebar-link:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.cf-sidebar-link.active {
+  color: #ffffff;
+  background-color: var(--cf-accent);
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+}
+.cf-sidebar-link i {
+  font-size: 1.15rem;
+}
+
+/* KPI Stat Cards */
+.cf-kpi-card {
+  background-color: #ffffff;
+  border: 1px solid var(--cf-border);
+  border-radius: var(--cf-radius-lg);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--cf-shadow-xs);
+  transition: var(--cf-transition);
+}
+.cf-kpi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--cf-shadow-md);
+}
+.cf-kpi-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--cf-radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+.cf-kpi-icon.green { background-color: #dcfce7; color: #15803d; }
+.cf-kpi-icon.blue { background-color: #e0f2fe; color: #0284c7; }
+.cf-kpi-icon.purple { background-color: #f3e8ff; color: #9333ea; }
+.cf-kpi-icon.amber { background-color: #fef3c7; color: #d97706; }
+
+.cf-kpi-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--cf-text-muted);
+  margin-bottom: 2px;
+}
+.cf-kpi-value {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--cf-text-primary);
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* Sparkline / Chart Placeholder Styling */
+.cf-chart-card {
+  background-color: #ffffff;
+  border: 1px solid var(--cf-border);
+  border-radius: var(--cf-radius-lg);
+  padding: 24px;
+  box-shadow: var(--cf-shadow-xs);
+}
+
+/* ==========================================================================
+   Authentication Screens (Split Card)
+   ========================================================================== */
+.cf-auth-container {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+}
+.cf-auth-card {
+  background-color: #ffffff;
+  border-radius: var(--cf-radius-xl);
+  overflow: hidden;
+  box-shadow: var(--cf-shadow-lg);
+  border: 1px solid var(--cf-border);
+  width: 100%;
+  max-width: 920px;
+}
+.cf-auth-banner {
+  background: linear-gradient(145deg, #0f3e2e 0%, #09261c 100%);
+  color: #ffffff;
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+.cf-auth-banner::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background-image: url("data:svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 200' fill='rgba(255,255,255,0.06)'%3E%3Cpath d='M0 160h120v40H0zM140 100h80v100h-80zM240 60h100v140H240zM360 120h60v80h-60zM440 40h120v160H440zM580 90h90v110h-90zM690 140h110v60H690z'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: 400px 100px;
+  opacity: 0.8;
+  pointer-events: none;
+}
+.cf-auth-form-wrap {
+  padding: 48px 40px;
+}
+
+/* Input Fields with Left Icons and Toggle */
+.cf-input-group {
+  position: relative;
+  margin-bottom: 20px;
+}
+.cf-input-group .cf-input-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--cf-text-muted);
+  font-size: 1.1rem;
+  pointer-events: none;
+  z-index: 5;
+}
+.cf-input-group input.form-control,
+.cf-input-group select.form-select {
+  border-radius: var(--cf-radius-pill);
+  border: 1.5px solid var(--cf-border);
+  padding: 12px 18px 12px 46px;
+  font-size: 0.95rem;
+  background-color: var(--cf-surface-secondary);
+  transition: var(--cf-transition);
+}
+.cf-input-group input.form-control:focus,
+.cf-input-group select.form-select:focus {
+  background-color: #ffffff;
+  border-color: var(--cf-accent);
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+  outline: none;
+}
+.cf-password-toggle {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--cf-text-muted);
+  cursor: pointer;
+  z-index: 5;
+  padding: 4px;
+}
+.cf-password-toggle:hover {
+  color: var(--cf-text-primary);
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.cf-footer {
+  background-color: #ffffff;
+  border-top: 1px solid var(--cf-border);
+  padding: 32px 0 24px 0;
+  margin-top: 60px;
+  color: var(--cf-text-secondary);
+  font-size: 0.9rem;
+}
+.cf-footer a {
+  color: var(--cf-text-secondary);
+}
+.cf-footer a:hover {
+  color: var(--cf-accent);
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+@media (max-width: 991.98px) {
+  .cf-panel-layout {
+    flex-direction: column;
+  }
+  .cf-panel-sidebar {
+    width: 100%;
+    padding: 16px;
+  }
+  .cf-sidebar-nav {
+    flex-direction: row;
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    margin: 12px 0 0 0;
+  }
+  .cf-sidebar-link {
+    white-space: nowrap;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+  }
+  .cf-panel-content {
+    padding: 20px 16px;
+  }
+  .cf-auth-banner {
+    padding: 32px 24px;
+    text-align: center;
+  }
+  .cf-auth-form-wrap {
+    padding: 32px 24px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .cf-hero {
+    padding: 36px 0 50px 0;
+    text-align: center;
+  }
+  .cf-hero-desc {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .cf-hero-actions {
+    justify-content: center;
+  }
+  .cf-sidebar-categories {
+    position: static;
+    margin-bottom: 24px;
+  }
+  .cf-cart-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .cf-cart-item-actions {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+  }
+}
+
