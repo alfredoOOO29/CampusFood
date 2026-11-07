@@ -43,10 +43,13 @@
                 
                 <div class="mb-4">
                     <h2 class="fw-bold mb-1">Crear una Cuenta</h2>
-                    <p class="text-muted small mb-0">Solo para estudiantes con correo universitario activo.</p>
+                    <p class="text-muted small mb-0">Usa tu correo institucional para unirte a la comunidad universitaria.</p>
                 </div>
 
-                <div th:if="${errorRegistro}" class="alert alert-danger py-2 px-3 small rounded-4 mb-3" th:text="${errorRegistro}"></div>
+                <div th:if="${errorRegistro}" class="alert alert-danger d-flex align-items-center gap-2 py-2 px-3 small rounded-4 mb-3">
+                    <i class="bi bi-exclamation-triangle-fill flex-shrink-0 fs-5 text-danger"></i>
+                    <span th:text="${errorRegistro}"></span>
+                </div>
 
                 <form th:action="@{/registro}" method="post" th:object="${registroDTO}">
                     
@@ -75,7 +78,7 @@
                     <label for="email" class="form-label small fw-semibold text-secondary">Correo institucional</label>
                     <div class="cf-input-group">
                         <i class="bi bi-envelope cf-input-icon"></i>
-                        <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="ej. u20261234@utp.edu.pe" required>
+                        <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="ej. u20261234@utp.edu.pe o tu correo" required>
                     </div>
                     <div class="text-danger small mt-n2 mb-2" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
 
@@ -116,9 +119,13 @@
                 </form>
 
                 <div class="text-center mt-4 pt-3 border-top">
-                    <p class="small text-muted mb-0">
+                    <p class="small text-muted mb-1">
                         ¿Ya tienes una cuenta? 
                         <a th:href="@{/login}" class="text-cf-accent fw-bold text-decoration-none">Inicia sesión</a>
+                    </p>
+                    <p class="small text-muted mb-0">
+                        ¿Ya te registraste y tienes un código pendiente? 
+                        <a th:href="@{/verificar-codigo}" class="text-secondary fw-semibold text-decoration-none">Ingresar código aquí</a>
                     </p>
                 </div>
 

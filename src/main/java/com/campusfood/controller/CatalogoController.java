@@ -22,16 +22,41 @@ public class CatalogoController {
     }
 
     @GetMapping("/catalogo")
-    public String verCatalogo(@RequestParam(required = false) String q,
-                              @RequestParam(required = false) Long categoria,
+    public String verCatalogo(@RequestParam(value = "q", required = false) String q,
+                              @RequestParam(value = "categoria", required = false) String categoriaParam,
                               Model model) {
         
+        Long categoriaId = null;
+        String nombreCategoria = null;
+
+        if (categoriaParam != null && !categoriaParam.trim().isEmpty()) {
+            String trimmed = categoriaParam.trim();
+            // Si el parámetro recibido es numérico (ID de categoría)
+            if (trimmed.matches("\\d+")) {
+                try {
+                    categoriaId = Long.parseLong(trimmed);
+                    var catOpt = categoriaRepository.findById(categoriaId);
+                    if (catOpt.isPresent()) {
+                        nombreCategoria = catOpt.get().getNombre();
+                    }
+                } catch (NumberFormatException ignored) {}
+            } else {
+                // Si el parámetro recibido es el nombre de la categoría (ej. "Bebidas", "Postres")
+                var catOpt = categoriaRepository.findByNombreIgnoreCase(trimmed);
+                if (catOpt.isPresent()) {
+                    categoriaId = catOpt.get().getId();
+                    nombreCategoria = catOpt.get().getNombre();
+                }
+            }
+        }
+
         if (q != null && !q.trim().isEmpty()) {
-            model.addAttribute("productos", productoRepository.searchDisponibles(q));
-            model.addAttribute("tituloSeccion", "Resultados para: " + q);
-        } else if (categoria != null) {
-            model.addAttribute("productos", productoRepository.findByCategoriaDisponibles(categoria));
-            model.addAttribute("tituloSeccion", "Filtrado por categoría");
+            model.addAttribute("productos", productoRepository.searchDisponibles(q.trim()));
+            model.addAttribute("tituloSeccion", "Resultados para: \"" + q.trim() + "\"");
+        } else if (categoriaId != null) {
+            model.addAttribute("productos", productoRepository.findByCategoriaDisponibles(categoriaId));
+            model.addAttribute("tituloSeccion", nombreCategoria != null ? nombreCategoria : "Categoría");
+            model.addAttribute("categoriaActual", categoriaId);
         } else {
             model.addAttribute("productos", productoRepository.findAllDisponibles());
             model.addAttribute("tituloSeccion", "Catálogo General");

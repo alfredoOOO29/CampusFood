@@ -78,9 +78,12 @@
                 
                 <!-- Categoría & Badge Disponible -->
                 <div class="d-flex align-items-center gap-2 mb-3">
-                    <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-bold" th:text="${producto.categoria.nombre}">
+                    <a th:href="@{/catalogo(categoria=${producto.categoria.id})}" 
+                       class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-bold text-decoration-none" 
+                       th:text="${producto.categoria.nombre}"
+                       title="Ver todos los alimentos de esta categoría">
                         Categoría
-                    </span>
+                    </a>
                     <span th:if="${producto.stock > 0}" class="cf-badge-available">
                         <i class="bi bi-check-circle-fill"></i> Disponible (<span th:text="${producto.stock}"></span> und)
                     </span>
@@ -180,8 +183,11 @@
 
                                 <!-- Botón: Agregar al Carrito -->
                                 <button type="button" 
-                                        class="btn btn-cf-secondary py-3 px-4 fw-bold"
-                                        th:onclick="'addCurrentToCart(' + ${producto.id} + ', \'' + ${#strings.escapeJavaScript(producto.nombre)} + '\', ' + ${producto.precio} + ', \'' + ${producto.imagenUrl != null ? producto.imagenUrl : ''} + '\')'">
+                                        class="btn btn-cf-secondary py-3 px-4 fw-bold btn-add-cart-detail"
+                                        th:data-id="${producto.id}"
+                                        th:data-nombre="${producto.nombre}"
+                                        th:data-precio="${producto.precio}"
+                                        th:data-imagen="${producto.imagenUrl != null ? producto.imagenUrl : ''}">
                                     <i class="bi bi-cart-plus me-1"></i>
                                     <span>Agregar al carrito</span>
                                 </button>

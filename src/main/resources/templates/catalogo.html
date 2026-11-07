@@ -17,7 +17,7 @@
                     <!-- Categoría: Todas -->
                     <a th:href="@{/catalogo}" 
                        class="cf-category-pill" 
-                       th:classappend="${param.categoria == null and param.q == null ? 'active' : ''}">
+                       th:classappend="${categoriaActual == null and (param.q == null or #strings.isEmpty(param.q)) ? 'active' : ''}">
                         <span class="cat-icon">🥣</span>
                         <span>Todas</span>
                     </a>
@@ -26,7 +26,7 @@
                     <a th:each="cat : ${categorias}" 
                        th:href="@{/catalogo(categoria=${cat.id})}" 
                        class="cf-category-pill" 
-                       th:classappend="${param.categoria != null and #strings.equals(param.categoria, cat.id.toString()) ? 'active' : ''}">
+                       th:classappend="${categoriaActual != null and categoriaActual == cat.id ? 'active' : ''}">
                         <span class="cat-icon" th:switch="${cat.nombre}">
                             <span th:case="'Sándwiches'">🥪</span>
                             <span th:case="'Postres'">🍰</span>
@@ -87,16 +87,23 @@
                         
                         <!-- Imagen, Categoría y Botón Favorito -->
                         <div class="cf-product-image-wrap">
-                            <span class="cf-badge-category" th:text="${producto.categoria.nombre}">Categoría</span>
+                            <a th:href="@{/catalogo(categoria=${producto.categoria.id})}" 
+                               class="cf-badge-category" 
+                               th:text="${producto.categoria.nombre}"
+                               title="Ver todos los alimentos de esta categoría">
+                                Categoría
+                            </a>
                             <button type="button" class="cf-btn-favorite" title="Guardar en favoritos">
                                 <i class="bi bi-heart"></i>
                             </button>
-                            <img th:if="${producto.imagenUrl != null and !producto.imagenUrl.isEmpty()}" 
-                                 th:src="@{${producto.imagenUrl}}" 
-                                 th:alt="${producto.nombre}">
-                            <img th:if="${producto.imagenUrl == null or producto.imagenUrl.isEmpty()}" 
-                                 src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=500&q=80" 
-                                 th:alt="${producto.nombre}">
+                            <a th:href="@{/producto/{id}(id=${producto.id})}" class="d-block w-100 h-100 text-decoration-none">
+                                <img th:if="${producto.imagenUrl != null and !producto.imagenUrl.isEmpty()}" 
+                                     th:src="@{${producto.imagenUrl}}" 
+                                     th:alt="${producto.nombre}">
+                                <img th:if="${producto.imagenUrl == null or producto.imagenUrl.isEmpty()}" 
+                                     src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=500&q=80" 
+                                     th:alt="${producto.nombre}">
+                            </a>
                         </div>
 
                         <!-- Contenido -->
@@ -134,9 +141,12 @@
                                         Detalle
                                     </a>
                                     <button type="button" 
-                                            class="btn-cf-cart-circle" 
+                                            class="btn-cf-cart-circle btn-add-cart" 
                                             title="Agregar al carrito"
-                                            th:onclick="'CampusCart.addItem({id:' + ${producto.id} + ', nombre:\'' + ${#strings.escapeJavaScript(producto.nombre)} + '\', precio:' + ${producto.precio} + ', imagenUrl:\'' + ${producto.imagenUrl != null ? producto.imagenUrl : ''} + '\', quantity:1})'">
+                                            th:data-id="${producto.id}"
+                                            th:data-nombre="${producto.nombre}"
+                                            th:data-precio="${producto.precio}"
+                                            th:data-imagen="${producto.imagenUrl != null ? producto.imagenUrl : ''}">
                                         <i class="bi bi-cart3"></i>
                                     </button>
                                 </div>

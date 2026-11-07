@@ -13,6 +13,8 @@ import java.util.List;
 @Repository
 public interface ProductoRepository extends JpaRepository<Producto, Long> {
     List<Producto> findByVendedorIdOrderByFechaCreacionDesc(Long vendedorId);
+    boolean existsByNombre(String nombre);
+    java.util.Optional<Producto> findByNombre(String nombre);
 
     // Catálogo General
     @Query("SELECT p FROM Producto p WHERE p.activo = true AND p.stock > 0 ORDER BY p.fechaCreacion DESC")

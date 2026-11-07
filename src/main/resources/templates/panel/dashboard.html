@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="~{layout/base :: head('Panel del Vendedor - CampusFood')}"></head>
+<head th:replace="~{layout/base :: head('Mi Panel Universitario - CampusFood')}"></head>
 <body>
 
 <div class="cf-panel-layout">
     
-    <!-- SIDEBAR OSCURO (Panel del Vendedor) -->
+    <!-- SIDEBAR OSCURO (Panel Universitario) -->
     <aside class="cf-panel-sidebar">
         <!-- Logo -->
         <a class="cf-logo cf-logo-light mb-4" th:href="@{/}">
@@ -24,15 +24,21 @@
                 </a>
             </li>
             <li class="cf-sidebar-item">
+                <a th:href="@{/panel/pedidos}" class="cf-sidebar-link">
+                    <i class="bi bi-bag-check"></i>
+                    <span>Mis Compras</span>
+                </a>
+            </li>
+            <li class="cf-sidebar-item">
                 <a th:href="@{/panel/ventas}" class="cf-sidebar-link">
-                    <i class="bi bi-box-seam"></i>
+                    <i class="bi bi-shop"></i>
                     <span>Mis Ventas</span>
                 </a>
             </li>
             <li class="cf-sidebar-item">
-                <a th:href="@{/panel/pedidos}" class="cf-sidebar-link">
-                    <i class="bi bi-bag-check"></i>
-                    <span>Mis Compras</span>
+                <a th:href="@{/panel/productos/nuevo}" class="cf-sidebar-link">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>Publicar Alimento</span>
                 </a>
             </li>
             <li class="cf-sidebar-item">
@@ -49,15 +55,15 @@
             </li>
         </ul>
 
-        <!-- User mini badge on bottom of sidebar -->
+        <!-- Perfil mini al fondo del sidebar -->
         <div class="pt-4 mt-auto border-top border-white-10 d-none d-lg-block">
             <div class="d-flex align-items-center gap-3">
                 <div class="cf-avatar-badge" style="background-color: var(--cf-accent);">
                     <span th:text="${nombreUsuario != null and !nombreUsuario.isEmpty() ? #strings.substring(nombreUsuario, 0, 1) : 'U'}">U</span>
                 </div>
                 <div class="text-truncate">
-                    <small class="text-white-50 d-block" style="font-size: 0.75rem;">Estudiante Vendedor</small>
-                    <span class="text-white fw-bold small text-truncate" th:text="${nombreUsuario}">Nombre Usuario</span>
+                    <small class="text-white-50 d-block" style="font-size: 0.75rem;">Estudiante Universitario</small>
+                    <span class="text-white fw-bold small text-truncate d-block" th:text="${nombreUsuario}">Nombre Usuario</span>
                 </div>
             </div>
         </div>
@@ -67,30 +73,22 @@
     <main class="cf-panel-content">
         
         <!-- Header superior del Panel -->
-        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
             <div>
-                <h2 class="fw-bold mb-1">Panel del Vendedor</h2>
-                <p class="text-muted small mb-0">Resumen de tu actividad en CampusFood</p>
+                <h2 class="fw-bold mb-1">Mi Panel Universitario</h2>
+                <p class="text-muted small mb-0">
+                    Bienvenido(a), <span class="fw-semibold text-dark" th:text="${nombreUsuario}">Usuario</span>. Consulta tus pedidos y gestiona tus ventas en el campus.
+                </p>
             </div>
 
-            <!-- Botón Mi Puesto -->
-            <div class="dropdown">
-                <button class="btn btn-cf-secondary py-2 px-3 fw-bold dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-shop me-1 text-cf-accent"></i>
-                    <span>Mi Puesto</span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4 p-2">
-                    <li>
-                        <a class="dropdown-item py-2 fw-semibold" th:href="@{/panel/productos/nuevo}">
-                            <i class="bi bi-plus-circle me-2 text-cf-accent"></i> Publicar nuevo alimento
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item py-2 fw-semibold" th:href="@{/panel/ventas}">
-                            <i class="bi bi-list-check me-2 text-cf-primary"></i> Gestionar pedidos recibidos
-                        </a>
-                    </li>
-                </ul>
+            <!-- Accesos Rápidos -->
+            <div class="d-flex flex-wrap gap-2">
+                <a th:href="@{/catalogo}" class="btn btn-cf-primary py-2 px-3 fw-bold small">
+                    <i class="bi bi-compass me-1"></i> Explorar Catálogo
+                </a>
+                <a th:href="@{/panel/productos/nuevo}" class="btn btn-cf-secondary py-2 px-3 fw-bold small">
+                    <i class="bi bi-plus-circle me-1 text-cf-accent"></i> Publicar Alimento
+                </a>
             </div>
         </div>
 
@@ -101,179 +99,386 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
 
-        <!-- 4 KPI CARDS (Métricas) -->
-        <div class="row g-3 mb-4">
-            
-            <!-- 1. Total Productos -->
-            <div class="col-sm-6 col-xl-3">
-                <div class="cf-kpi-card">
-                    <div class="cf-kpi-icon green">
-                        <i class="bi bi-box-seam"></i>
-                    </div>
-                    <div>
-                        <div class="cf-kpi-label">Total de Productos</div>
-                        <div class="cf-kpi-value" th:text="${totalProductos != null and totalProductos > 0 ? totalProductos : '12'}">12</div>
-                    </div>
+        <!-- Alerta destacada: Pedidos listos para recoger -->
+        <div th:if="${pedidosListos != null and pedidosListos > 0}" class="alert alert-success d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 p-3 rounded-4 shadow-xs mb-4 border-2">
+            <div class="d-flex align-items-center gap-3">
+                <div class="fs-3 text-success">
+                    <i class="bi bi-bell-fill"></i>
+                </div>
+                <div>
+                    <strong class="d-block text-dark">¡Tienes <span th:text="${pedidosListos}">1</span> pedido(s) listo(s) para recoger!</strong>
+                    <small class="text-muted">Acércate al punto acordado con el vendedor para recibir tu comida caliente o refrigerada.</small>
                 </div>
             </div>
-
-            <!-- 2. Pedidos Recibidos -->
-            <div class="col-sm-6 col-xl-3">
-                <div class="cf-kpi-card">
-                    <div class="cf-kpi-icon blue">
-                        <i class="bi bi-cart-check"></i>
-                    </div>
-                    <div>
-                        <div class="cf-kpi-label">Pedidos Recibidos</div>
-                        <div class="cf-kpi-value" th:text="${totalPedidos != null and totalPedidos > 0 ? totalPedidos : '48'}">48</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 3. Ganancias -->
-            <div class="col-sm-6 col-xl-3">
-                <div class="cf-kpi-card">
-                    <div class="cf-kpi-icon purple">
-                        <i class="bi bi-cash-stack"></i>
-                    </div>
-                    <div>
-                        <div class="cf-kpi-label">Ganancias</div>
-                        <div class="cf-kpi-value" th:text="${ganancias != null and ganancias > 0 ? 'S/ ' + #numbers.formatDecimal(ganancias, 1, 2) : 'S/ 320.00'}">S/ 320.00</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 4. Calificación -->
-            <div class="col-sm-6 col-xl-3">
-                <div class="cf-kpi-card">
-                    <div class="cf-kpi-icon amber">
-                        <i class="bi bi-star-fill"></i>
-                    </div>
-                    <div>
-                        <div class="cf-kpi-label">Calificación</div>
-                        <div class="cf-kpi-value">4.9 <span class="text-warning fs-6">★</span></div>
-                    </div>
-                </div>
-            </div>
-
+            <a th:href="@{/panel/pedidos}" class="btn btn-sm btn-success fw-bold px-3 py-2 rounded-pill text-nowrap">
+                Ver mis pedidos por recoger
+            </a>
         </div>
 
-        <!-- FILA DE MIS PRODUCTOS Y GRÁFICO DE VENTAS -->
-        <div class="row g-4 mb-4">
+        <!-- Tarjeta de Identidad del Estudiante -->
+        <div class="cf-card p-3 p-md-4 mb-4 bg-white">
+            <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="cf-avatar-badge fs-4" style="width: 58px; height: 58px;">
+                        <span th:text="${nombreUsuario != null and !nombreUsuario.isEmpty() ? #strings.substring(nombreUsuario, 0, 1) : 'U'}">U</span>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <h4 class="fw-bold mb-0 text-dark" th:text="${nombreUsuario}">Nombre Estudiante</h4>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1 small">
+                                <i class="bi bi-patch-check-fill me-1"></i> Estudiante Verificado
+                            </span>
+                        </div>
+                        <p class="text-muted small mb-0 mt-1">
+                            <i class="bi bi-envelope me-1"></i> <span th:text="${emailUsuario}">correo@utp.edu.pe</span>
+                            <span class="mx-2">•</span>
+                            <i class="bi bi-shield-check me-1 text-success"></i> Cuenta al día (0 sanciones)
+                        </p>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-light text-dark border px-3 py-2 rounded-pill small fw-semibold" th:if="${esVendedor}">
+                        <i class="bi bi-shop text-cf-primary me-1"></i> Perfil: Comprador y Vendedor
+                    </span>
+                    <span class="badge bg-light text-dark border px-3 py-2 rounded-pill small fw-semibold" th:if="${!esVendedor}">
+                        <i class="bi bi-bag-check text-cf-accent me-1"></i> Perfil: Estudiante Comprador
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SELECTOR DE VISTA: Pestañas Comprador vs Vendedor -->
+        <ul class="nav nav-pills cf-panel-tabs mb-4 gap-2" id="panelTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active rounded-pill px-4 py-2 fw-bold" id="compras-tab" data-bs-toggle="tab" data-bs-target="#compras-pane" type="button" role="tab" aria-controls="compras-pane" aria-selected="true">
+                    <i class="bi bi-bag-check me-2"></i> Mis Compras
+                    <span class="badge bg-cf-light text-cf-primary ms-1" th:text="${totalCompras}">0</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link rounded-pill px-4 py-2 fw-bold" id="ventas-tab" data-bs-toggle="tab" data-bs-target="#ventas-pane" type="button" role="tab" aria-controls="ventas-pane" aria-selected="false">
+                    <i class="bi bi-shop me-2"></i> Mi Emprendimiento / Ventas
+                    <span class="badge bg-cf-light text-cf-primary ms-1" th:text="${totalProductos}">0</span>
+                </button>
+            </li>
+        </ul>
+
+        <!-- CONTENIDO DE LAS PESTAÑAS -->
+        <div class="tab-content" id="panelTabContent">
             
-            <!-- SECCIÓN: Mis Productos (Vista Previa Horizontal) -->
-            <div class="col-lg-6">
-                <div class="cf-card p-4 h-100">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="fw-bold mb-0">Mis Productos</h5>
-                        <a th:href="@{/panel/ventas}" class="small text-cf-accent fw-bold text-decoration-none">
-                            Ver todos <i class="bi bi-arrow-right"></i>
+            <!-- ============================================== -->
+            <!-- PESTAÑA 1: MIS COMPRAS (ROL PRINCIPAL ESTUDIANTE) -->
+            <!-- ============================================== -->
+            <div class="tab-pane fade show active" id="compras-pane" role="tabpanel" aria-labelledby="compras-tab" tabindex="0">
+                
+                <!-- 4 KPI Cards de Compras (DATOS REALES) -->
+                <div class="row g-3 mb-4">
+                    <!-- 1. Total Compras -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="cf-kpi-card">
+                            <div class="cf-kpi-icon blue">
+                                <i class="bi bi-bag-heart"></i>
+                            </div>
+                            <div>
+                                <div class="cf-kpi-label">Compras Realizadas</div>
+                                <div class="cf-kpi-value" th:text="${totalCompras}">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Pedidos en Curso -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="cf-kpi-card">
+                            <div class="cf-kpi-icon green">
+                                <i class="bi bi-hourglass-split"></i>
+                            </div>
+                            <div>
+                                <div class="cf-kpi-label">Pedidos en Curso</div>
+                                <div class="cf-kpi-value text-cf-primary" th:text="${pedidosActivos}">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Total Invertido -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="cf-kpi-card">
+                            <div class="cf-kpi-icon purple">
+                                <i class="bi bi-wallet2"></i>
+                            </div>
+                            <div>
+                                <div class="cf-kpi-label">Total Invertido</div>
+                                <div class="cf-kpi-value" th:text="'S/ ' + ${#numbers.formatDecimal(totalGastado, 1, 2)}">S/ 0.00</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Por Recoger -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="cf-kpi-card">
+                            <div class="cf-kpi-icon amber">
+                                <i class="bi bi-geo-alt"></i>
+                            </div>
+                            <div>
+                                <div class="cf-kpi-label">Listos por Recoger</div>
+                                <div class="cf-kpi-value" th:text="${pedidosListos}">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de Compras Recientes -->
+                <div class="cf-card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                        <div>
+                            <h5 class="fw-bold mb-0">Mis Pedidos Recientes</h5>
+                            <small class="text-muted">Últimos alimentos reservados en el campus universitario</small>
+                        </div>
+                        <a th:href="@{/panel/pedidos}" class="small text-cf-accent fw-bold text-decoration-none">
+                            Ver historial completo <i class="bi bi-arrow-right"></i>
                         </a>
                     </div>
 
-                    <!-- Si el vendedor tiene productos -->
-                    <div class="d-flex flex-column gap-3" th:if="${misProductos != null and !misProductos.isEmpty()}">
-                        <div th:each="prod : ${misProductos}" class="d-flex align-items-center justify-content-between p-2 rounded-3 hover-bg bg-light">
-                            <div class="d-flex align-items-center gap-3">
-                                <img th:if="${prod.imagenUrl != null and !prod.imagenUrl.isEmpty()}" 
-                                     th:src="@{${prod.imagenUrl}}" 
-                                     class="rounded-3" 
-                                     style="width: 52px; height: 52px; object-fit: cover;">
-                                <img th:if="${prod.imagenUrl == null or prod.imagenUrl.isEmpty()}" 
-                                     src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=150&q=80" 
-                                     class="rounded-3" 
-                                     style="width: 52px; height: 52px; object-fit: cover;">
-                                <div>
-                                    <h6 class="fw-bold mb-0 text-dark" th:text="${prod.nombre}">Hamburguesa</h6>
-                                    <small class="text-muted" th:text="'Stock: ' + ${prod.stock} + ' und'">Stock: 10 und</small>
-                                </div>
-                            </div>
-                            <span class="fw-bold text-cf-accent" th:text="'S/ ' + ${#numbers.formatDecimal(prod.precio, 1, 2)}">S/ 8.00</span>
-                        </div>
+                    <!-- Si el estudiante tiene compras registradas -->
+                    <div class="table-responsive" th:if="${misCompras != null and !misCompras.isEmpty()}">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="small text-muted text-uppercase fw-bold">Código</th>
+                                    <th class="small text-muted text-uppercase fw-bold">Alimento(s)</th>
+                                    <th class="small text-muted text-uppercase fw-bold">Vendedor</th>
+                                    <th class="small text-muted text-uppercase fw-bold">Fecha</th>
+                                    <th class="small text-muted text-uppercase fw-bold">Total</th>
+                                    <th class="small text-muted text-uppercase fw-bold">Estado</th>
+                                    <th class="small text-muted text-uppercase fw-bold text-end">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="pedido : ${comprasRecientes}">
+                                    <td class="fw-bold text-cf-primary" th:text="'#' + ${pedido.id}">#1</td>
+                                    <td>
+                                        <div th:each="detalle : ${pedido.detalles}">
+                                            <span class="fw-semibold text-dark d-block" th:text="${detalle.producto.nombre}">Hamburguesa</span>
+                                            <small class="text-muted" th:text="${detalle.cantidad} + ' und x S/ ' + ${#numbers.formatDecimal(detalle.precioUnitario, 1, 2)}">1 x S/ 8.00</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border px-2 py-1 rounded-pill" th:text="${pedido.vendedor.nombre}">Juan</span>
+                                    </td>
+                                    <td class="small text-secondary" th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy HH:mm')}">01/01/2026</td>
+                                    <td class="fw-bold text-cf-accent" th:text="'S/ ' + ${#numbers.formatDecimal(pedido.total, 1, 2)}">S/ 0.00</td>
+                                    <td>
+                                        <span class="badge rounded-pill px-3 py-1 fw-bold" 
+                                              th:classappend="${pedido.estado.name() == 'PENDIENTE' ? 'bg-warning-subtle text-dark border border-warning-subtle' : 
+                                                             (pedido.estado.name() == 'ACEPTADO' ? 'bg-info-subtle text-dark border border-info-subtle' : 
+                                                             (pedido.estado.name() == 'LISTO' ? 'bg-primary-subtle text-primary border border-primary-subtle' : 
+                                                             (pedido.estado.name() == 'ENTREGADO' ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle')))}"
+                                              th:text="${pedido.estado}">PENDIENTE</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <form th:if="${pedido.estado.name() == 'LISTO'}" 
+                                              th:action="@{/panel/pedidos/{id}/estado(id=${pedido.id})}" 
+                                              method="post" class="d-inline">
+                                            <input type="hidden" name="estado" value="ENTREGADO">
+                                            <input type="hidden" name="origen" value="">
+                                            <button type="submit" class="btn btn-sm btn-cf-primary rounded-pill px-3 fw-bold" onclick="return confirm('¿Confirmas que recibiste el producto y realizaste el pago?')">
+                                                Confirmar Recibido
+                                            </button>
+                                        </form>
+                                        <a th:if="${pedido.estado.name() != 'LISTO'}" th:href="@{/panel/pedidos}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                                            Detalle
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
 
-                    <!-- Si no tiene productos aún, mostramos vista previa ilustrada como la maqueta -->
-                    <div class="row g-2" th:if="${misProductos == null or misProductos.isEmpty()}">
-                        <div class="col-6 col-sm-3 text-center">
-                            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80" class="rounded-3 img-fluid mb-2 shadow-xs" style="height: 70px; width: 100%; object-fit: cover;">
-                            <small class="d-block fw-semibold text-truncate">Hamburguesa</small>
-                        </div>
-                        <div class="col-6 col-sm-3 text-center">
-                            <img src="https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=200&q=80" class="rounded-3 img-fluid mb-2 shadow-xs" style="height: 70px; width: 100%; object-fit: cover;">
-                            <small class="d-block fw-semibold text-truncate">Refresco</small>
-                        </div>
-                        <div class="col-6 col-sm-3 text-center">
-                            <img src="https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=200&q=80" class="rounded-3 img-fluid mb-2 shadow-xs" style="height: 70px; width: 100%; object-fit: cover;">
-                            <small class="d-block fw-semibold text-truncate">Papas Fritas</small>
-                        </div>
-                        <div class="col-6 col-sm-3 text-center">
-                            <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=200&q=80" class="rounded-3 img-fluid mb-2 shadow-xs" style="height: 70px; width: 100%; object-fit: cover;">
-                            <small class="d-block fw-semibold text-truncate">Sándwich</small>
-                        </div>
-                        <div class="col-12 mt-3 text-center">
-                            <a th:href="@{/panel/productos/nuevo}" class="btn btn-cf-primary btn-sm py-2 px-3 fw-bold">
-                                <i class="bi bi-plus-circle me-1"></i> Publicar tu primer alimento
-                            </a>
-                        </div>
+                    <!-- Si NO tiene compras registradas aún -->
+                    <div th:if="${misCompras == null or misCompras.isEmpty()}" class="text-center py-5">
+                        <div class="display-4 text-muted mb-3">🛒</div>
+                        <h5 class="fw-bold text-dark mb-2">Aún no has realizado compras en el campus</h5>
+                        <p class="text-muted mb-4" style="max-width: 440px; margin: 0 auto;">
+                            Descubre almuerzos caseros, postres, bebidas y sándwiches preparados por tus compañeros universitarios.
+                        </p>
+                        <a th:href="@{/catalogo}" class="btn btn-cf-primary px-4 py-2 fw-bold">
+                            <i class="bi bi-search me-1"></i> Explorar Catálogo de Alimentos
+                        </a>
                     </div>
                 </div>
+
             </div>
 
-            <!-- SECCIÓN: Gráfica de Ventas (Últimos 7 días) -->
-            <div class="col-lg-6">
-                <div class="cf-chart-card h-100">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div>
-                            <h5 class="fw-bold mb-0">Ventas (Últimos 7 días)</h5>
-                            <small class="text-muted">Rendimiento semanal de pedidos</small>
+            <!-- ============================================== -->
+            <!-- PESTAÑA 2: MI EMPRENDIMIENTO (ROL VENDEDOR) -->
+            <!-- ============================================== -->
+            <div class="tab-pane fade" id="ventas-pane" role="tabpanel" aria-labelledby="ventas-tab" tabindex="0">
+                
+                <!-- 4 KPI Cards de Vendedor (DATOS REALES) -->
+                <div class="row g-3 mb-4">
+                    <!-- 1. Total de Productos a la venta -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="cf-kpi-card">
+                            <div class="cf-kpi-icon green">
+                                <i class="bi bi-box-seam"></i>
+                            </div>
+                            <div>
+                                <div class="cf-kpi-label">Productos Publicados</div>
+                                <div class="cf-kpi-value" th:text="${totalProductos}">0</div>
+                            </div>
                         </div>
-                        <span class="badge bg-cf-light text-cf-accent rounded-pill px-3 py-1 fw-bold">
-                            +18.4%
-                        </span>
                     </div>
 
-                    <!-- SVG Sparkline Line Graph con Gradiente Verde -->
-                    <div class="w-100 position-relative py-2">
-                        <svg viewBox="0 0 500 200" class="w-100" style="overflow: visible;">
-                            <defs>
-                                <linearGradient id="cfGreenGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" stop-color="#16a34a" stop-opacity="0.35"/>
-                                    <stop offset="100%" stop-color="#16a34a" stop-opacity="0.0"/>
-                                </linearGradient>
-                            </defs>
-                            <!-- Grid horizontal lines -->
-                            <line x1="0" y1="40" x2="500" y2="40" stroke="#f0f3f0" stroke-width="1.5" />
-                            <line x1="0" y1="90" x2="500" y2="90" stroke="#f0f3f0" stroke-width="1.5" />
-                            <line x1="0" y1="140" x2="500" y2="140" stroke="#f0f3f0" stroke-width="1.5" />
-                            
-                            <!-- Area fill -->
-                            <path d="M 10 150 Q 80 140, 150 110 T 250 120 T 350 70 T 490 85 L 490 190 L 10 190 Z" fill="url(#cfGreenGradient)" />
-                            
-                            <!-- Smooth green line -->
-                            <path d="M 10 150 Q 80 140, 150 110 T 250 120 T 350 70 T 490 85" fill="none" stroke="#16a34a" stroke-width="3.5" stroke-linecap="round" />
-                            
-                            <!-- Data dots -->
-                            <circle cx="10" cy="150" r="4.5" fill="#ffffff" stroke="#16a34a" stroke-width="2.5" />
-                            <circle cx="95" cy="132" r="4.5" fill="#ffffff" stroke="#16a34a" stroke-width="2.5" />
-                            <circle cx="175" cy="112" r="4.5" fill="#ffffff" stroke="#16a34a" stroke-width="2.5" />
-                            <circle cx="250" cy="120" r="4.5" fill="#ffffff" stroke="#16a34a" stroke-width="2.5" />
-                            <circle cx="330" cy="85" r="4.5" fill="#ffffff" stroke="#16a34a" stroke-width="2.5" />
-                            <circle cx="410" cy="65" r="4.5" fill="#ffffff" stroke="#16a34a" stroke-width="2.5" />
-                            <circle cx="490" cy="85" r="5.5" fill="#16a34a" stroke="#ffffff" stroke-width="2" />
-                        </svg>
+                    <!-- 2. Pedidos Recibidos de clientes -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="cf-kpi-card">
+                            <div class="cf-kpi-icon blue">
+                                <i class="bi bi-cart-check"></i>
+                            </div>
+                            <div>
+                                <div class="cf-kpi-label">Pedidos Recibidos</div>
+                                <div class="cf-kpi-value" th:text="${totalPedidos}">0</div>
+                            </div>
+                        </div>
+                    </div>
 
-                        <!-- Days labels below -->
-                        <div class="d-flex justify-content-between text-muted small mt-2 px-1 fw-semibold" style="font-size: 0.78rem;">
-                            <span>Lun</span>
-                            <span>Mar</span>
-                            <span>Mié</span>
-                            <span>Jue</span>
-                            <span>Vie</span>
-                            <span>Sáb</span>
-                            <span>Dom</span>
+                    <!-- 3. Ganancias Totales -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="cf-kpi-card">
+                            <div class="cf-kpi-icon purple">
+                                <i class="bi bi-cash-stack"></i>
+                            </div>
+                            <div>
+                                <div class="cf-kpi-label">Ganancias Totales</div>
+                                <div class="cf-kpi-value" th:text="'S/ ' + ${#numbers.formatDecimal(ganancias, 1, 2)}">S/ 0.00</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Calificación Real de Clientes -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="cf-kpi-card">
+                            <div class="cf-kpi-icon amber">
+                                <i class="bi bi-star-fill"></i>
+                            </div>
+                            <div>
+                                <div class="cf-kpi-label">Calificación de Clientes</div>
+                                <div class="cf-kpi-value">
+                                    <span th:if="${totalResenas > 0}">
+                                        <span th:text="${calificacion}">0.0</span> <span class="text-warning fs-6">★</span>
+                                    </span>
+                                    <span th:if="${totalResenas == 0}" class="fs-6 text-muted fw-semibold">
+                                        Sin reseñas
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="row g-4">
+                    <!-- Columna Izquierda: Mis Productos Publicados -->
+                    <div class="col-lg-6">
+                        <div class="cf-card p-4 h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h5 class="fw-bold mb-0">Mis Alimentos a la Venta</h5>
+                                    <small class="text-muted">Tus productos visibles en el catálogo</small>
+                                </div>
+                                <a th:if="${totalProductos > 0}" th:href="@{/panel/ventas}" class="small text-cf-accent fw-bold text-decoration-none">
+                                    Gestionar <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+
+                            <!-- Si tiene productos publicados -->
+                            <div class="d-flex flex-column gap-3" th:if="${misProductos != null and !misProductos.isEmpty()}">
+                                <div th:each="prod : ${misProductos}" class="d-flex align-items-center justify-content-between p-2 rounded-3 hover-bg bg-light border">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <img th:if="${prod.imagenUrl != null and !prod.imagenUrl.isEmpty()}" 
+                                             th:src="@{${prod.imagenUrl}}" 
+                                             class="rounded-3" 
+                                             style="width: 52px; height: 52px; object-fit: cover;">
+                                        <img th:if="${prod.imagenUrl == null or prod.imagenUrl.isEmpty()}" 
+                                             src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=150&q=80" 
+                                             class="rounded-3" 
+                                             style="width: 52px; height: 52px; object-fit: cover;">
+                                        <div>
+                                            <h6 class="fw-bold mb-0 text-dark" th:text="${prod.nombre}">Producto</h6>
+                                            <small class="text-muted" th:text="'Stock: ' + ${prod.stock} + ' und'">Stock: 10 und</small>
+                                        </div>
+                                    </div>
+                                    <span class="fw-bold text-cf-accent" th:text="'S/ ' + ${#numbers.formatDecimal(prod.precio, 1, 2)}">S/ 0.00</span>
+                                </div>
+                                <div class="mt-2 text-center">
+                                    <a th:href="@{/panel/productos/nuevo}" class="btn btn-cf-primary btn-sm py-2 px-3 fw-bold">
+                                        <i class="bi bi-plus-circle me-1"></i> Publicar otro alimento
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Si NO tiene productos publicados aún (Onboarding Estudiantil Limpio) -->
+                            <div th:if="${misProductos == null or misProductos.isEmpty()}" class="text-center py-4">
+                                <div class="display-4 text-muted mb-2">👨‍🍳</div>
+                                <h6 class="fw-bold text-dark mb-1">¿Quieres vender comida en el campus?</h6>
+                                <p class="text-muted small mb-3" style="max-width: 360px; margin: 0 auto;">
+                                    Publica tus postres, almuerzos caseros o snacks. Define tu horario y lugar de entrega dentro de la universidad.
+                                </p>
+                                <a th:href="@{/panel/productos/nuevo}" class="btn btn-cf-primary btn-sm py-2 px-4 fw-bold">
+                                    <i class="bi bi-plus-circle me-1"></i> Publicar mi primer alimento
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha: Pedidos Recibidos Recientes -->
+                    <div class="col-lg-6">
+                        <div class="cf-card p-4 h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h5 class="fw-bold mb-0">Pedidos Recibidos Recientes</h5>
+                                    <small class="text-muted">Compañeros que han reservado tu comida</small>
+                                </div>
+                                <a th:if="${totalPedidos > 0}" th:href="@{/panel/ventas}" class="small text-cf-accent fw-bold text-decoration-none">
+                                    Ver todos <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+
+                            <!-- Si tiene ventas registradas -->
+                            <div class="d-flex flex-column gap-2" th:if="${pedidosRecientes != null and !pedidosRecientes.isEmpty()}">
+                                <div th:each="pedido : ${pedidosRecientes}" class="p-3 rounded-3 bg-light border d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-bold small text-dark" th:text="'Pedido #' + ${pedido.id} + ' - ' + ${pedido.comprador.nombre}">Pedido #1</div>
+                                        <small class="text-muted" th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy HH:mm')}">01/01/2026</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="fw-bold text-cf-accent" th:text="'S/ ' + ${#numbers.formatDecimal(pedido.total, 1, 2)}">S/ 0.00</div>
+                                        <span class="badge rounded-pill px-2 py-1 small"
+                                              th:classappend="${pedido.estado.name() == 'PENDIENTE' ? 'bg-warning-subtle text-dark' : 
+                                                             (pedido.estado.name() == 'ACEPTADO' ? 'bg-info-subtle text-dark' : 
+                                                             (pedido.estado.name() == 'LISTO' ? 'bg-primary-subtle text-primary' : 
+                                                             (pedido.estado.name() == 'ENTREGADO' ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger')))}"
+                                              th:text="${pedido.estado}">PENDIENTE</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2 text-center">
+                                    <a th:href="@{/panel/ventas}" class="btn btn-cf-secondary btn-sm py-2 px-3 fw-bold">
+                                        <i class="bi bi-list-check me-1"></i> Ir a Gestión de Ventas
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Si NO tiene ventas registradas aún -->
+                            <div th:if="${pedidosRecientes == null or pedidosRecientes.isEmpty()}" class="text-center py-4">
+                                <div class="display-4 text-muted mb-2">📦</div>
+                                <h6 class="fw-bold text-dark mb-1">Sin pedidos de clientes todavía</h6>
+                                <p class="text-muted small mb-0" style="max-width: 360px; margin: 0 auto;">
+                                    En cuanto otros estudiantes reserven tus alimentos desde el catálogo, sus pedidos aparecerán aquí para que los prepares.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
         </div>

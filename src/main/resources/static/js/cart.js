@@ -127,6 +127,38 @@ const CampusCart = {
 document.addEventListener('DOMContentLoaded', () => {
   CampusCart.updateBadge();
 
+  // Handle Add-to-Cart buttons via data-* attributes
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.btn-add-cart');
+    if (btn) {
+      e.preventDefault();
+      e.stopPropagation();
+      CampusCart.addItem({
+        id: btn.dataset.id,
+        nombre: btn.dataset.nombre || 'Producto',
+        precio: parseFloat(btn.dataset.precio) || 0,
+        imagenUrl: btn.dataset.imagen || '',
+        quantity: 1
+      });
+      return;
+    }
+
+    const detailBtn = e.target.closest('.btn-add-cart-detail');
+    if (detailBtn) {
+      e.preventDefault();
+      const input = document.getElementById('detailCantidadInput');
+      const qty = input ? parseInt(input.value, 10) || 1 : 1;
+      CampusCart.addItem({
+        id: detailBtn.dataset.id,
+        nombre: detailBtn.dataset.nombre || 'Producto',
+        precio: parseFloat(detailBtn.dataset.precio) || 0,
+        imagenUrl: detailBtn.dataset.imagen || '',
+        quantity: qty
+      });
+      return;
+    }
+  });
+
   // Handle password toggle buttons
   document.querySelectorAll('.cf-password-toggle').forEach(btn => {
     btn.addEventListener('click', () => {

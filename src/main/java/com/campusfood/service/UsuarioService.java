@@ -49,28 +49,56 @@ public class UsuarioService {
             throw new IllegalArgumentException("Las contraseñas no coinciden");
         }
         
-        String emailDomain = dto.getEmail().substring(dto.getEmail().indexOf("@") + 1);
-        if (!emailDomain.equalsIgnoreCase(allowedDomain)) {
-            throw new IllegalArgumentException("Solo se permite registro con el dominio institucional: " + allowedDomain);
+        String cleanEmail = dto.getEmail() != null ? dto.getEmail().trim().toLowerCase() : "";
+        if (!cleanEmail.contains("@")) {
+            throw new IllegalArgumentException("El formato del correo es inválido");
         }
 
-        if (usuarioRepository.existsByEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("El correo ya se encuentra registrado");
+        String emailDomain = cleanEmail.substring(cleanEmail.indexOf("@") + 1);
+        String allowedDomainsStr = allowedDomain != null ? allowedDomain.trim() : "utp.edu.pe";
+        java.util.List<String> allowedList = java.util.Arrays.stream(allowedDomainsStr.split(","))
+                .map(String::trim)
+                .map(String::toLowerCase)
+                .filter(s -> !s.isEmpty())
+                .toList();
+
+        boolean domainAllowed = allowedList.isEmpty() 
+                || allowedList.contains("*") 
+                || allowedList.contains(emailDomain.toLowerCase());
+
+        if (!domainAllowed) {
+            throw new IllegalArgumentException("Solo se permite registro con dominios autorizados: " + allowedDomainsStr);
         }
 
-        Usuario usuario = new Usuario();
-        usuario.setNombre(dto.getNombre());
-        usuario.setApellidos(dto.getApellidos());
-        usuario.setEmail(dto.getEmail());
-        usuario.setPassword(passwordEncoder.encode(dto.getPassword()));
-        usuario.setHabilitado(false);
+        Optional<Usuario> existenteOpt = usuarioRepository.findByEmailIgnoreCase(cleanEmail);
+        Usuario usuario;
 
-        // Asignar rol ESTUDIANTE por defecto
-        Rol rolEstudiante = rolRepository.findByNombre("ESTUDIANTE")
-            .orElseGet(() -> rolRepository.save(new Rol("ESTUDIANTE")));
-        usuario.getRoles().add(rolEstudiante);
+        if (existenteOpt.isPresent()) {
+            usuario = existenteOpt.get();
+            if (usuario.isHabilitado()) {
+                throw new IllegalArgumentException("El correo ya se encuentra registrado y activo. Puedes iniciar sesión directamente.");
+            }
+            // El usuario ya existe pero NO está verificado todavía.
+            // Actualizamos sus datos para que pueda completar su verificación sin bloquearse
+            usuario.setNombre(dto.getNombre().trim());
+            usuario.setApellidos(dto.getApellidos().trim());
+            usuario.setPassword(passwordEncoder.encode(dto.getPassword()));
+            usuario = usuarioRepository.save(usuario);
+        } else {
+            usuario = new Usuario();
+            usuario.setNombre(dto.getNombre().trim());
+            usuario.setApellidos(dto.getApellidos().trim());
+            usuario.setEmail(cleanEmail);
+            usuario.setPassword(passwordEncoder.encode(dto.getPassword()));
+            usuario.setHabilitado(false);
 
-        usuario = usuarioRepository.save(usuario);
+            // Asignar rol ESTUDIANTE por defecto
+            Rol rolEstudiante = rolRepository.findByNombre("ESTUDIANTE")
+                .orElseGet(() -> rolRepository.save(new Rol("ESTUDIANTE")));
+            usuario.getRoles().add(rolEstudiante);
+
+            usuario = usuarioRepository.save(usuario);
+        }
 
         // Generar código numérico de 6 dígitos y token
         generarYEnviarCodigo(usuario);
@@ -84,7 +112,7 @@ public class UsuarioService {
             return false;
         }
 
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email.trim().toLowerCase());
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmailIgnoreCase(email.trim());
         if (usuarioOpt.isEmpty()) {
             return false;
         }
@@ -120,7 +148,7 @@ public class UsuarioService {
             throw new IllegalArgumentException("Debe ingresar un correo electrónico.");
         }
 
-        Usuario usuario = usuarioRepository.findByEmail(email.trim().toLowerCase())
+        Usuario usuario = usuarioRepository.findByEmailIgnoreCase(email.trim())
                 .orElseThrow(() -> new IllegalArgumentException("No existe ninguna cuenta registrada con el correo: " + email));
 
         if (usuario.isHabilitado()) {
@@ -131,15 +159,19 @@ public class UsuarioService {
     }
 
     private void generarYEnviarCodigo(Usuario usuario) {
-        // Eliminar verificaciones previas del usuario
-        verificacionCorreoRepository.deleteByUsuario(usuario);
+        // Reusar o actualizar registro de verificación existente para evitar colisiones
+        VerificacionCorreo verificacion = verificacionCorreoRepository.findTopByUsuarioOrderByFechaExpiracionDesc(usuario)
+                .orElse(new VerificacionCorreo());
 
         // Generar código de 6 dígitos
         String codigo = String.format("%06d", secureRandom.nextInt(1_000_000));
         String token = UUID.randomUUID().toString();
         LocalDateTime fechaExpiracion = LocalDateTime.now().plusMinutes(15);
 
-        VerificacionCorreo verificacion = new VerificacionCorreo(codigo, token, usuario, fechaExpiracion);
+        verificacion.setUsuario(usuario);
+        verificacion.setCodigo(codigo);
+        verificacion.setToken(token);
+        verificacion.setFechaExpiracion(fechaExpiracion);
         verificacionCorreoRepository.save(verificacion);
 
         // Enviar por correo mediante EmailService

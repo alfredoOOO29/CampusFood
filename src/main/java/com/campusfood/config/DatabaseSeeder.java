@@ -28,13 +28,12 @@ public class DatabaseSeeder {
                                       PasswordEncoder passwordEncoder) {
         return args -> {
             // 1. Inicializar Categorías
-            if (categoriaRepository.count() == 0) {
-                List<String> categoriasBase = Arrays.asList(
-                        "Comida rápida", "Bebidas", "Postres", "Snacks", "Sándwiches", "Saludable", "Otros");
-                for (String nombre : categoriasBase) {
+            List<String> categoriasBase = Arrays.asList(
+                    "Comida rápida", "Bebidas", "Postres", "Snacks", "Sándwiches", "Saludable", "Otros");
+            for (String nombre : categoriasBase) {
+                if (categoriaRepository.findByNombreIgnoreCase(nombre).isEmpty()) {
                     categoriaRepository.save(new Categoria(nombre));
                 }
-                System.out.println("Categorías iniciales cargadas exitosamente.");
             }
 
             // 2. Inicializar Roles
@@ -71,14 +70,20 @@ public class DatabaseSeeder {
                 return usuarioRepository.save(est);
             });
 
-            // 5. Cargar productos representativos de la maqueta si el catálogo está vacío
-            if (productoRepository.count() == 0) {
-                Categoria comidaRapida = categoriaRepository.findByNombre("Comida rápida").orElse(null);
-                Categoria bebidas = categoriaRepository.findByNombre("Bebidas").orElse(null);
-                Categoria snacks = categoriaRepository.findByNombre("Snacks").orElse(null);
-                Categoria postres = categoriaRepository.findByNombre("Postres").orElse(null);
-                Categoria sandiwches = categoriaRepository.findByNombre("Sándwiches").orElse(null);
-                Categoria saludable = categoriaRepository.findByNombre("Saludable").orElse(null);
+            // 5. Cargar productos representativos de la maqueta si aún no existen
+            if (!productoRepository.existsByNombre("Hamburguesa Clásica")) {
+                Categoria comidaRapida = categoriaRepository.findByNombreIgnoreCase("Comida rápida")
+                        .orElseGet(() -> categoriaRepository.save(new Categoria("Comida rápida")));
+                Categoria bebidas = categoriaRepository.findByNombreIgnoreCase("Bebidas")
+                        .orElseGet(() -> categoriaRepository.save(new Categoria("Bebidas")));
+                Categoria snacks = categoriaRepository.findByNombreIgnoreCase("Snacks")
+                        .orElseGet(() -> categoriaRepository.save(new Categoria("Snacks")));
+                Categoria postres = categoriaRepository.findByNombreIgnoreCase("Postres")
+                        .orElseGet(() -> categoriaRepository.save(new Categoria("Postres")));
+                Categoria sandiwches = categoriaRepository.findByNombreIgnoreCase("Sándwiches")
+                        .orElseGet(() -> categoriaRepository.save(new Categoria("Sándwiches")));
+                Categoria saludable = categoriaRepository.findByNombreIgnoreCase("Saludable")
+                        .orElseGet(() -> categoriaRepository.save(new Categoria("Saludable")));
 
                 crearProductoDemo(productoRepository, estudiante, "Hamburguesa Clásica",
                         "Deliciosa hamburguesa con carne de res, queso cheddar, lechuga fresca, tomate y salsa especial.",

@@ -133,16 +133,23 @@
                     <div class="cf-product-card">
                         <!-- Imagen y Badges -->
                         <div class="cf-product-image-wrap">
-                            <span class="cf-badge-category" th:text="${producto.categoria.nombre}">Comida</span>
+                            <a th:href="@{/catalogo(categoria=${producto.categoria.id})}" 
+                               class="cf-badge-category" 
+                               th:text="${producto.categoria.nombre}"
+                               title="Ver todos los alimentos de esta categoría">
+                                Comida
+                            </a>
                             <button type="button" class="cf-btn-favorite" title="Guardar en favoritos">
                                 <i class="bi bi-heart"></i>
                             </button>
-                            <img th:if="${producto.imagenUrl != null and !producto.imagenUrl.isEmpty()}" 
-                                 th:src="@{${producto.imagenUrl}}" 
-                                 th:alt="${producto.nombre}">
-                            <img th:if="${producto.imagenUrl == null or producto.imagenUrl.isEmpty()}" 
-                                 src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80" 
-                                 th:alt="${producto.nombre}">
+                            <a th:href="@{/producto/{id}(id=${producto.id})}" class="d-block w-100 h-100 text-decoration-none">
+                                <img th:if="${producto.imagenUrl != null and !producto.imagenUrl.isEmpty()}" 
+                                     th:src="@{${producto.imagenUrl}}" 
+                                     th:alt="${producto.nombre}">
+                                <img th:if="${producto.imagenUrl == null or producto.imagenUrl.isEmpty()}" 
+                                     src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80" 
+                                     th:alt="${producto.nombre}">
+                            </a>
                         </div>
 
                         <!-- Info -->
@@ -170,9 +177,12 @@
                                 </div>
                                 <div class="d-flex align-items-center gap-2">
                                     <button type="button" 
-                                            class="btn-cf-cart-circle" 
+                                            class="btn-cf-cart-circle btn-add-cart" 
                                             title="Agregar al carrito"
-                                            th:onclick="'CampusCart.addItem({id:' + ${producto.id} + ', nombre:\'' + ${#strings.escapeJavaScript(producto.nombre)} + '\', precio:' + ${producto.precio} + ', imagenUrl:\'' + ${producto.imagenUrl != null ? producto.imagenUrl : ''} + '\', quantity:1})'">
+                                            th:data-id="${producto.id}"
+                                            th:data-nombre="${producto.nombre}"
+                                            th:data-precio="${producto.precio}"
+                                            th:data-imagen="${producto.imagenUrl != null ? producto.imagenUrl : ''}">
                                         <i class="bi bi-cart3"></i>
                                     </button>
                                 </div>
@@ -187,19 +197,21 @@
                 <div class="col-sm-6 col-lg-3">
                     <div class="cf-product-card">
                         <div class="cf-product-image-wrap">
-                            <span class="cf-badge-category">Comida rápida</span>
+                            <a th:href="@{/catalogo(categoria='Comida rápida')}" class="cf-badge-category" title="Ver comida rápida">Comida rápida</a>
                             <button type="button" class="cf-btn-favorite"><i class="bi bi-heart"></i></button>
-                            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80" alt="Hamburguesa Clásica">
+                            <a th:href="@{/catalogo(categoria='Comida rápida')}" class="d-block w-100 h-100">
+                                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80" alt="Hamburguesa Clásica">
+                            </a>
                         </div>
                         <div class="cf-product-body">
-                            <h4 class="cf-product-title"><a th:href="@{/catalogo}">Hamburguesa Clásica</a></h4>
+                            <h4 class="cf-product-title"><a th:href="@{/catalogo(q='Hamburguesa')}">Hamburguesa Clásica</a></h4>
                             <p class="cf-product-desc">Carne de res, queso cheddar fundido y vegetales frescos.</p>
                             <div class="cf-product-meta">
                                 <div><i class="bi bi-geo-alt-fill"></i> Pabellón B - Cafetería</div>
                             </div>
                             <div class="cf-product-footer">
                                 <div><span class="cf-product-price">S/ 8.00</span></div>
-                                <a th:href="@{/catalogo}" class="btn-cf-cart-circle"><i class="bi bi-cart3"></i></a>
+                                <button type="button" class="btn-cf-cart-circle" onclick="CampusCart.addItem({id:1, nombre:'Hamburguesa Clásica', precio:8.00, quantity:1})"><i class="bi bi-cart3"></i></button>
                             </div>
                         </div>
                     </div>
@@ -207,19 +219,21 @@
                 <div class="col-sm-6 col-lg-3">
                     <div class="cf-product-card">
                         <div class="cf-product-image-wrap">
-                            <span class="cf-badge-category">Bebidas</span>
+                            <a th:href="@{/catalogo(categoria='Bebidas')}" class="cf-badge-category" title="Ver bebidas">Bebidas</a>
                             <button type="button" class="cf-btn-favorite"><i class="bi bi-heart"></i></button>
-                            <img src="https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=400&q=80" alt="Refresco Natural">
+                            <a th:href="@{/catalogo(categoria='Bebidas')}" class="d-block w-100 h-100">
+                                <img src="https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=400&q=80" alt="Refresco Natural">
+                            </a>
                         </div>
                         <div class="cf-product-body">
-                            <h4 class="cf-product-title"><a th:href="@{/catalogo}">Refresco Natural</a></h4>
+                            <h4 class="cf-product-title"><a th:href="@{/catalogo(q='Refresco')}">Refresco Natural</a></h4>
                             <p class="cf-product-desc">Jugo de maracuyá helado preparado en el día.</p>
                             <div class="cf-product-meta">
                                 <div><i class="bi bi-geo-alt-fill"></i> Patio Central</div>
                             </div>
                             <div class="cf-product-footer">
                                 <div><span class="cf-product-price">S/ 4.00</span></div>
-                                <a th:href="@{/catalogo}" class="btn-cf-cart-circle"><i class="bi bi-cart3"></i></a>
+                                <button type="button" class="btn-cf-cart-circle" onclick="CampusCart.addItem({id:2, nombre:'Refresco Natural', precio:4.00, quantity:1})"><i class="bi bi-cart3"></i></button>
                             </div>
                         </div>
                     </div>
@@ -227,19 +241,21 @@
                 <div class="col-sm-6 col-lg-3">
                     <div class="cf-product-card">
                         <div class="cf-product-image-wrap">
-                            <span class="cf-badge-category">Snacks</span>
+                            <a th:href="@{/catalogo(categoria='Snacks')}" class="cf-badge-category" title="Ver snacks">Snacks</a>
                             <button type="button" class="cf-btn-favorite"><i class="bi bi-heart"></i></button>
-                            <img src="https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=400&q=80" alt="Papas Fritas">
+                            <a th:href="@{/catalogo(categoria='Snacks')}" class="d-block w-100 h-100">
+                                <img src="https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=400&q=80" alt="Papas Fritas">
+                            </a>
                         </div>
                         <div class="cf-product-body">
-                            <h4 class="cf-product-title"><a th:href="@{/catalogo}">Papas Fritas</a></h4>
+                            <h4 class="cf-product-title"><a th:href="@{/catalogo(q='Papas')}">Papas Fritas</a></h4>
                             <p class="cf-product-desc">Porción crocante con cremas universitarias.</p>
                             <div class="cf-product-meta">
                                 <div><i class="bi bi-geo-alt-fill"></i> Pabellón A</div>
                             </div>
                             <div class="cf-product-footer">
                                 <div><span class="cf-product-price">S/ 5.00</span></div>
-                                <a th:href="@{/catalogo}" class="btn-cf-cart-circle"><i class="bi bi-cart3"></i></a>
+                                <button type="button" class="btn-cf-cart-circle" onclick="CampusCart.addItem({id:3, nombre:'Papas Fritas', precio:5.00, quantity:1})"><i class="bi bi-cart3"></i></button>
                             </div>
                         </div>
                     </div>
@@ -247,19 +263,21 @@
                 <div class="col-sm-6 col-lg-3">
                     <div class="cf-product-card">
                         <div class="cf-product-image-wrap">
-                            <span class="cf-badge-category">Postres</span>
+                            <a th:href="@{/catalogo(categoria='Postres')}" class="cf-badge-category" title="Ver postres">Postres</a>
                             <button type="button" class="cf-btn-favorite"><i class="bi bi-heart"></i></button>
-                            <img src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=400&q=80" alt="Brownie Casero">
+                            <a th:href="@{/catalogo(categoria='Postres')}" class="d-block w-100 h-100">
+                                <img src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=400&q=80" alt="Brownie Casero">
+                            </a>
                         </div>
                         <div class="cf-product-body">
-                            <h4 class="cf-product-title"><a th:href="@{/catalogo}">Brownie Casero</a></h4>
+                            <h4 class="cf-product-title"><a th:href="@{/catalogo(q='Brownie')}">Brownie Casero</a></h4>
                             <p class="cf-product-desc">Chocolate puro con nueces y centro suave.</p>
                             <div class="cf-product-meta">
                                 <div><i class="bi bi-geo-alt-fill"></i> Biblioteca Central</div>
                             </div>
                             <div class="cf-product-footer">
                                 <div><span class="cf-product-price">S/ 6.00</span></div>
-                                <a th:href="@{/catalogo}" class="btn-cf-cart-circle"><i class="bi bi-cart3"></i></a>
+                                <button type="button" class="btn-cf-cart-circle" onclick="CampusCart.addItem({id:4, nombre:'Brownie Casero', precio:6.00, quantity:1})"><i class="bi bi-cart3"></i></button>
                             </div>
                         </div>
                     </div>
@@ -279,6 +297,16 @@
                 <a th:each="cat : ${categorias}" 
                    th:href="@{/catalogo(categoria=${cat.id})}" 
                    class="btn btn-cf-secondary rounded-pill py-2 px-3 fw-semibold">
+                    <span th:switch="${cat.nombre}" class="me-1">
+                        <span th:case="'Sándwiches'">🥪</span>
+                        <span th:case="'Postres'">🍰</span>
+                        <span th:case="'Dulces'">🍫</span>
+                        <span th:case="'Snacks'">🍪</span>
+                        <span th:case="'Bebidas'">🥤</span>
+                        <span th:case="'Comida rápida'">🍔</span>
+                        <span th:case="'Saludable'">🥗</span>
+                        <span th:case="*">🍱</span>
+                    </span>
                     <span th:text="${cat.nombre}">Categoría</span>
                 </a>
             </div>

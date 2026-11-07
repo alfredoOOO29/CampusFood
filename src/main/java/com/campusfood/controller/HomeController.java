@@ -67,9 +67,13 @@ public class HomeController {
         try {
             usuarioService.registrarEstudiante(registroDTO);
             redirectAttributes.addFlashAttribute("mensajeExito", "Registro exitoso. Hemos enviado un código de verificación de 6 dígitos a tu correo.");
-            return "redirect:/verificar-codigo?email=" + registroDTO.getEmail();
+            return "redirect:/verificar-codigo?email=" + (registroDTO.getEmail() != null ? registroDTO.getEmail().trim().toLowerCase() : "");
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorRegistro", e.getMessage());
+            redirectAttributes.addFlashAttribute("registroDTO", registroDTO);
+            return "redirect:/registro";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorRegistro", "Error inesperado al procesar el registro: " + e.getMessage());
             redirectAttributes.addFlashAttribute("registroDTO", registroDTO);
             return "redirect:/registro";
         }
@@ -77,7 +81,7 @@ public class HomeController {
 
     @GetMapping("/verificar-codigo")
     public String mostrarVerificarCodigo(@RequestParam(value = "email", required = false) String email, Model model) {
-        model.addAttribute("email", email);
+        model.addAttribute("email", email != null ? email.trim() : null);
         return "verificar-codigo";
     }
 
@@ -91,7 +95,7 @@ public class HomeController {
             return "redirect:/login";
         } else {
             redirectAttributes.addFlashAttribute("errorVerificacion", "El código ingresado es incorrecto o ha expirado.");
-            return "redirect:/verificar-codigo?email=" + email;
+            return "redirect:/verificar-codigo?email=" + (email != null ? email.trim() : "");
         }
     }
 
@@ -102,8 +106,10 @@ public class HomeController {
             redirectAttributes.addFlashAttribute("mensajeExito", "Hemos enviado un nuevo código de 6 dígitos a tu correo.");
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorVerificacion", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorVerificacion", "Error al reenviar el código: " + e.getMessage());
         }
-        return "redirect:/verificar-codigo?email=" + email;
+        return "redirect:/verificar-codigo?email=" + (email != null ? email.trim() : "");
     }
 
     @GetMapping("/verificar-correo")
